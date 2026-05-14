@@ -72,7 +72,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 3 — Kim ⭐ *(GitHub Repository Manager)*
+### 👤 Member 3 — Kim 
 **Role:** Price Calculation & Promo Codes
 
 | Task | Module |
