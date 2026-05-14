@@ -149,7 +149,7 @@ shopping-cart-system/
 
 > Follow these steps **carefully and in order**.
 > Steps 1–6 are done **only once** when you first join.
-> The repo is managed by **Kim (Ceddrickx)** — send your GitHub username to her to get access.
+> The repo is managed by **Kim (Ceddrickx)** — send your GitHub username(link) to him to get access.
 
 ---
 
