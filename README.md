@@ -72,7 +72,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 3 — Villar ⭐ *(GitHub Repository Manager)*
+### 👤 Member 3 — Villar
 **Role:** Price Calculation & Promo Codes
 
 | Task | Module |
@@ -258,7 +258,7 @@ Only edit the file assigned to you:
 |--------|----------------|
 | Feleo & Isaac | `main.py` and `member1_item.py` |
 | Naelgas | `member2_cart.py` |
-| Villar ⭐ | `member3_price.py` |
+| Villar  | `member3_price.py` |
 | Cachapero | `member4_payment.py` |
 | All Members | `member5_receipt.py` |
 
@@ -351,7 +351,7 @@ Kim (Ceddrickx) will:
 
 ---
 
-## 👑 Guide for Kim — Repo Manager (Ceddrickx)
+## 👑 Guide  
 
 When a teammate submits a Pull Request:
 
