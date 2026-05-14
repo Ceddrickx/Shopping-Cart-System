@@ -72,7 +72,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 3 — Kim 
+### 👤 Member 3 — Villar
 **Role:** Price Calculation & Promo Codes
 
 | Task | Module |
