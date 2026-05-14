@@ -1,8 +1,8 @@
-## Group Member Task Distribution
+# Group Member Task Distribution
 # MP5: Shopping Cart System with Payment Handling
 # Member 1 - Project Lead / Item Model & Main Menu
-·       Define the Item class (ID, name, category, price, quantity, expiration)
-·       Search item by name or ID (Search module)
+· Define the Item class (ID, name, category, price, quantity, expiration)
+· Search item by name or ID (Search module)
 ·       Update item details (Update module)
 ·       Build the main menu and integrate all modules (main.py)
 ·       Data Structure: Linked List — item catalog/inventory
