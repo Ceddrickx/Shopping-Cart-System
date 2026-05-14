@@ -44,7 +44,7 @@ shopping-cart-system/
 
 ## 👥 Group Member Task Distribution
 
-### 👤 Member 1 — Rap & Alyanna
+### 👤 Member 1 — Feleo & Isaac
 **Role:** Project Lead / Item Model & Main Menu
 
 | Task | Module |
@@ -58,7 +58,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 2 — Kirby
+### 👤 Member 2 — Naelgas
 **Role:** Cart Operations & Undo Feature
 
 | Task | Module |
@@ -86,7 +86,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 4 — Ecks
+### 👤 Member 4 — Cachapero
 **Role:** Payment Simulation
 
 | Task | Module |
@@ -100,7 +100,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 5 — Kirby & All
+### 👤 Member 5 — All Members
 **Role:** Receipt, Transaction History & Error Handling
 
 | Task | Module |
