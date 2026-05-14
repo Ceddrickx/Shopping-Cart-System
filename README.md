@@ -72,7 +72,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 3 — Villar
+### 👤 Member 3 — Villar ⭐ *(GitHub Repository Manager)*
 **Role:** Price Calculation & Promo Codes
 
 | Task | Module |
@@ -80,7 +80,7 @@ shopping-cart-system/
 | Compute total price of all items in cart | Price module |
 | Apply promo code or discount | Promo module |
 | Display final payable amount (subtotal, discount, total) | Display module |
-| Manage and maintain the GitHub repository | GitHub |
+| Review and merge all Pull Requests | GitHub |
 
 > **Data Structure:** `Queue` — promo code processing
 
@@ -147,9 +147,10 @@ shopping-cart-system/
 
 ## 🔧 Git Setup Guide for Members
 
-> Follow these steps **carefully and in order**.
-> Steps 1–6 are done **only once** when you first join.
-> The repo is managed by **Kim (Ceddrickx)** — send your GitHub username(link) to him to get access.
+> This project uses the **Fork + Pull Request** workflow.
+> This means you work on your **own copy** of the repo and submit your code to **Kim (Ceddrickx)** for review before it gets merged.
+> No one can directly edit the main repository except **Kim (Ceddrickx)**.
+> Steps 1–6 are done **only once** when you first set up.
 
 ---
 
@@ -171,15 +172,20 @@ You should see something like `git version 2.x.x` ✅
 
 1. Go to [https://github.com](https://github.com)
 2. Sign up for a free account if you don't have one yet
-3. Send your GitHub **username** to **Kim** so he can add you as a collaborator
+
+> You do **not** need to be added as a collaborator for this workflow. Anyone can fork.
 
 ---
 
-### ✅ STEP 3 — Accept the Collaborator Invite
+### ✅ STEP 3 — Fork the Repository
 
-1. Check your **email** for an invitation from GitHub sent by **Ceddrickx**
-2. Click **Accept Invitation**
-3. You now have permission to push code to the repository ✅
+Forking creates your own personal copy of Kim's repo under your GitHub account.
+
+1. Go to: [https://github.com/Ceddrickx/shopping-cart-system](https://github.com/Ceddrickx/shopping-cart-system)
+2. Click the **Fork** button at the top right of the page
+3. Click **Create fork**
+4. You now have your own copy at:
+   `https://github.com/YOUR_USERNAME/shopping-cart-system` ✅
 
 ---
 
@@ -196,12 +202,12 @@ git config --global user.email "your_email@gmail.com"
 
 ---
 
-### ✅ STEP 5 — Clone the Repository
+### ✅ STEP 5 — Clone YOUR Fork (not Kim's)
 
-This downloads the full project to your PC:
+Download **your fork** to your PC:
 
 ```bash
-git clone https://github.com/Ceddrickx/shopping-cart-system.git
+git clone https://github.com/YOUR_USERNAME/shopping-cart-system.git
 ```
 
 Then navigate into the project folder:
@@ -214,7 +220,25 @@ You should now see all the project files on your PC ✅
 
 ---
 
-### ✅ STEP 6 — Open the Project in Your Editor
+### ✅ STEP 6 — Connect to Kim's Original Repo
+
+This lets you pull the latest updates from Kim's repo anytime:
+
+```bash
+git remote add upstream https://github.com/Ceddrickx/shopping-cart-system.git
+```
+
+Verify the connection:
+
+```bash
+git remote -v
+```
+
+You should see both `origin` (your fork) and `upstream` (Kim's repo) ✅
+
+---
+
+### ✅ STEP 7 — Open the Project in Your Editor
 
 **If using VS Code:**
 ```bash
@@ -226,37 +250,43 @@ code .
 
 ---
 
-### ✅ STEP 7 — Know Your Assigned File
+### ✅ STEP 8 — Know Your Assigned File
 
 Only edit the file assigned to you:
 
 | Member | Assigned File/s |
 |--------|----------------|
-| Rap & Alyanna | `main.py` and `member1_item.py` |
-| Kirby | `member2_cart.py` |
-| Kim  | `member3_price.py` |
-| Ecks | `member4_payment.py` |
-| Kirby & All | `member5_receipt.py` |
+| Feleo & Isaac | `main.py` and `member1_item.py` |
+| Naelgas | `member2_cart.py` |
+| Villar ⭐ | `member3_price.py` |
+| Cachapero | `member4_payment.py` |
+| All Members | `member5_receipt.py` |
 
 > ⚠️ **Do NOT edit files that belong to other members.**
 
 ---
 
-### ✅ STEP 8 — Pull First Before Coding (Every Session)
+### ✅ STEP 9 — Sync with Kim's Repo Before Coding (Every Session)
 
-Every time you sit down to code, **always run this first**:
+Before coding each session, always get the latest updates from Kim's original repo first:
 
 ```bash
-git pull origin main
+git pull upstream main
 ```
 
-This makes sure you have the latest version of the project before making changes. Skipping this causes conflicts. ⚠️
+Then update your own fork too:
+
+```bash
+git push origin main
+```
+
+> Always do this before you start coding to avoid conflicts. ⚠️
 
 ---
 
-### ✅ STEP 9 — Push Your Code After Coding
+### ✅ STEP 10 — Push Your Code to YOUR Fork
 
-Once you're done editing your file, run these **3 commands in order**:
+Once you're done editing your assigned file, run these **3 commands in order**:
 
 ```bash
 # 1. Stage your file (tell Git which file you changed)
@@ -265,42 +295,71 @@ git add your_file.py
 # 2. Commit with a short message describing what you did
 git commit -m "Your name: describe what you added or changed"
 
-# 3. Push your code up to GitHub
+# 3. Push to YOUR fork (not Kim's repo)
 git push origin main
 ```
 
 **Real examples per member:**
 
 ```bash
-# Rap & Alyanna (Member 1)
+# Feleo & Isaac (Member 1)
 git add member1_item.py
-git commit -m "Rap: finished Item class and linked list catalog"
+git commit -m "Feleo: finished Item class and linked list catalog"
 git push origin main
 
-# Kirby (Member 2)
+# Naelgas (Member 2)
 git add member2_cart.py
-git commit -m "Kirby: finished add to cart and undo stack"
+git commit -m "Naelgas: finished add to cart and undo stack"
 git push origin main
 
-# Kim (Member 3) 
+# Villar (Member 3)
 git add member3_price.py
-git commit -m "Kim: added promo queue and discount logic"
+git commit -m "Villar: added promo queue and discount logic"
 git push origin main
 
-# Ecks (Member 4)
+# Cachapero (Member 4)
 git add member4_payment.py
-git commit -m "Ecks: completed cash and e-wallet payment flow"
+git commit -m "Cachapero: completed cash and e-wallet payment flow"
 git push origin main
 ```
 
 ---
 
-### ✅ STEP 10 — Verify Your Push Worked
+### ✅ STEP 11 — Create a Pull Request to Kim's Repo
 
-1. Open your browser and go to:
-   `https://github.com/Ceddrickx/shopping-cart-system`
-2. Click on your file (e.g. `member2_cart.py`)
-3. You should see your latest code there ✅
+This is how your code gets submitted to the main repository for Kim to review.
+
+1. Go to your fork on GitHub:
+   `https://github.com/YOUR_USERNAME/shopping-cart-system`
+2. Click **Contribute** → **Open Pull Request**
+3. Make sure it says:
+   - **base repository:** `Ceddrickx/shopping-cart-system` ← Kim's main repo
+   - **head repository:** `YOUR_USERNAME/shopping-cart-system` ← your fork
+4. Add a title like: `"Naelgas - Member 2: Cart Operations done"`
+5. Click **Create Pull Request** ✅
+
+> Kim will receive a notification and review your code before merging it into the main repo.
+
+---
+
+### ✅ STEP 12 — Wait for Kim to Merge
+
+Kim (Ceddrickx) will:
+- Review your submitted code
+- Request changes if needed — just fix them and push again to your fork, the Pull Request updates automatically
+- Merge it into the main repo once everything looks good ✅
+
+---
+
+## 👑 Guide for Kim — Repo Manager (Ceddrickx)
+
+When a teammate submits a Pull Request:
+
+1. Go to your repo → click the **Pull Requests** tab
+2. Click the Pull Request to open and review it
+3. Check the **Files changed** tab — make sure they only edited their assigned file
+4. If everything looks good → click **Merge pull request** → **Confirm merge** ✅
+5. If there's an issue → click **Request changes** and leave a comment explaining what to fix
 
 ---
 
@@ -308,10 +367,10 @@ git push origin main
 
 | Error | What It Means | Fix |
 |-------|--------------|-----|
-| `git push` rejected | Someone else pushed before you | Run `git pull origin main` first, then push again |
-| `permission denied` | You haven't been added as collaborator | Message **Kim** to add you, then accept the invite |
+| `git push` rejected | Pushing to Kim's repo directly | Make sure you cloned YOUR fork, not Kim's |
 | `fatal: not a git repository` | You're in the wrong folder | Run `cd shopping-cart-system` first |
-| Merge conflict | Two people edited the same file | Message **Kim** immediately — do NOT force push |
+| Merge conflict | Two people edited the same file | Message Kim immediately — do NOT force push |
+| Pull Request has conflicts | Your fork is outdated | Run `git pull upstream main` then push again |
 | `fatal: unable to access` | No internet or wrong URL | Check your connection and the repo URL |
 
 ---
@@ -321,11 +380,13 @@ git push origin main
 ```
 Every coding session — follow this order:
 
-1.  git pull origin main         ← ALWAYS do this first
-2.  Edit ONLY your assigned file
-3.  git add your_file.py         ← stage your changes
-4.  git commit -m "message"      ← describe what you did
-5.  git push origin main         ← upload to GitHub
+1.  git pull upstream main       ← get latest from Kim's repo
+2.  git push origin main         ← update your own fork
+3.  Edit ONLY your assigned file
+4.  git add your_file.py         ← stage your changes
+5.  git commit -m "message"      ← describe what you did
+6.  git push origin main         ← push to your fork
+7.  Open Pull Request on GitHub  ← submit to Kim for review
 ```
 
 ---
