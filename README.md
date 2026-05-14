@@ -171,7 +171,7 @@ You should see something like `git version 2.x.x` ✅
 
 1. Go to [https://github.com](https://github.com)
 2. Sign up for a free account if you don't have one yet
-3. Send your GitHub **username** to **Kim** so she can add you as a collaborator
+3. Send your GitHub **username** to **Kim** so he can add you as a collaborator
 
 ---
 
@@ -234,7 +234,7 @@ Only edit the file assigned to you:
 |--------|----------------|
 | Rap & Alyanna | `main.py` and `member1_item.py` |
 | Kirby | `member2_cart.py` |
-| Kim ⭐ | `member3_price.py` |
+| Kim  | `member3_price.py` |
 | Ecks | `member4_payment.py` |
 | Kirby & All | `member5_receipt.py` |
 
@@ -282,7 +282,7 @@ git add member2_cart.py
 git commit -m "Kirby: finished add to cart and undo stack"
 git push origin main
 
-# Kim (Member 3) ⭐
+# Kim (Member 3) 
 git add member3_price.py
 git commit -m "Kim: added promo queue and discount logic"
 git push origin main
