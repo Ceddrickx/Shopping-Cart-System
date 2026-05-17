@@ -1,3 +1,25 @@
+class Item:
+    def __init__(self, item_id, name, category, price, quantity, expiration):
+        self.item_id = item_id
+        self.name = name
+        self.category = category
+        self.price = price
+        self.quantity = quantity
+        self.expiration = expiration
+
+    def display(self):
+        print(f"""
+ID: {self.item_id}
+Name: {self.name}
+Category: {self.category}
+Price: ₱{self.price}
+Quantity: {self.quantity}
+Expiration: {self.expiration}
+""")
+
+pencil = Item("01", "pencil", "writing", "15.00", "100", "")
+print(pencil.display())
+
 def display_cart():
     pass
 def add_item():
@@ -17,7 +39,7 @@ def main():
     [     National University School Supplies     ]
     ===============================================
     [1] View Cart
-    [2] Add Item
+    [2] Add Item #search item by name and id
     [3] Remove Item
     [4] Undo Last Action
     [5] Redo Last Action
@@ -42,4 +64,3 @@ def main():
             print("Invalid choice.")
 
 main()
-
