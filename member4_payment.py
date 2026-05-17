@@ -1,11 +1,6 @@
-# =============================================================================
-#  PAYMENT SIMULATION  |  DASTRUC  |  Member 4 - Ecks
-#  Receives: item list + total from Member 3 (Price Calculation)
-#  Sends: payment record to Member 5 (Receipt & Transaction History)
-#  Data Structure: Stack — payment method history
-# =============================================================================
+# PAYMENT SIMULATION  |  DASTRUC  |  Member 4 (Ecks)
 
-# ── STACK (payment method history) ───────────────────────────────────────────
+# Stack
 class Stack:
     def __init__(self):  self._d = []
     def push(self, x):   self._d.append(x)
@@ -17,7 +12,7 @@ class Stack:
 
 payment_stack = Stack()
 
-# ── HELPERS ───────────────────────────────────────────────────────────────────
+# Helper
 SEP  = "=" * 48
 LINE = "-" * 48
 
@@ -50,7 +45,7 @@ def ask_confirm(summary):
     print(f"  {LINE}")
     return get_choice("  Proceed? [y/n]: ", ["y","Y","n","N"]).lower() == "y"
 
-# ── LUHN VALIDATION ───────────────────────────────────────────────────────────
+# Luhn
 def luhn(n):
     d, total = [int(c) for c in reversed(n)], 0
     for i, val in enumerate(d):
@@ -66,7 +61,7 @@ def card_type(n):
     if n[:2] in ("34","37"):                 return "Amex"
     return "Other"
 
-# ── CONFIRMATION SCREEN ───────────────────────────────────────────────────────
+# Confirm screen
 def show_confirmation(record):
     hdr("PAYMENT CONFIRMATION")
     print(f"  Item / Order  : {record['item']}")
@@ -87,7 +82,7 @@ def show_confirmation(record):
     print(f"  Status        : {record['status']}")
     print(SEP)
 
-# ── PAYMENT FLOWS ─────────────────────────────────────────────────────────────
+# Payment Flow
 def cash_flow(item, amount):
     hdr("CASH PAYMENT")
     print(f"  Total Amount Due: P{amount:.2f}\n")
@@ -141,15 +136,8 @@ def ewallet_flow(item, amount):
         return None
     return {"method": "E-Wallet", "wallet": wallet, "account": account, "ref": ref, "status": "SUCCESS"}
 
-# ── MAIN PAYMENT FUNCTION (called by main.py or Member 3) ────────────────────
+# Main payment
 def process_payment(item="Order", amount=None):
-    """
-    Entry point for payment.
-    - item   : order label or item name passed in from Member 3
-    - amount : total payable amount passed in from Member 3
-    Returns the payment record (dict) so Member 5 can use it for the receipt.
-    Returns None if payment was cancelled.
-    """
     if amount is None:
         amount = get_float("  Enter total amount to pay (P): ")
 
@@ -175,11 +163,11 @@ def process_payment(item="Order", amount=None):
         return None
 
     record = {"item": item, "amount": amount, **result}
-    payment_stack.push(record)          # push to stack (payment method history)
+    payment_stack.push(record)         
     show_confirmation(record)
-    return record                       # return to Member 5 for receipt generation
+    return record                       
 
-# ── STANDALONE TEST MENU (remove when integrating with main.py) ───────────────
+# Menu
 if __name__ == "__main__":
     while True:
         hdr("PAYMENT MODULE  |  Member 4 - Ecks")
