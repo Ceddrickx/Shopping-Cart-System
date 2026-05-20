@@ -31,9 +31,6 @@ class Queue:
         """Check if there are no promo codes in the queue."""
         return self.items == []
 
-    # FIX 1 — Added proper methods so we never touch
-    # promo_queue.items directly from outside the class
-
     def remove_item(self, item):
         """Remove a specific item from the queue by value."""
         if item in self.items:
