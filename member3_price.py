@@ -1,7 +1,5 @@
 # ============================================================
-# Member 3 - Villar
 # Price Calculation & Promo Codes
-# Data Structure: Queue — promo code processing
 # ============================================================
 
 class Queue:
