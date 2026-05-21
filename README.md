@@ -9,23 +9,6 @@ A terminal-based **Shopping Cart System** built in Python that simulates item se
 
 ---
 
-## 🚀 How to Run
-
-> Make sure you have **Python 3.10+** installed.
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/Ceddrickx/shopping-cart-system.git
-
-# 2. Go into the project folder
-cd shopping-cart-system
-
-# 3. Run the program
-python main.py
-```
-
----
-
 ## 📁 File Structure
 
 ```
