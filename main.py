@@ -1,12 +1,5 @@
 # ============================================================
-# Member 1 - Main System Integration
-# Role:
-#   Item Model, Linked List Inventory,
-#   Search, Update, Display & Main Menu
-#
-# Project:
-#   MP5 – Shopping Cart System with Payment Handling
-#
+# Members: [Names]
 # Data Structures Used:
 #   - Linked List            → Inventory
 #   - Stack                  → Cart Undo History
@@ -18,7 +11,6 @@ from cart import Cart
 from price import process_price
 from payment import payment_menu
 from receipt import receipt_history
-
 
 # ╔══════════════════════════════════════════════════════════╗
 #  ITEM CLASS
