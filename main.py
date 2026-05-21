@@ -1,21 +1,12 @@
 # ============================================================
-#  item.py  —  Member 1: Feleo & Isaac
 #  Role   : Item Model, Linked List Inventory,
 #            Search, Update, Display & Main Menu
 #  Project: MP5 – Shopping Cart System with Payment Handling
 #  Data Structure: Singly Linked List (item catalog / inventory)
 # ============================================================
 
-# ── Placeholder imports (uncomment when each member finishes) ──
-# from member2 import cart_menu       # Naelgas  – Cart & Undo
-# from member3 import price_menu      # Villar   – Price & Promo
-# from member4 import payment_menu    # Cachapero– Payment Simulation
-
-
 # ╔══════════════════════════════════════════════════════════╗
 #  ITEM CLASS
-
-
 # ╚══════════════════════════════════════════════════════════╝
 class Item:
     """Represents a single inventory item."""
@@ -35,7 +26,6 @@ class Item:
             f"₱{self.price:>7.2f} | {stock_label:<13} | Exp: {self.expiration}"
         )
 
-
 # ╔══════════════════════════════════════════════════════════╗
 #  NODE CLASS  (Singly Linked List building block)
 # ╚══════════════════════════════════════════════════════════╝
@@ -45,7 +35,6 @@ class Node:
     def __init__(self, item):
         self.item = item   # Item object stored in this node
         self.next = None   # Pointer to the next node
-
 
 # ╔══════════════════════════════════════════════════════════╗
 #  LINKED LIST CLASS  (Inventory / Item Catalog)
@@ -59,7 +48,6 @@ class LinkedList:
     def __init__(self):
         self.head = None   # Points to the first node
 
-
     # ── INSERT (append to end) ─────────────────────────────
     def insert(self, item):
         """Add a new item node at the end of the list."""
@@ -72,7 +60,6 @@ class LinkedList:
         while current.next is not None:
             current = current.next
         current.next = new_node
-
 
     # ── DELETE by ID ───────────────────────────────────────
     def delete(self, item_id):
@@ -100,7 +87,6 @@ class LinkedList:
         print(f"\n  [!] Item with ID '{item_id}' not found.")
         return False
 
-
     # ── SEARCH by ID or Name ───────────────────────────────
     def search(self, query):
         """
@@ -117,7 +103,6 @@ class LinkedList:
                 results.append(item)
             current = current.next
         return results
-
 
     # ── UPDATE by ID ───────────────────────────────────────
     def update(self, item_id):
@@ -175,7 +160,6 @@ class LinkedList:
         print(f"\n  [!] Item with ID '{item_id}' not found.")
         return False
 
-
     # ── DISPLAY ALL ───────────────────────────────────────
     def display(self, category_filter=None):
         """
@@ -217,7 +201,6 @@ class LinkedList:
         print(divider)
         print(f"  Total items shown: {count}")
 
-
     # ── FIND BY ID (helper for other members) ─────────────
     def find_by_id(self, item_id):
         """Return the Item object matching item_id, or None."""
@@ -227,7 +210,6 @@ class LinkedList:
                 return current.item
             current = current.next
         return None
-
 
     # ── DEDUCT QUANTITY (called by Member 4 after payment) ─
     def deduct_quantity(self, item_id, qty):
@@ -244,7 +226,6 @@ class LinkedList:
             return False
         item.quantity -= qty
         return True
-
 
 # ╔══════════════════════════════════════════════════════════╗
 #  PRE-LOAD INVENTORY  (25 default items)
@@ -281,8 +262,7 @@ def load_default_inventory(inventory: LinkedList):
     ]
     for data in default_items:
         inventory.insert(Item(*data))
-
-
+        
 # ╔══════════════════════════════════════════════════════════╗
 #  MENU HANDLERS  (Member 1 features)
 # ╚══════════════════════════════════════════════════════════╝
@@ -313,7 +293,6 @@ def display_menu(inventory):
         else:
             print("  [!] Invalid option. Please enter 1, 2, or 3.")
 
-
 def search_menu(inventory):
     """Sub-menu for searching inventory."""
     while True:
@@ -338,7 +317,6 @@ def search_menu(inventory):
             print(f"  {'─'*80}")
         else:
             print(f"  [!] No items found matching '{query}'.")
-
 
 def update_menu(inventory):
     """Sub-menu for updating an inventory item."""
@@ -366,7 +344,6 @@ def update_menu(inventory):
         cont = input("\n  Update another item? (y/n): ").strip().lower()
         if cont != "y":
             break
-
 
 # ╔══════════════════════════════════════════════════════════╗
 #  MAIN MENU
@@ -418,7 +395,6 @@ def main_menu(inventory):
 
         else:
             print("  [!] Invalid option. Please choose from the menu.")
-
 
 # ╔══════════════════════════════════════════════════════════╗
 #  ENTRY POINT
