@@ -1,416 +1,324 @@
 # ============================================================
-#  Role   : Item Model, Linked List Inventory,
-#            Search, Update, Display & Main Menu
-#  Project: MP5 – Shopping Cart System with Payment Handling
-#  Data Structure: Singly Linked List (item catalog / inventory)
+# main.py
+# NUmart - Study smart. Shop smart.
+# Entry point and menu driver for the shopping cart system.
+# Run this file to start the program.
 # ============================================================
 
-# ╔══════════════════════════════════════════════════════════╗
-#  ITEM CLASS
-# ╚══════════════════════════════════════════════════════════╝
-class Item:
-    """Represents a single inventory item."""
+from system import NUmart
 
-    def __init__(self, item_id, name, category, price, quantity, expiration="None"):
-        self.item_id    = item_id       # str  e.g. "001"
-        self.name       = name          # str
-        self.category   = category      # str
-        self.price      = float(price)  # float
-        self.quantity   = int(quantity) # int
-        self.expiration = expiration    # str  "YYYY-MM-DD" or "None"
 
-    def __str__(self):
-        stock_label = f"Qty: {self.quantity}" if self.quantity > 0 else "OUT OF STOCK"
-        return (
-            f"[{self.item_id}] {self.name:<25} | {self.category:<10} | "
-            f"₱{self.price:>7.2f} | {stock_label:<13} | Exp: {self.expiration}"
-        )
+# ─────────────────────────────────────────
+# HELPER FUNCTIONS
+# ─────────────────────────────────────────
 
-# ╔══════════════════════════════════════════════════════════╗
-#  NODE CLASS  (Singly Linked List building block)
-# ╚══════════════════════════════════════════════════════════╝
-class Node:
-    """A single node in the linked list."""
+def print_header():
+    """Print the NUmart system header."""
+    print("\n")
+    print("  ╔═════════════════════════════════════╗")
+    print("  ║              N U M A R T            ║")
+    print("  ║      Study smart. Shop smart.       ║")
+    print("  ╚═════════════════════════════════════╝")
 
-    def __init__(self, item):
-        self.item = item   # Item object stored in this node
-        self.next = None   # Pointer to the next node
+def pause():
+    """Pause and wait for user to press Enter."""
+    input("\n  Press Enter to continue...")
 
-# ╔══════════════════════════════════════════════════════════╗
-#  LINKED LIST CLASS  (Inventory / Item Catalog)
-# ╚══════════════════════════════════════════════════════════╝
-class LinkedList:
-    """
-    Singly Linked List used as the item catalog / inventory.
-    Head → Node1 → Node2 → ... → NodeN → None
-    """
+def clear_screen():
+    """Print blank lines to simulate screen clearing."""
+    print("\n" * 3)
 
-    def __init__(self):
-        self.head = None   # Points to the first node
 
-    # ── INSERT (append to end) ─────────────────────────────
-    def insert(self, item):
-        """Add a new item node at the end of the list."""
-        new_node = Node(item)
-        if self.head is None:
-            self.head = new_node
-            return
-        # Traverse to the last node
-        current = self.head
-        while current.next is not None:
-            current = current.next
-        current.next = new_node
+# ─────────────────────────────────────────
+# CUSTOMER MENUS
+# ─────────────────────────────────────────
 
-    # ── DELETE by ID ───────────────────────────────────────
-    def delete(self, item_id):
-        """
-        Remove the node whose item.item_id matches item_id.
-        Returns True if deleted, False if not found.
-        """
-        if self.head is None:
-            print("\n  [!] Inventory is empty. Nothing to delete.")
-            return False
+def menu_browse(store):
+    """Browse inventory — display all available items."""
+    clear_screen()
+    print_header()
+    print("\n  [ BROWSE ITEMS — INVENTORY ]")
+    store.inventory.display()
+    pause()
 
-        # If the head node matches
-        if self.head.item.item_id == item_id:
-            self.head = self.head.next
-            return True
 
-        # Traverse to find the node before the target
-        current = self.head
-        while current.next is not None:
-            if current.next.item.item_id == item_id:
-                current.next = current.next.next
-                return True
-            current = current.next
-
-        print(f"\n  [!] Item with ID '{item_id}' not found.")
-        return False
-
-    # ── SEARCH by ID or Name ───────────────────────────────
-    def search(self, query):
-        """
-        Search by item ID or name (case-insensitive partial match).
-        Returns a list of matching Item objects.
-        """
-        results = []
-        current = self.head
-        query_lower = query.strip().lower()
-        while current is not None:
-            item = current.item
-            if (item.item_id.lower() == query_lower or
-                    query_lower in item.name.lower()):
-                results.append(item)
-            current = current.next
-        return results
-
-    # ── UPDATE by ID ───────────────────────────────────────
-    def update(self, item_id):
-        """
-        Locate item by ID and let the user update its fields.
-        Returns True if updated, False if not found.
-        """
-        current = self.head
-        while current is not None:
-            if current.item.item_id == item_id:
-                item = current.item
-                print(f"\n  Updating: {item}")
-                print("  (Press ENTER to keep the current value.)\n")
-
-                # Name
-                new_name = input(f"  New Name       [{item.name}]: ").strip()
-                if new_name:
-                    item.name = new_name
-
-                # Category
-                new_cat = input(f"  New Category   [{item.category}]: ").strip()
-                if new_cat:
-                    item.category = new_cat
-
-                # Price
-                while True:
-                    new_price = input(f"  New Price      [{item.price:.2f}]: ").strip()
-                    if not new_price:
-                        break
-                    try:
-                        item.price = float(new_price)
-                        break
-                    except ValueError:
-                        print("  [!] Invalid price. Please enter a number.")
-
-                # Quantity
-                while True:
-                    new_qty = input(f"  New Quantity   [{item.quantity}]: ").strip()
-                    if not new_qty:
-                        break
-                    try:
-                        item.quantity = int(new_qty)
-                        break
-                    except ValueError:
-                        print("  [!] Invalid quantity. Please enter a whole number.")
-
-                # Expiration
-                new_exp = input(f"  New Expiration [{item.expiration}]: ").strip()
-                if new_exp:
-                    item.expiration = new_exp
-
-                return True
-            current = current.next
-
-        print(f"\n  [!] Item with ID '{item_id}' not found.")
-        return False
-
-    # ── DISPLAY ALL ───────────────────────────────────────
-    def display(self, category_filter=None):
-        """
-        Print all items in the inventory.
-        Optionally filter by category (case-insensitive).
-        """
-        if self.head is None:
-            print("\n  [!] Inventory is empty.")
-            return
-
-        header = (
-            f"  {'ID':<5} {'Name':<25} {'Category':<10} "
-            f"{'Price':>8}   {'Stock':<13}   {'Expiration'}"
-        )
-        divider = "  " + "-" * 80
-
-        if category_filter:
-            print(f"\n  {'─'*80}")
-            print(f"  INVENTORY  —  Category: {category_filter.upper()}")
-            print(f"  {'─'*80}")
-        else:
-            print(f"\n  {'─'*80}")
-            print(f"  {'FULL INVENTORY':^80}")
-            print(f"  {'─'*80}")
-
-        print(header)
-        print(divider)
-
-        current = self.head
-        count   = 0
-        while current is not None:
-            item = current.item
-            if (category_filter is None or
-                    item.category.lower() == category_filter.lower()):
-                print(f"  {item}")
-                count += 1
-            current = current.next
-
-        print(divider)
-        print(f"  Total items shown: {count}")
-
-    # ── FIND BY ID (helper for other members) ─────────────
-    def find_by_id(self, item_id):
-        """Return the Item object matching item_id, or None."""
-        current = self.head
-        while current is not None:
-            if current.item.item_id == item_id:
-                return current.item
-            current = current.next
-        return None
-
-    # ── DEDUCT QUANTITY (called by Member 4 after payment) ─
-    def deduct_quantity(self, item_id, qty):
-        """
-        Decrease item stock after successful payment.
-        Returns True on success, False if not found or insufficient stock.
-        """
-        item = self.find_by_id(item_id)
-        if item is None:
-            print(f"  [!] Item ID '{item_id}' not found in inventory.")
-            return False
-        if item.quantity < qty:
-            print(f"  [!] Insufficient stock for '{item.name}'.")
-            return False
-        item.quantity -= qty
-        return True
-
-# ╔══════════════════════════════════════════════════════════╗
-#  PRE-LOAD INVENTORY  (25 default items)
-# ╚══════════════════════════════════════════════════════════╝
-def load_default_inventory(inventory: LinkedList):
-    """Populate the linked list with the 25 default inventory items."""
-    default_items = [
-        # ID    Name                    Category    Price    Qty   Expiration
-        ("001", "Ballpen (Black)",      "Writing",   15.00,  100,  "None"),
-        ("002", "Ballpen (Red)",        "Writing",   15.00,  100,  "None"),
-        ("003", "Pencil No. 2",         "Writing",   10.00,  150,  "None"),
-        ("004", "Highlighter",          "Writing",   35.00,   50,  "None"),
-        ("005", "Permanent Marker",     "Writing",   45.00,   50,  "None"),
-        ("006", "Notebook (50 leaves)", "Paper",     55.00,   80,  "None"),
-        ("007", "Notebook (100 leaves)","Paper",     85.00,   80,  "None"),
-        ("008", "Pad Paper",            "Paper",     40.00,  100,  "None"),
-        ("009", "Bond Paper (Short)",   "Paper",      5.00,  200,  "None"),
-        ("010", "Folder (Long)",        "Paper",     12.00,  100,  "None"),
-        ("011", "Scissors",             "Tools",     55.00,   30,  "None"),
-        ("012", "Ruler (30cm)",         "Tools",     25.00,   40,  "None"),
-        ("013", "Compass",              "Tools",     75.00,   20,  "None"),
-        ("014", "Stapler",              "Tools",    120.00,   15,  "None"),
-        ("015", "Tape (Clear)",         "Tools",     30.00,   60,  "None"),
-        ("016", "Glue Stick",           "Adhesives", 25.00,   60,  "2027-12-31"),
-        ("017", "Paste (White)",        "Adhesives", 35.00,   40,  "2027-06-30"),
-        ("018", "Double-sided Tape",    "Adhesives", 40.00,   50,  "None"),
-        ("019", "Correction Tape",      "Adhesives", 45.00,   50,  "None"),
-        ("020", "Eraser",               "Adhesives", 10.00,  120,  "None"),
-        ("021", "Colored Paper",        "Art",       20.00,  100,  "None"),
-        ("022", "Watercolor Paint",     "Art",       95.00,   25,  "2026-12-31"),
-        ("023", "Crayons (12 colors)",  "Art",       65.00,   30,  "None"),
-        ("024", "Coloring Pencils",     "Art",       85.00,   30,  "None"),
-        ("025", "Sketchpad",            "Art",      110.00,   20,  "None"),
-    ]
-    for data in default_items:
-        inventory.insert(Item(*data))
-        
-# ╔══════════════════════════════════════════════════════════╗
-#  MENU HANDLERS  (Member 1 features)
-# ╚══════════════════════════════════════════════════════════╝
-
-def display_menu(inventory):
-    """Sub-menu for browsing inventory."""
+def menu_cart(store):
+    """Shopping cart menu — add, remove, undo, view cart."""
     while True:
-        print("\n┌─── VIEW INVENTORY ───────────────────┐")
-        print("  │  1. View All Items                   │")
-        print("  │  2. View by Category                 │")
-        print("  │  3. Back to Main Menu                │")
-        print("  └──────────────────────────────────────┘")
-        choice = input("  Choose an option: ").strip()
+        clear_screen()
+        print_header()
+        print("\n  [ SHOPPING CART ]")
+        print("  ─────────────────────────────────────")
+        print("  [1] Add item to cart")
+        print("  [2] Remove item from cart")
+        print("  [3] View cart")
+        print("  [4] Undo last action")
+        print("  [0] Back to main menu")
+        print("  ─────────────────────────────────────")
+
+        choice = input("\n  Enter choice: ").strip()
 
         if choice == "1":
-            inventory.display()
+            clear_screen()
+            print("\n  [ ADD ITEM TO CART ]")
+            store.inventory.display()
+
+            # retry until valid item ID is entered
+            while True:
+                item_id = input("\n  Enter Item ID to add (or 0 to cancel): ").strip()
+                if item_id == "0":
+                    break
+                if item_id == "":
+                    print("  [!] Item ID cannot be empty. Please try again.")
+                    continue
+                if store.inventory.search(item_id) is None:
+                    print(f"  [!] Item ID '{item_id}' not found. Please choose a valid ID from the list.")
+                    continue
+
+                # valid ID — now ask for quantity with retry
+                while True:
+                    try:
+                        qty = int(input("  Enter quantity: "))
+                        if qty <= 0:
+                            print("  [!] Quantity must be at least 1. Please try again.")
+                            continue
+                        break
+                    except ValueError:
+                        print("  [!] Invalid input. Please enter a whole number.")
+                store.add_to_cart(item_id, qty)
+                break
+            pause()
 
         elif choice == "2":
-            print("\n  Categories: Writing | Paper | Tools | Adhesives | Art")
-            cat = input("  Enter category: ").strip()
-            if cat:
-                inventory.display(category_filter=cat)
-            else:
-                print("  [!] No category entered.")
+            clear_screen()
+            print("\n  [ REMOVE ITEM FROM CART ]")
+            store.display_cart()
+
+            if not store.cart.is_empty():
+                # retry until valid cart item ID is entered
+                while True:
+                    item_id = input("\n  Enter Item ID to remove (or 0 to cancel): ").strip()
+                    if item_id == "0":
+                        break
+                    if item_id == "":
+                        print("  [!] Item ID cannot be empty. Please try again.")
+                        continue
+                    if store.cart.search(item_id) is None:
+                        print(f"  [!] Item ID '{item_id}' is not in your cart. Please try again.")
+                        continue
+                    store.remove_from_cart(item_id)
+                    break
+            pause()
 
         elif choice == "3":
-            break
-        else:
-            print("  [!] Invalid option. Please enter 1, 2, or 3.")
+            clear_screen()
+            print("\n  [ YOUR CART ]")
+            store.display_cart()
+            pause()
 
-def search_menu(inventory):
-    """Sub-menu for searching inventory."""
-    while True:
-        print("\n┌─── SEARCH INVENTORY ─────────────────┐")
-        print("  │  Enter Item ID or Name to search.    │")
-        print("  │  Type 'back' to return.              │")
-        print("  └──────────────────────────────────────┘")
-        query = input("  Search: ").strip()
-
-        if query.lower() == "back":
-            break
-        elif not query:
-            print("  [!] Please enter a search term.")
-            continue
-
-        results = inventory.search(query)
-        if results:
-            print(f"\n  Found {len(results)} result(s):\n")
-            print(f"  {'─'*80}")
-            for item in results:
-                print(f"  {item}")
-            print(f"  {'─'*80}")
-        else:
-            print(f"  [!] No items found matching '{query}'.")
-
-def update_menu(inventory):
-    """Sub-menu for updating an inventory item."""
-    while True:
-        print("\n┌─── UPDATE ITEM ──────────────────────┐")
-        print("  │  Enter the Item ID you want to edit. │")
-        print("  │  Type 'back' to return.              │")
-        print("  └──────────────────────────────────────┘")
-        item_id = input("  Item ID: ").strip()
-
-        if item_id.lower() == "back":
-            break
-        elif not item_id:
-            print("  [!] Please enter an Item ID.")
-            continue
-
-        success = inventory.update(item_id)
-        if success:
-            print(f"\n  [✓] Item '{item_id}' updated successfully.")
-            # Show updated record
-            updated = inventory.find_by_id(item_id)
-            if updated:
-                print(f"  {updated}")
-
-        cont = input("\n  Update another item? (y/n): ").strip().lower()
-        if cont != "y":
-            break
-
-# ╔══════════════════════════════════════════════════════════╗
-#  MAIN MENU
-# ╚══════════════════════════════════════════════════════════╝
-def main_menu(inventory):
-    """Main customer-facing menu."""
-    while True:
-        print("\n")
-        print("  ╔══════════════════════════════════════════╗")
-        print("  ║       STATIONERY SHOP — MAIN MENU        ║")
-        print("  ╠══════════════════════════════════════════╣")
-        print("  ║  1. View Inventory                       ║")
-        print("  ║  2. Search Item                          ║")
-        print("  ║  3. Update Item                          ║")
-        print("  ║  ──────────────────────────────────      ║")
-        print("  ║  4. Cart Operations    [Member 2]        ║")
-        print("  ║  5. Price & Promo      [Member 3]        ║")
-        print("  ║  6. Payment            [Member 4]        ║")
-        print("  ║  ──────────────────────────────────      ║")
-        print("  ║  0. Exit                                 ║")
-        print("  ╚══════════════════════════════════════════╝")
-        choice = input("  Choose an option: ").strip()
-
-        if choice == "1":
-            display_menu(inventory)
-
-        elif choice == "2":
-            search_menu(inventory)
-
-        elif choice == "3":
-            update_menu(inventory)
-
-        # ── Placeholders for other members ──────────────────
         elif choice == "4":
-            print("\n  [Member 2 - Cart Operations] Coming soon...")
-            # cart_menu(inventory)   ← uncomment when member2.py is ready
-
-        elif choice == "5":
-            print("\n  [Member 3 - Price & Promo] Coming soon...")
-            # price_menu(inventory)  ← uncomment when member3.py is ready
-
-        elif choice == "6":
-            print("\n  [Member 4 - Payment] Coming soon...")
-            # payment_menu(inventory) ← uncomment when member4.py is ready
+            clear_screen()
+            print("\n  [ UNDO LAST ACTION ]")
+            store.undo_last_action()
+            pause()
 
         elif choice == "0":
-            print("\n  Thank you for visiting! Goodbye. 👋\n")
             break
 
         else:
-            print("  [!] Invalid option. Please choose from the menu.")
+            print("\n  [!] Invalid choice. Please enter 0-4.")
+            pause()
 
-# ╔══════════════════════════════════════════════════════════╗
-#  ENTRY POINT
-# ╚══════════════════════════════════════════════════════════╝
+
+def menu_price_summary(store):
+    """Show price summary and allow promo code application."""
+    while True:
+        clear_screen()
+        print_header()
+        print("\n  [ PRICE SUMMARY & PROMO ]")
+        print("  ─────────────────────────────────────")
+        print("  [1] View price summary")
+        print("  [2] Apply promo code")
+        print("  [3] Remove promo code")
+        print("  [0] Back to main menu")
+        print("  ─────────────────────────────────────")
+
+        choice = input("\n  Enter choice: ").strip()
+
+        if choice == "1":
+            clear_screen()
+            store.display_price_summary()
+            pause()
+
+        elif choice == "2":
+            clear_screen()
+            print("\n  [ APPLY PROMO CODE ]")
+            print("  Enter your promo code below.")
+
+            # retry until non-empty promo code is entered
+            while True:
+                code = input("  Promo code (or 0 to cancel): ").strip()
+                if code == "0":
+                    break
+                if code == "":
+                    print("  [!] Promo code cannot be empty. Please try again.")
+                    continue
+                store.apply_promo(code)
+                break
+            pause()
+
+        elif choice == "3":
+            clear_screen()
+            store.remove_promo()
+            pause()
+
+        elif choice == "0":
+            break
+
+        else:
+            print("\n  [!] Invalid choice. Please enter 0-3.")
+            pause()
+
+
+def menu_payment(store):
+    """Proceed to payment."""
+    clear_screen()
+    print_header()
+    print("\n  [ PAYMENT ]")
+    store.display_price_summary()
+    store.process_payment()
+
+
+def menu_history(store):
+    """View transaction history."""
+    clear_screen()
+    print_header()
+    print("\n  [ TRANSACTION HISTORY ]")
+    store.history.display()
+    pause()
+
+
+# ─────────────────────────────────────────
+# ADMIN MENU
+# ─────────────────────────────────────────
+
+def menu_admin(store):
+    """Admin panel — requires PIN to access."""
+    clear_screen()
+    print_header()
+    print("\n  [ ADMIN PANEL ]")
+    print("  This section is for authorized personnel only.")
+
+    if not store.admin_login():
+        pause()
+        return
+
+    while True:
+        clear_screen()
+        print_header()
+        print("\n  [ ADMIN — INVENTORY MANAGEMENT ]")
+        print("  ─────────────────────────────────────")
+        print("  [1] View inventory")
+        print("  [2] Add new item")
+        print("  [3] Delete item")
+        print("  [4] Update item")
+        print("  [5] Search item by ID")
+        print("  [0] Back to main menu")
+        print("  ─────────────────────────────────────")
+
+        choice = input("\n  Enter choice: ").strip()
+
+        if choice == "1":
+            clear_screen()
+            print("\n  [ INVENTORY ]")
+            store.inventory.display()
+            pause()
+
+        elif choice == "2":
+            clear_screen()
+            store.admin_add_item()
+            pause()
+
+        elif choice == "3":
+            clear_screen()
+            store.admin_delete_item()
+            pause()
+
+        elif choice == "4":
+            clear_screen()
+            store.admin_update_item()
+            pause()
+
+        elif choice == "5":
+            clear_screen()
+            print("\n  [ SEARCH ITEM ]")
+            store.admin_search_item()
+            pause()
+
+        elif choice == "0":
+            break
+
+        else:
+            print("\n  [!] Invalid choice. Please enter 0-5.")
+            pause()
+
+
+# ─────────────────────────────────────────
+# MAIN MENU
+# ─────────────────────────────────────────
+
+def main_menu(store):
+    """Main menu loop for the NUmart system."""
+    while True:
+        clear_screen()
+        print_header()
+        print("\n  [ MAIN MENU ]")
+        print("  ─────────────────────────────────────")
+        print("  [1] Browse Items")
+        print("  [2] Shopping Cart")
+        print("  [3] Price Summary & Promo Code")
+        print("  [4] Payment")
+        print("  [5] Transaction History")
+        print("  [6] Admin Panel")
+        print("  [0] Exit")
+        print("  ─────────────────────────────────────")
+
+        choice = input("\n  Enter choice: ").strip()
+
+        if choice == "1":
+            menu_browse(store)
+
+        elif choice == "2":
+            menu_cart(store)
+
+        elif choice == "3":
+            menu_price_summary(store)
+
+        elif choice == "4":
+            menu_payment(store)
+
+        elif choice == "5":
+            menu_history(store)
+
+        elif choice == "6":
+            menu_admin(store)
+
+        elif choice == "0":
+            clear_screen()
+            print_header()
+            print("\n  Thank you for shopping at NUmart!")
+            print("  Study smart. Shop smart.\n")
+            break
+
+        else:
+            print("\n  [!] Invalid choice. Please enter 0-6.")
+            pause()
+
+
+# ─────────────────────────────────────────
+# PROGRAM ENTRY POINT
+# ─────────────────────────────────────────
+
 if __name__ == "__main__":
-    # Initialize the linked list inventory
-    inventory = LinkedList()
-
-    # Load the 25 default items
-    load_default_inventory(inventory)
-
-    # Show home screen
-    print("\n  ╔══════════════════════════════════════════╗")
-    print("  ║       WELCOME TO STATIONERY SHOP!        ║")
-    print("  ║     Shopping Cart System v1.0            ║")
-    print("  ╚══════════════════════════════════════════╝")
-
-    # Launch main menu
-    main_menu(inventory)
+    store = NUmart()   # initialize the system and pre-load inventory
+    main_menu(store)   # start the main menu
