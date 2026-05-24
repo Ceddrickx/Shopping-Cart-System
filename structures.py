@@ -225,18 +225,18 @@ class CartLinkedList:
             print("\n  [!] Your cart is empty.")
             return
 
-        print("\n  " + "=" * 60)
-        print(f"  {'ID':<6} {'Name':<22} {'Qty':>5} {'Unit Price':>11} {'Subtotal':>10}")
-        print("  " + "-" * 60)
+        print("\n  " + "=" * 65)
+        print(f"  {'ID':<6} {'Name':<22} {'Qty':>5} {'Unit Price':>12} {'Subtotal':>12}")
+        print("  " + "-" * 65)
 
         current = self.head
         while current is not None:
             subtotal = current.price * current.quantity
             print(f"  {current.item_id:<6} {current.name:<22} {current.quantity:>5} "
-                  f"₱{current.price:>9.2f} ₱{subtotal:>9.2f}")
+                  f"{'₱':>4}  {current.price:<8.2f} {'₱':>2} {subtotal:<9.2f}")
             current = current.next
 
-        print("  " + "=" * 60)
+        print("  " + "=" * 65)
 
     # ── Compute Total ───────────────────────
     def compute_total(self):
