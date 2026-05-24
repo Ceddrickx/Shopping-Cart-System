@@ -3,7 +3,7 @@
 
 ---
 
-## 📌 Project Overview
+## 📌 Project Overviews
 
 A terminal-based **Shopping Cart System** built in Python that simulates item selection, checkout, and payment for a **School Supplies Store**. Each module applies a specific data structure discussed in class.
 
