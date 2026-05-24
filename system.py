@@ -12,7 +12,6 @@
 # ============================================================
 
 import datetime
-import sys
 from structures import LinkedList, CartLinkedList, Stack, Queue
 
 
@@ -111,7 +110,10 @@ class NUmart:
         if total_requested > item.quantity:
             available = item.quantity - already_in_cart
             if available <= 0:
-                print(f"\n  [!] '{item.name}' is already maxed out in your cart.")
+                if item.quantity == 0:
+                    print(f"\n  [!] '{item.name}' is out of stock.")
+                else:
+                    print(f"\n  [!] '{item.name}' is already maxed out in your cart.")
             else:
                 print(f"\n  [!] Insufficient stock. Only {available} item(s) available for '{item.name}'.")
             return
@@ -144,16 +146,22 @@ class NUmart:
             return
 
         # save details before removing for undo
-        removed_qty  = cart_item.quantity
-        removed_name = cart_item.name
+        removed_qty      = cart_item.quantity
+        removed_name     = cart_item.name
+        removed_category = cart_item.category
+        removed_price    = cart_item.price
 
         self.cart.remove_item(item_id)
 
-        # push action to undo stack
+        # push action to undo stack — capture category and price at removal
+        # time so undo restores the exact original values, independent of any
+        # subsequent admin edits to the inventory item
         self.undo_stack.push({
             "action"  : "REMOVE",
             "item_id" : item_id,
             "name"    : removed_name,
+            "category": removed_category,
+            "price"   : removed_price,
             "quantity": removed_qty
         })
 
@@ -199,13 +207,19 @@ class NUmart:
                     cart_item.quantity -= quantity
                 else:
                     self.cart.remove_item(item_id)
-            print(f"\n  [✓] Undo successful — removed {quantity}x '{name}' from cart.")
+                # success message only when item was actually found and removed
+                print(f"\n  [✓] Undo successful — removed {quantity}x '{name}' from cart.")
+            else:
+                # item was not in the cart — undo cannot be completed
+                print(f"\n  [!] Undo failed — '{name}' was not found in your cart.")
 
         elif action == "REMOVE":
-            # undo a remove → add it back to cart
-            item = self.inventory.search(item_id)
-            if item:
-                self.cart.add_item(item_id, name, item.category, item.price, quantity)
+            # undo a remove → re-add using category and price captured
+            # at removal time, not the current live inventory state
+            category = last_action["category"]
+            price    = last_action["price"]
+            self.cart.add_item(item_id, name, category, price, quantity)
+            # add_item creates a new node or merges into an existing one
             print(f"\n  [✓] Undo successful — '{name}' added back to cart.")
 
     # ─────────────────────────────────────
@@ -308,7 +322,11 @@ class NUmart:
         # retry until valid cash amount is entered
         while True:
             try:
+                import math
                 cash = float(input(f"  Enter cash amount (₱{amount_due:.2f} due): ₱"))
+                if math.isnan(cash) or math.isinf(cash):
+                    print("  [!] Invalid input. Please enter a valid amount.")
+                    continue
                 if cash < amount_due:
                     print(f"  [!] Insufficient amount. Please enter at least ₱{amount_due:.2f}.")
                     continue
@@ -395,8 +413,10 @@ class NUmart:
             })
             # Bug 1 fix: deduct purchased quantity from inventory stock
             inv_item = self.inventory.search(item_data["item_id"])
+            # Bug D fix: floor deduction at 0 — prevents negative stock if admin
+            # reduced inventory mid-session after items were already added to cart
             if inv_item is not None:
-                inv_item.quantity -= item_data["qty"]
+                inv_item.quantity = max(0, inv_item.quantity - item_data["qty"])
 
         # display receipt on screen
         print("\n\n  " + "=" * 45)
@@ -410,7 +430,7 @@ class NUmart:
         print("  " + "-" * 45)
 
         for item in items_record:
-            print(f"  {item['name']:<22} {item['qty']:>4} ₱{item['subtotal']:>9.2f}")
+            print(f"  {item['name']:<22} ₱{item['qty']:>4} ₱{item['subtotal']:>9.2f}")
 
         print("  " + "-" * 45)
         print(f"  {'Subtotal':<30} ₱{total:>9.2f}")
@@ -505,7 +525,11 @@ class NUmart:
         # retry until valid price
         while True:
             try:
+                import math
                 price = float(input("  Price (₱): "))
+                if math.isnan(price) or math.isinf(price):
+                    print("  [!] Invalid price. Please enter a valid number.")
+                    continue
                 if price <= 0:
                     print("  [!] Price must be greater than 0. Please try again.")
                     continue
@@ -595,7 +619,11 @@ class NUmart:
             if new_price == "":
                 break
             try:
+                import math
                 new_price = float(new_price)
+                if math.isnan(new_price) or math.isinf(new_price):
+                    print("  [!] Invalid price. Please enter a valid number or press Enter to skip.")
+                    continue
                 if new_price <= 0:
                     print("  [!] Price must be greater than 0. Please try again.")
                     continue
