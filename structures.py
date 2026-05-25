@@ -1,10 +1,8 @@
 """Data structures:
 LinkedList (Inventory), CartLinkedList (Cart),
 Stack (Undo), Queue (Transaction History)"""
-# ================================
-# LINKED LIST - Inventory
-# ================================
 
+# ----- LINKED LIST(Inventory) ------
 class ItemNode:
     """A single node in the inventory linked list."""
     def __init__(self, item_id, name, category, price, quantity, expiration="None"):
@@ -104,10 +102,7 @@ class LinkedList:
     def is_empty(self):
         return self.head is None
 
-# ================================
-# CART LINKED LIST - Shopping Cart
-# ================================
-
+# ----- CART LINKED LIST(Shopping Cart) -----
 class CartNode:
     """A single node in the cart linked list."""
     def __init__(self, item_id, name, category, price, quantity):
@@ -214,10 +209,7 @@ class CartLinkedList:
     def is_empty(self):
         return self.head is None
 
-# ================================
-# STACK - Undo Operations
-# ================================
-
+# ----- STACK(Undo Operations) -----
 class Stack:
     """Stack (LIFO) for tracking cart actions so we can undo them."""
     def __init__(self):
@@ -240,10 +232,7 @@ class Stack:
     def size(self):
         return len(self._data)
 
-# ================================
-# QUEUE - Transaction History
-# ================================
-
+# ----- QUEUE(Transaction History) -----
 class Queue:
     """Queue (FIFO) for storing transaction history in order."""
     def __init__(self):
@@ -265,24 +254,39 @@ class Queue:
         if self.is_empty():
             print("\n  [!] No transaction history yet.")
             return
-        print("\n  " + "=" * 60)
-        print("            TRANSACTION HISTORY")
-        print("  " + "=" * 60)
+
+        print("\n  +----------------------------------------------------------+"
+              "\n  |               [ TRANSACTION HISTORY ]                   |"
+              "\n  +----------------------------------------------------------+")
+
         for i, transaction in enumerate(self._data, start=1):
-            print(f"\n  Transaction #{i}")
-            print(f"  Date/Time : {transaction['datetime']}")
-            print(f"  Payment   : {transaction['method']}")
-            print(f"  Total     : ₱{transaction['total']:.2f}")
+            total = f"₱{transaction['total']:.2f}"
+            amount_due = f"₱{transaction['amount_due']:.2f}"
+            datetime = transaction['datetime']
+            method = transaction['method']
+
+            print(f"\n  |  Transaction #{i:<44}|"
+                  f"\n  |  Date/Time  : {datetime:<44}|"
+                  f"\n  |  Payment    : {method:<44}|"
+                  f"\n  |  Total      : {total:<44}|"
+                  f"\n  |  Amount Due : {amount_due:<44}|")
+
             if transaction['discount'] > 0:
-                print(f"  Discount  : {transaction['discount']}%")
-            print(f"  Amount Due: ₱{transaction['amount_due']:.2f}")
-            print("  " + "-" * 40)
-            print(f"  {'Name':<22} {'Qty':>5} {'Subtotal':>10}")
-            print("  " + "-" * 40)
+                print(f"  |  Discount  : {transaction['discount']:<44}% |")
+
+            print("  +----------------------+-------+------------+"
+                  "\n  |  Name                |  Qty  |  Subtotal  |"
+                  "\n  +----------------------+-------+------------+")
+
             for item in transaction['items']:
-                print(f"  {item['name']:<22} {item['qty']:>5} ₱{item['subtotal']:>9.2f}")
-            print("  " + "-" * 40)
-        print("\n  " + "=" * 60)
+                subtotal = f"P{item['subtotal']:.2f}"
+                print(f"  |  {item['name']:<20}"
+                      f"|  {item['qty']:<5}"
+                      f"|  {subtotal:<10}|")
+
+            print("  +----------------------+-------+------------+")
+
+        print("\n  +----------------------------------------------------------+")
 
     def is_empty(self):
         return len(self._data) == 0
