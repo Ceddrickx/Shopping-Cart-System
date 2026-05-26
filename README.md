@@ -26,7 +26,7 @@ shopping-cart-system/
 
 ## 👥 Group Member Task Distribution
 
-### 👤 Member 1 (main.py) — Feleo & Isaac
+### 👤 Member 1 (main.py) — Feleo
 **Role:** Project Lead / Item Model & Main Menu
 
 | Task | Module |
@@ -82,7 +82,7 @@ shopping-cart-system/
 
 ---
 
-### 👤 Member 5 — All Members
+### 👤 Member 5 — Isaac
 **Role:** Receipt, Transaction History & Error Handling
 
 | Task | Module |
