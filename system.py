@@ -1,17 +1,27 @@
 """ System logic: Inventory setup (25 items), Cart & Undo operations,
-Pricing & Promos, Payment, Receipt, Admin Inventory Management """
+Pricing & Promos, Payment, Receipt, Buyer Login """
 
 import datetime
 import math
 from structures import LinkedList, CartLinkedList, Stack, Queue
 
 # ----- CONSTANTS -----
-ADMIN_PIN = "2026"
 PROMO_CODES = {
-    "SAVE10" : 10,
-    "STUDENT15" : 15,
-    "NUFV30" : 30,
-    "BACKTOSCHOOL45" : 45 }
+    "SAVE10"        : 10,
+    "STUDENT15"     : 15,
+    "NUFV30"        : 30,
+    "BACKTOSCHOOL45": 45 }
+
+# Pre-loaded buyer accounts: { username: password }
+BUYER_ACCOUNTS = {
+    "Cachapero" : "2025-1034489",
+    "Feleo" : "2025-1039335",
+    "Isaac": "2025-1031452",
+    "Naelgas": "2025-1031500",
+    "Villar": "2025-1034600"
+}
+
+LOW_STOCK_THRESHOLD = 20
 
 # ----- NUMART SYSTEM CLASS -----
 class NUmart:
@@ -59,6 +69,42 @@ class NUmart:
         for item in items:
             self.inventory.insert(*item)
 
+    # ----- BUYER LOGIN -----
+    def buyer_login(self):
+        """Prompt for username and 8-digit password. Allows up to 3 attempts."""
+        print("\n  +-----------------------------------+"
+              "\n  |          [ BUYER LOGIN ]          |"
+              "\n  |     Please log in to continue.    |"
+              "\n  +-----------------------------------+")
+        attempts = 3
+        while attempts > 0:
+            username = input("\n  Enter username: ").strip()
+            if username == "":
+                print("  [!] Username cannot be empty. Please try again.")
+                continue
+
+            password = input("  Enter password: ").strip()
+            if len(password) != 12:
+                print("\n  [!] Password must be exactly 12 characters. Please try again.")
+                attempts -= 1
+                if attempts > 0:
+                    print(f"  [!] {attempts} attempt(s) remaining.")
+                else:
+                    print("  [!] Too many failed attempts. Exiting.")
+                continue
+
+            if username in BUYER_ACCOUNTS and BUYER_ACCOUNTS[username] == password:
+                print(f"\n  [>>] Welcome, {username}! Happy shopping at NUmart!")
+                return True
+
+            attempts -= 1
+            if attempts > 0:
+                print(f"  [!] Incorrect username or password. {attempts} attempt(s) remaining.")
+            else:
+                print("  [!] Too many failed attempts. Exiting.")
+
+        return False
+
     # ----- CART OPERATIONS -----
     def add_to_cart(self, item_id, quantity):
         """ Add an item to the cart after validating stock.
@@ -90,11 +136,11 @@ class NUmart:
         self.cart.add_item(item.item_id, item.name, item.category, item.price, quantity)
         # push action to undo stack
         self.undo_stack.push({
-            "action": "ADD",
-            "item_id": item.item_id,
-            "name": item.name,
+            "action"  : "ADD",
+            "item_id" : item.item_id,
+            "name"    : item.name,
             "quantity": quantity })
-        print(f"\n  [✓] {quantity}x '{item.name}' added to cart.")
+        print(f"\n  [>>] {quantity}x '{item.name}' added to cart.")
         return True
 
     def remove_from_cart(self, item_id):
@@ -117,7 +163,7 @@ class NUmart:
 
         # push action to undo stack — capture category and price at removal
         # time so undo restores the exact original values, independent of any
-        # subsequent admin edits to the inventory item
+        # subsequent edits to the inventory item
         self.undo_stack.push({
             "action"  : "REMOVE",
             "item_id" : item_id,
@@ -125,7 +171,7 @@ class NUmart:
             "category": removed_category,
             "price"   : removed_price,
             "quantity": removed_qty })
-        print(f"\n  [✓] '{removed_name}' removed from cart.")
+        print(f"\n  [>>] '{removed_name}' removed from cart.")
 
     def display_cart(self):
         """Display all items in the cart with subtotals."""
@@ -164,10 +210,8 @@ class NUmart:
                     cart_item.quantity -= quantity
                 else:
                     self.cart.remove_item(item_id)
-                # success message only when item was actually found and removed
-                print(f"\n  [✓] Undo successful — removed {quantity}x '{name}' from cart.")
+                print(f"\n  [>>] Undo successful — removed {quantity}x '{name}' from cart.")
             else:
-                # item was not in the cart — undo cannot be completed
                 print(f"\n  [!] Undo failed — '{name}' was not found in your cart.")
 
         elif action == "REMOVE":
@@ -176,17 +220,16 @@ class NUmart:
             category = last_action["category"]
             price    = last_action["price"]
             self.cart.add_item(item_id, name, category, price, quantity)
-            # add_item creates a new node or merges into an existing one
-            print(f"\n  [✓] Undo successful — '{name}' added back to cart.")
+            print(f"\n  [>>] Undo successful — '{name}' added back to cart.")
 
     # ----- PROMO CODE & PRICE CALCULATION -----
     def apply_promo(self, code):
         """Apply a promo code if valid. Updates the discount rate."""
         code = code.strip().upper()
         if code in PROMO_CODES:
-            self.discount = PROMO_CODES[code]
+            self.discount   = PROMO_CODES[code]
             self.promo_used = code
-            print(f"\n  [✓] Promo code '{code}' applied! You get {self.discount}% off.")
+            print(f"\n  [>>] Promo code '{code}' applied! You get {self.discount}% off.")
             return True
         else:
             print(f"\n  [!] Invalid promo code '{code}'. Please try again.")
@@ -197,7 +240,7 @@ class NUmart:
         if self.discount == 0:
             print("\n  [!] No promo code is currently applied.")
             return
-        print(f"\n  [✓] Promo code '{self.promo_used}' removed.")
+        print(f"\n  [>>] Promo code '{self.promo_used}' removed.")
         self.discount   = 0
         self.promo_used = ""
 
@@ -213,19 +256,24 @@ class NUmart:
         if self.cart.is_empty():
             print("\n  [!] Your cart is empty.")
             return
+
         total, discounted, final = self.get_final_total()
+        total_str = f"₱{total:.2f}"
+        discounted_str = f"-₱{discounted:.2f}"
+        final_str = f"₱{final:.2f}"
 
-        print("\n  " + "=" * 40)
-        print("          PRICE SUMMARY")
-        print("  " + "=" * 40)
-        print(f"  Subtotal  : ₱{total:.2f}")
+        print("\n  +-----------------------------------+"
+              "\n  |         [ PRICE SUMMARY ]         |"
+              "\n  +-----------------------------------+"
+              f"\n  |  Subtotal  : {total_str:<21}|")
+
         if self.discount > 0:
-            print(f"  Promo     : {self.promo_used} (-{self.discount}%)")
-            print(f"  Discount  : -₱{discounted:.2f}")
-        print("  " + "-" * 40)
-        print(f"  TOTAL DUE : ₱{final:.2f}")
-        print("  " + "=" * 40)
+            print(f"  |  Promo     : {self.promo_used:<21}|"
+                  f"\n  |  Discount  : {discounted_str:<21}|")
 
+        print("  +-----------------------------------+"
+              f"\n  |  TOTAL DUE : {final_str:<21}|"
+              "\n  +-----------------------------------+")
 
     # ----- PAYMENT -----
     def process_payment(self):
@@ -268,25 +316,33 @@ class NUmart:
 
     def _pay_cash(self, amount_due):
         """Handle cash payment and compute change."""
-        print("\n  -- CASH PAYMENT --")
+        print("\n  +-----------------------------------+"
+              "\n  |         [ CASH PAYMENT ]          |"
+              "\n  +-----------------------------------+")
 
-        # retry until valid cash amount is entered
         while True:
+            cash_input = input(f"\n  Amount Due : ₱{amount_due:.2f}"
+                               "\n  Enter cash : ₱").strip()
+            if cash_input == "0":
+                print("\n  [!] Payment cancelled.")
+                return None
             try:
-                cash = float(input(f"  Enter cash amount (₱{amount_due:.2f} due): ₱"))
+                cash = float(cash_input)
                 if math.isnan(cash) or math.isinf(cash):
-                    print("  [!] Invalid input. Please enter a valid amount.")
+                    print("\n  [!] Invalid amount. Please try again.")
                     continue
                 if cash < amount_due:
-                    print(f"  [!] Insufficient amount. Please enter at least ₱{amount_due:.2f}.")
+                    print(f"\n  [!] Not enough. Minimum amount is ₱{amount_due:.2f}.")
                     continue
                 break
             except ValueError:
-                print("  [!] Invalid input. Please enter a valid amount.")
+                print("\n  [!] Invalid input. Please enter a number.")
 
         change = cash - amount_due
-        print(f"\n  [✓] Payment received: ₱{cash:.2f}")
-        print(f"  [✓] Your change     : ₱{change:.2f}")
+        print(f"\n  +-----------------------------------+"
+              f"\n  |  [OK] Payment received : ₱{cash:.2f}"
+              f"\n  |  [OK] Your change      : ₱{change:.2f}"
+              "\n  +-----------------------------------+")
         return "Cash"
 
     def _pay_card(self, amount_due):
@@ -295,21 +351,22 @@ class NUmart:
 
         # retry until valid 16-digit card number is entered
         while True:
-            card_number = input("  Enter card number (16 digits, or 0 to cancel): ").strip().replace(" ", "")
+            card_number = input("  Enter card number (16 digits, or 0 to return to payment menu): ").strip().replace(" ", "")
             if card_number == "0":
+                print("  [!] Payment cancelled.")
                 return None
             if len(card_number) == 16 and card_number.isdigit():
                 break
             print("  [!] Invalid card number. Must be exactly 16 digits. Please try again.")
 
         masked = "*" * 12 + card_number[-4:]
-        print(f"\n  [✓] Card: {masked}")
-        print(f"  [✓] Amount charged: ₱{amount_due:.2f}")
-        print("  [✓] Card payment approved!")
+        print(f"\n  [>>] Card: {masked}")
+        print(f"  [>>] Amount charged: ₱{amount_due:.2f}")
+        print("  [>>] Card payment approved!")
         return "Card"
 
     def _pay_ewallet(self, amount_due):
-        """Handle e-wallet payment with account input."""
+        """Handle e-wallet payment with reference number input."""
         print("\n  +-----------------------------------+"
               "\n  |          [ E-WALLET ]             |"
               "\n  +-----------------------------------+"
@@ -322,29 +379,29 @@ class NUmart:
         wallets = {"1": "GCash", "2": "Maya", "3": "ShopeePay"}
         # retry until valid e-wallet choice
         while True:
-            wallet_choice = input("\n  Select e-wallet: ").strip()
+            wallet_choice = input("\n  Select e-wallet (or 0 to return to payment menu): ").strip()
             if wallet_choice == "0":
+                print("  [!] Payment cancelled.")
                 return None
             if wallet_choice in wallets:
                 break
             print("  [!] Invalid choice. Please enter 1, 2, 3, or 0.")
 
         wallet_name = wallets[wallet_choice]
-        # retry until non-empty account is entered
+        # retry until valid 9-digit reference number is entered
         while True:
-            account = input(f"  Enter {wallet_name} number/email (or 0 to cancel): ").strip()
-            if account == "0":
+            ref_number = input(f"  Enter {wallet_name} reference number (9 digits, or 0 to return to payment menu): ").strip()
+            if ref_number == "0":
+                print("  [!] Payment cancelled.")
                 return None
-            if account == "":
-                print(f"  [!] {wallet_name} number/email cannot be empty. Please try again.")
-                continue
-            break
+            if len(ref_number) == 9 and ref_number.isdigit():
+                break
+            print(f"  [!] Invalid reference number. Must be exactly 9 digits. Please try again.")
 
-        print(f"\n  [✓] {wallet_name} account: {account}")
-        print(f"  [✓] Amount charged: ₱{amount_due:.2f}")
-        print(f"  [✓] {wallet_name} payment confirmed!")
+        print(f"\n  [>>] {wallet_name} reference no.: {ref_number}")
+        print(f"  [>>] Amount charged: ₱{amount_due:.2f}")
+        print(f"  [>>] {wallet_name} payment confirmed!")
         return wallet_name
-
 
     # ----- RECEIPT GENERATION -----
     def _generate_receipt(self, method, total, discounted, final):
@@ -354,6 +411,7 @@ class NUmart:
 
         # collect items for history record and deduct stock
         items_record = []
+        low_stock_alerts = []
         for item_data in self.cart.iter_items():
             items_record.append({
                 "name"    : item_data["name"],
@@ -362,9 +420,12 @@ class NUmart:
             })
 
             inv_item = self.inventory.search(item_data["item_id"])
-            # reduced inventory mid-session after items were already added to cart
             if inv_item is not None:
+                # deduct purchased quantity from inventory
                 inv_item.quantity = max(0, inv_item.quantity - item_data["qty"])
+                # check for low stock after deduction
+                if inv_item.quantity <= LOW_STOCK_THRESHOLD:
+                    low_stock_alerts.append((inv_item.name, inv_item.quantity))
 
         # display receipt on screen
         print(f"\n  +-------------------------------------------+"
@@ -374,19 +435,23 @@ class NUmart:
               f"\n  |  Date/Time : {dt_string:<29}|"
               f"\n  |  Payment   : {method:<29}|"
               "\n  +-------------------------------------------+"
-              "\n  |  Item                    Qty   Subtotal   |"
+              "\n  |  Item                    Qty    Subtotal  |"
               "\n  +-------------------------------------------+")
-
         for item in items_record:
-            print(f"  {item['name']:<22}  {item['qty']:>4} ₱{item['subtotal']:>9.2f}")
+            name = f"{item['name']:<24}"
+            qty = f"{item['qty']:<7}"
+            sub = f"₱{item['subtotal']:.2f}"
+            print(f"  |  {name}{qty}{sub:<10}|")
+        print("  +-------------------------------------------+")
 
+        total_str = f"₱{total:.2f}"
+        final_str = f"₱{final:.2f}"
         print(f"  +-------------------------------------------+"
-              f"\n  |  Subtotal: ₱{f'{total:.2f}':<30}|")
-
+              f"\n  |  Subtotal  : {total_str:<29}|")
         if self.discount > 0:
-            print(f"  {'Discount (' + self.promo_used + ')':<30} -₱{discounted:>8.2f}")
-
-        print(f"  |  TOTAL PAID:                  ₱{f'{final:.2f}':>9}  |"
+            discounted_str = f"-₱{discounted:.2f}"
+            print(f"  |  Discount  : {discounted_str:<29}|")
+        print(f"  |  TOTAL PAID: {final_str:<29}|"
               "\n  +-------------------------------------------+"
               "\n  |    Thank you for shopping at NUmart!      |"
               "\n  |          Study smart. Shop smart.         |"
@@ -408,247 +473,3 @@ class NUmart:
         self.promo_used = ""
         self.undo_stack = Stack()  # clear undo history after checkout
 
-        # clear leftover Enter keystrokes from payment inputs before prompting
-        try:
-            import msvcrt
-            while msvcrt.kbhit():
-                msvcrt.getch()
-        except ImportError:
-            pass  # non-Windows systems don't need this
-        input("\n  Press Enter to return to main menu...")
-
-
-    # ----- ADMIN(INVENTORY MANAGEMENT) -----
-    def admin_login(self):
-        """Prompt for admin PIN. Allows up to 3 attempts."""
-        attempts = 3
-        while attempts > 0:
-            pin = input("\n  Enter Admin PIN: ").strip()
-            if pin == ADMIN_PIN:
-                print("\n  [✓] Admin access granted.")
-                return True
-            attempts -= 1
-            if attempts > 0:
-                print(f"  [!] Incorrect PIN. {attempts} attempt(s) remaining.")
-            else:
-                print("  [!] Too many incorrect attempts. Access denied.")
-        return False
-
-    def admin_add_item(self):
-        """Admin: Add a new item to the inventory."""
-        print("\n  -- ADD NEW ITEM --")
-
-        # retry until valid unique item ID is entered
-        while True:
-            item_id = input("  Item ID (3 digits, or 0 to cancel): ").strip()
-            if item_id == "0":
-                return
-            if item_id == "":
-                print("  [!] Item ID cannot be empty. Please try again.")
-                continue
-            if not item_id.isdigit() or len(item_id) != 3:
-                print("  [!] Item ID must be exactly 3 digits (e.g., 067). Please try again.")
-                continue
-            if self.inventory.search(item_id):
-                print(f"  [!] Item ID '{item_id}' already exists. Please use a different ID.")
-                continue
-            break
-
-        # retry until non-empty name
-        while True:
-            name = input("  Item Name: ").strip()
-            if name == "":
-                print("  [!] Item name cannot be empty. Please try again.")
-                continue
-            break
-
-        # retry until non-empty category
-        while True:
-            category = input("  Category: ").strip()
-            if category == "":
-                print("  [!] Category cannot be empty. Please try again.")
-                continue
-            break
-
-        # retry until valid price
-        while True:
-            try:
-                price = float(input("  Price (₱): "))
-                if math.isnan(price) or math.isinf(price):
-                    print("  [!] Invalid price. Please enter a valid number.")
-                    continue
-                if price <= 0:
-                    print("  [!] Price must be greater than 0. Please try again.")
-                    continue
-                break
-            except ValueError:
-                print("  [!] Invalid price. Please enter a valid number.")
-
-        # retry until valid quantity
-        while True:
-            try:
-                quantity = int(input("  Quantity: "))
-                if quantity < 0:
-                    print("  [!] Quantity cannot be negative. Please try again.")
-                    continue
-                break
-            except ValueError:
-                print("  [!] Invalid quantity. Please enter a whole number.")
-
-        expiration = input("  Expiration (YYYY-MM-DD or None): ").strip()
-        if expiration == "":
-            expiration = "None"
-
-        self.inventory.insert(item_id, name, category, price, quantity, expiration)
-        print(f"\n  [✓] '{name}' added to inventory successfully.")
-
-    def admin_delete_item(self):
-        """Admin: Delete an item from the inventory by item ID."""
-        print("\n  -- DELETE ITEM --")
-        self.inventory.display()
-
-        # retry until valid item ID is entered
-        while True:
-            item_id = input("\n  Enter Item ID to delete (or 0 to cancel): ").strip()
-            if item_id == "0":
-                return
-            if item_id == "":
-                print("  [!] Item ID cannot be empty. Please try again.")
-                continue
-            item = self.inventory.search(item_id)
-            if item is None:
-                print(f"  [!] Item ID '{item_id}' not found. Please try again.")
-                continue
-            break
-
-        # retry until valid confirmation
-        while True:
-            confirm = input(f"  Are you sure you want to delete '{item.name}'? (yes/no): ").strip().lower()
-            if confirm == "yes":
-                self.inventory.delete(item_id)
-                print(f"\n  [✓] '{item.name}' deleted from inventory.")
-                break
-            elif confirm == "no":
-                print("\n  [!] Deletion cancelled.")
-                break
-            else:
-                print("  [!] Please type 'yes' or 'no'.")
-
-    def admin_update_item(self):
-        """Admin: Update an existing inventory item's details."""
-        print("\n  -- UPDATE ITEM --")
-        self.inventory.display()
-
-        # retry until valid item ID is entered
-        while True:
-            item_id = input("\n  Enter Item ID to update (or 0 to cancel): ").strip()
-            if item_id == "0":
-                return
-            if item_id == "":
-                print("  [!] Item ID cannot be empty. Please try again.")
-                continue
-            item = self.inventory.search(item_id)
-            if item is None:
-                print(f"  [!] Item ID '{item_id}' not found. Please try again.")
-                continue
-            break
-
-        print(f"\n  Updating: [{item.item_id}] {item.name}")
-        print("  (Press Enter to keep current value)\n")
-
-        new_name = input(f"  Name [{item.name}]: ").strip()
-
-        new_cat = input(f"  Category [{item.category}]: ").strip()
-
-        # retry until valid price or skipped
-        while True:
-            new_price = input(f"  Price [₱{item.price:.2f}]: ").strip()
-            if new_price == "":
-                break
-            try:
-                new_price = float(new_price)
-                if math.isnan(new_price) or math.isinf(new_price):
-                    print("  [!] Invalid price. Please enter a valid number or press Enter to skip.")
-                    continue
-                if new_price <= 0:
-                    print("  [!] Price must be greater than 0. Please try again.")
-                    continue
-                break
-            except ValueError:
-                print("  [!] Invalid price. Please enter a valid number or press Enter to skip.")
-
-        # retry until valid quantity or skipped
-        while True:
-            new_qty = input(f"  Quantity [{item.quantity}]: ").strip()
-            if new_qty == "":
-                break
-            try:
-                new_qty = int(new_qty)
-                if new_qty < 0:
-                    print("  [!] Quantity cannot be negative. Please try again.")
-                    continue
-                break
-            except ValueError:
-                print("  [!] Invalid quantity. Please enter a whole number or press Enter to skip.")
-
-        new_exp = input(f"  Expiration [{item.expiration}]: ").strip()
-
-        # apply updates - only fields that were changed
-        self.inventory.update(
-            item_id,
-            new_name       = new_name            if new_name              else None,
-            new_category   = new_cat             if new_cat               else None,
-            new_price      = new_price           if isinstance(new_price, float) else None,
-            new_quantity   = new_qty             if isinstance(new_qty, int)     else None,
-            new_expiration = new_exp             if new_exp               else None
-        )
-        print(f"\n  [✓] Item '{item.name}' updated successfully.")
-
-    def admin_search_item(self):
-        """Admin: Search for an item in the inventory by exact ID or partial name."""
-        while True:
-            query = input("\n  Enter Item ID or name keyword to search (or 0 to cancel): ").strip()
-            if query == "0":
-                return
-            if query == "":
-                print("  [!] Search query cannot be empty. Please try again.")
-                continue
-
-            # try exact ID match first
-            item = self.inventory.search(query)
-            if item is not None:
-                # single result — show full detail card
-                print(f"\n  +-----------------------------------+"
-                      "\n  |          [ ITEM DETAILS ]         |"
-                      "\n  +-----------------------------------+"
-                      f"\n  |  ID         : {item.item_id:<20}|"
-                      f"\n  |  Name       : {item.name:<20}|"
-                      f"\n  |  Category   : {item.category:<20}|"
-                      f"\n  |  Price      : ₱{f'{item.price:.2f}':<19}|"
-                      f"\n  |  Quantity   : {item.quantity:<20}|"
-                      f"\n  |  Expiration : {item.expiration:<20}|"
-                      "\n  +-----------------------------------+")
-                return
-
-            # fall back to partial name search
-            matches = self.inventory.search_by_name(query)
-            if matches:
-                print(f"\n  Found {len(matches)} item(s) matching '{query}':")
-                print(f"\n  +------+----------------------+------------+------------+------+--------------+"
-                      "\n  |  ID  |  Name                |  Category  |  Price     |  Qty |  Expiration  |"
-                      "\n  +------+----------------------+------------+------------+------+--------------+")
-                for m in matches:
-                    if "Bond Paper" in m.name:
-                        price_display = f"P{m.price:.2f}/10shts"
-                    else:
-                        price_display = f"P{m.price:.2f}"
-                    print(f"  |  {m.item_id:<4}"
-                          f"|  {m.name:<20}"
-                          f"|  {m.category:<10}"
-                          f"|  {price_display:<10}"
-                          f"|  {m.quantity:<4}"
-                          f"|  {m.expiration:<12}  |")
-                print("  +------+----------------------+------------+------------+------+--------------+")
-                return
-
-            print(f"  [!] No items found matching '{query}'. Please try again.")
