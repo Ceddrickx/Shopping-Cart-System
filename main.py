@@ -12,7 +12,7 @@ def print_header():
           "\n  +-----------------------------------+")
 
 def pause():
-    input("\n  Press Enter to continue...")
+    input("\n  Press ENTER to continue...")
 
 def clear_screen():
     print("\n" * 3)
@@ -48,9 +48,8 @@ def menu_cart(store):
 
             # retry until valid item ID is entered
             while True:
-                item_id = input("\n  Enter Item ID to add (or 0 to cancel): ").strip()
+                item_id = input("\n  Enter item ID (or 0 to return to Shopping Cart Menu): ").strip()
                 if item_id == "0":
-                    pause()
                     break
                 if item_id == "":
                     print("  [!] Item ID cannot be empty. Please try again.")
@@ -74,9 +73,8 @@ def menu_cart(store):
                 qty = 0
                 maxed = False
                 while True:
-                    raw = input("  Enter quantity (or 0 to cancel): ").strip()
+                    raw = input("  Enter quantity (or 0 to return to Shopping Cart Menu): ").strip()
                     if raw == "0":
-                        print("  [!] Add item cancelled.")
                         break
                     try:
                         qty = int(raw)
@@ -102,7 +100,7 @@ def menu_cart(store):
             if not store.cart.is_empty():
                 # retry until valid cart item ID is entered
                 while True:
-                    item_id = input("\n  Enter Item ID to remove (or 0 to cancel): ").strip()
+                    item_id = input("\n  Enter Item ID to remove (or 0 to return to Shopping Cart Menu): ").strip()
                     if item_id == "0":
                         break
                     if item_id == "":
@@ -119,12 +117,11 @@ def menu_cart(store):
                             store.remove_from_cart(item_id)
                             break
                         elif confirm == "no":
-                            print("  [!] Removal cancelled.")
                             break
                         else:
                             print("  [!] Please type 'yes' or 'no'.")
                     break
-            pause()
+
         elif choice == "3":
             print("\n  [ YOUR CART ]")
             store.display_cart()
@@ -161,20 +158,25 @@ def menu_price_summary(store):
             print("\n  +-----------------------------------+"
                   "\n  |       [ APPLY PROMO CODE ]        |"
                   "\n  +-----------------------------------+"
-                  "\n  |  Promo codes can be found on      |"
-                  "\n  |  NUmart posters, flyers, and      |"
-                  "\n  |  official social media pages.     |"
+                  "\n  |    Promo codes can be found on    |"
+                  "\n  |    NUmart posters, flyers, and    |"
+                  "\n  |    official social media pages.   |"
                   "\n  +-----------------------------------+")
 
             # retry until valid promo code is entered
             while True:
-                code = input("\n  Enter promo code (or 0 to cancel): ").strip()
+                code = input("\n  Enter promo code (or 0 to return to promo code menu): ").strip()
                 if code == "0":
                     print("  [!] Promo code application cancelled.")
                     break
                 if code == "":
                     print("  [!] Promo code cannot be empty. Please try again.")
                     continue
+                if store.promo_used:
+                    print(f"  [!] You can only use 1 promo code per transaction.")
+                    print(f"  [!] Remove '{store.promo_used}' first before applying a new one.")
+                    pause()
+                    break
                 if store.apply_promo(code):
                     pause()
                     break
@@ -199,7 +201,7 @@ def menu_payment(store):
         return
     store.process_payment()
     # _generate_receipt handles its own Enter prompt on success.
-    # If the cart is still non-empty, the user cancelled — pause so they can read the message.
+    # If the cart is still non-empty, the user cancelled and pause so they can read the message.
     if not store.cart.is_empty():
         pause()
 
@@ -207,60 +209,8 @@ def menu_history(store):
     """View transaction history."""
     clear_screen()
     print_header()
-    print("\n  [ TRANSACTION HISTORY ]")
     store.history.display()
     pause()
-
-# ----- ADMIN MENU -----
-def menu_admin(store):
-    """Admin panel — requires PIN to access."""
-    clear_screen()
-    print_header()
-    print("\n  +-----------------------------------+"
-          "\n  |          [ ADMIN PANEL ]          |"
-          "\n  |  For authorized personnel only.   |"
-          "\n  +-----------------------------------+")
-
-    if not store.admin_login():
-        pause()
-        return
-    while True:
-        clear_screen()
-        print_header()
-        print("\n  +-----------------------------------+"
-              "\n  |  [ ADMIN - INVENTORY MANAGEMENT ] |"
-              "\n  +-----------------------------------+"
-              "\n  |  [1] View Inventory               |"
-              "\n  |  [2] Add New Item                 |"
-              "\n  |  [3] Delete Item                  |"
-              "\n  |  [4] Update Item                  |"
-              "\n  |  [5] Search Item by ID            |"
-              "\n  |  [0] Back to Main Menu            |"
-              "\n  +-----------------------------------+")
-
-        choice = input("\n  Enter choice: ").strip()
-        if choice == "1":
-            print("\n  [ INVENTORY ]")
-            store.inventory.display()
-            pause()
-        elif choice == "2":
-            store.admin_add_item()
-            pause()
-        elif choice == "3":
-            store.admin_delete_item()
-            pause()
-        elif choice == "4":
-            store.admin_update_item()
-            pause()
-        elif choice == "5":
-            print("\n  [ SEARCH ITEM ]")
-            store.admin_search_item()
-            pause()
-        elif choice == "0":
-            break
-        else:
-            print("\n  [!] Invalid choice. Please enter 0-5.")
-            pause()
 
 # ----- MAIN MENU -----
 def main_menu(store):
@@ -276,17 +226,20 @@ def main_menu(store):
               "\n  |  [3] Price Summary & Promo Code   |"
               "\n  |  [4] Payment                      |"
               "\n  |  [5] Transaction History          |"
-              "\n  |  [6] Admin Panel                  |"
               "\n  |  [0] Exit                         |"
               "\n  +-----------------------------------+")
 
         choice = input("\n  Enter choice: ").strip()
-        if   choice == "1": menu_browse(store)
-        elif choice == "2": menu_cart(store)
-        elif choice == "3": menu_price_summary(store)
-        elif choice == "4": menu_payment(store)
-        elif choice == "5": menu_history(store)
-        elif choice == "6": menu_admin(store)
+        if choice == "1":
+            menu_browse(store)
+        elif choice == "2":
+            menu_cart(store)
+        elif choice == "3":
+            menu_price_summary(store)
+        elif choice == "4":
+            menu_payment(store)
+        elif choice == "5":
+            menu_history(store)
         elif choice == "0":
             clear_screen()
             print_header()
@@ -296,10 +249,19 @@ def main_menu(store):
                   "\n  +-----------------------------------+")
             break
         else:
-            print("\n  [!] Invalid choice. Please enter 0-6.")
+            print("\n  [!] Invalid choice. Please enter 0-5.")
             pause()
 
 # ----- PROGRAM ENTRY POINT ------
 if __name__ == "__main__":
     store = NUmart()
-    main_menu(store)
+    clear_screen()
+    print_header()
+    if not store.buyer_login():
+        clear_screen()
+        print_header()
+        print("\n  +-----------------------------------+"
+              "\n  |      Login failed. Goodbye!       |"
+              "\n  +-----------------------------------+")
+    else:
+        main_menu(store)
