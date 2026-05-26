@@ -2,6 +2,8 @@
 LinkedList (Inventory), CartLinkedList (Cart),
 Stack (Undo), Queue (Transaction History)"""
 
+import datetime
+
 # ----- LINKED LIST(Inventory) ------
 class ItemNode:
     """A single node in the inventory linked list."""
@@ -83,21 +85,32 @@ class LinkedList:
         return True
 
     def display(self):
-        """Print all items as a formatted table."""
+        """Print all items as a formatted table with low-stock and expiration date."""
         if self.head is None:
             print("\n  [!] No items in inventory.")
             return
-        print("\n  " + "=" * 79)
-        print(f"  {'ID':<6} {'Name':<22} {'Category':<12} {'Price':>12} {'Qty':>6}  {'Expiration'}")
-        print("  " + "-" * 79)
+
+        print("\n  +------+------------------------+------------+----------------+-------+----------------+"
+              "\n  |  ID  |  Name                  |  Category  |  Price         |  Qty  |  Expiration    |"
+              "\n  +------+------------------------+------------+----------------+-------+----------------+")
+
         current = self.head
         while current is not None:
-            # bond paper is priced per 10 sheets, so label it differently
-            price_display = f"₱{current.price:.2f}/10shts" if "Bond Paper" in current.name else f"₱{current.price:.2f}"
-            print(f"  {current.item_id:<6} {current.name:<22} {current.category:<12} "
-                  f"{price_display:>14} {current.quantity:>6}  {current.expiration}")
+            if "Bond Paper" in current.name:
+                price_display = f"P{current.price:.2f}/10shts"
+            else:
+                price_display = f"P{current.price:.2f}"
+
+            print(f"  |  {current.item_id:<4}"
+                  f"|  {current.name:<22}"
+                  f"|  {current.category:<10}"
+                  f"|  {price_display:<14}"
+                  f"|  {current.quantity:<5}"
+                  f"|  {current.expiration:<12}  |")
+
             current = current.next
-        print("  " + "=" * 79)
+
+        print("  +------+------------------------+------------+----------------+-------+----------------+")
 
     def is_empty(self):
         return self.head is None
@@ -165,18 +178,22 @@ class CartLinkedList:
         if self.head is None:
             print("\n  [!] Your cart is empty.")
             return
-        print("\n  " + "=" * 65)
-        print(f"  {'ID':<6} {'Name':<22} {'Qty':>5} {'Unit Price':>12} {'Subtotal':>12}")
-        print("  " + "-" * 65)
+        print("  +------+----------------------+-------+--------------+--------------+"
+              "\n  |  ID  |  Name                |  Qty  |  Unit Price  |  Subtotal    |"
+              "\n  +------+----------------------+-------+--------------+--------------+")
+
         current = self.head
         while current is not None:
-            subtotal     = current.price * current.quantity
-            price_str    = f"₱{current.price:.2f}"
+            subtotal = current.price * current.quantity
+            price_str = f"₱{current.price:.2f}"
             subtotal_str = f"₱{subtotal:.2f}"
-            print(f"  {current.item_id:<6} {current.name:<22} {current.quantity:>5} "
-                  f"{price_str:>12} {subtotal_str:>12}")
+            print(f"  |  {current.item_id:<4}"
+                  f"|  {current.name:<20}"
+                  f"|  {current.quantity:<5}"
+                  f"|  {price_str:<12}"
+                  f"|  {subtotal_str:<12}|")
             current = current.next
-        print("  " + "=" * 65)
+        print("  +------+----------------------+-------+--------------+--------------+")
 
     def compute_total(self):
         """Return the total price of all items in the cart."""
@@ -219,12 +236,16 @@ class Stack:
         self._data.append(action)
 
     def pop(self):
-        """Remove and return the last action. Returns None if empty."""
-        return self._data.pop() if not self.is_empty() else None
+        """Remove and return the last action."""
+        if self.is_empty():
+            return None
+        return self._data.pop()
 
     def peek(self):
         """Return the last action without removing it."""
-        return self._data[-1] if not self.is_empty() else None
+        if self.is_empty():
+            return None
+        return self._data[-1]
 
     def is_empty(self):
         return len(self._data) == 0
@@ -242,12 +263,16 @@ class Queue:
         self._data.append(transaction)
 
     def dequeue(self):
-        """Remove and return the oldest transaction. Returns None if empty."""
-        return self._data.pop(0) if not self.is_empty() else None
+        """Remove and return the oldest transaction."""
+        if self.is_empty():
+            return None
+        return self._data.pop(0)
 
     def peek(self):
         """Return the oldest transaction without removing it."""
-        return self._data[0] if not self.is_empty() else None
+        if self.is_empty():
+            return None
+        return self._data[0]
 
     def display(self):
         """Print all transactions in chronological order."""
@@ -256,37 +281,31 @@ class Queue:
             return
 
         print("\n  +----------------------------------------------------------+"
-              "\n  |               [ TRANSACTION HISTORY ]                   |"
+              "\n  |               [ TRANSACTION HISTORY ]                    |"
               "\n  +----------------------------------------------------------+")
 
         for i, transaction in enumerate(self._data, start=1):
             total = f"₱{transaction['total']:.2f}"
             amount_due = f"₱{transaction['amount_due']:.2f}"
-            datetime = transaction['datetime']
+            dt = transaction['datetime']
             method = transaction['method']
 
-            print(f"\n  |  Transaction #{i:<44}|"
-                  f"\n  |  Date/Time  : {datetime:<44}|"
-                  f"\n  |  Payment    : {method:<44}|"
-                  f"\n  |  Total      : {total:<44}|"
-                  f"\n  |  Amount Due : {amount_due:<44}|")
-
-            if transaction['discount'] > 0:
-                print(f"  |  Discount  : {transaction['discount']:<44}% |")
-
-            print("  +----------------------+-------+------------+"
-                  "\n  |  Name                |  Qty  |  Subtotal  |"
-                  "\n  +----------------------+-------+------------+")
+            print(f"  |  Transaction #{i:<43}|"
+                  f"\n  |  Date/Time  : {dt:<43}|"
+                  f"\n  |  Payment    : {method:<43}|"
+                  f"\n  |  Total      : {total:<43}|"
+                  f"\n  |  Amount Due : {amount_due:<43}|"
+                  "\n  +----------------------------------------------------------+"
+                  "\n  |  Name                    Qty    Subtotal                 |"
+                  "\n  +----------------------------------------------------------+")
 
             for item in transaction['items']:
-                subtotal = f"P{item['subtotal']:.2f}"
-                print(f"  |  {item['name']:<20}"
-                      f"|  {item['qty']:<5}"
-                      f"|  {subtotal:<10}|")
+                name = f"{item['name']:<24}"
+                qty = f"{item['qty']:<6}"
+                subtotal = f"₱{item['subtotal']:.2f}"
+                print(f"  |  {name}{qty} {subtotal:<25}|")
 
-            print("  +----------------------+-------+------------+")
-
-        print("\n  +----------------------------------------------------------+")
+            print("  +----------------------------------------------------------+")
 
     def is_empty(self):
         return len(self._data) == 0
