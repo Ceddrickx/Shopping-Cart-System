@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NUmart Python Terms</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #fff;
+      color: #1a1a1a;
+    }
+
+    /* paste all the CSS variables manually since 
+       GitHub Pages won't have claude.ai's design system */
+    --color-background-primary: #ffffff;
+    --color-background-secondary: #f5f5f3;
+    --color-border-tertiary: rgba(0,0,0,0.15);
+    --color-border-secondary: rgba(0,0,0,0.3);
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #5a5a58;
+    --color-text-tertiary: #8a8a88;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --font-mono: 'Courier New', monospace;
+  </style>
+</head>
+<body>
+  
+<h2 class="sr-only">Interactive NUmart code with clickable term highlights for class, object, constructor, self, attribute, method, parameter, argument, and instantiation</h2>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.wrap{padding:1rem 0;display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px}
+.terms-col{display:flex;flex-direction:column;gap:6px}
+.term-btn{padding:7px 12px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);font-size:12px;font-weight:500;cursor:pointer;text-align:left;transition:all .15s;display:flex;align-items:center;gap:8px;color:var(--color-text-primary)}
+.term-btn:hover{background:var(--color-background-secondary)}
+.term-btn.active{border-width:1.5px}
+.dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.code-col{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px;font-family:var(--font-mono);font-size:12px;line-height:2;overflow-x:auto}
+.line{white-space:pre;display:block;border-radius:4px;padding:0 4px;transition:background .2s}
+.hl{border-radius:3px;padding:0 2px;transition:background .2s,color .2s}
+.info-box{margin-top:10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;background:var(--color-background-primary);min-height:70px}
+.info-term{font-size:12px;font-weight:500;margin-bottom:4px}
+.info-desc{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.none-msg{font-size:12px;color:var(--color-text-tertiary);font-style:italic}
+
+.t-class    {background:#EEEDFE;color:#3C3489}
+.t-object   {background:#E1F5EE;color:#085041}
+.t-ctor     {background:#FAEEDA;color:#633806}
+.t-self     {background:#FAECE7;color:#712B13}
+.t-attr     {background:#E6F1FB;color:#0C447C}
+.t-method   {background:#EAF3DE;color:#27500A}
+.t-param    {background:#EEEDFE;color:#534AB7}
+.t-arg      {background:#E1F5EE;color:#0F6E56}
+.t-inst     {background:#FAEEDA;color:#854F0B}
+
+.btn-class  {border-color:#AFA9EC}.btn-class.active  {background:#EEEDFE;border-color:#7F77DD;color:#3C3489}
+.btn-object {border-color:#9FE1CB}.btn-object.active {background:#E1F5EE;border-color:#1D9E75;color:#085041}
+.btn-ctor   {border-color:#FAC775}.btn-ctor.active   {background:#FAEEDA;border-color:#BA7517;color:#633806}
+.btn-self   {border-color:#F0997B}.btn-self.active   {background:#FAECE7;border-color:#D85A30;color:#712B13}
+.btn-attr   {border-color:#85B7EB}.btn-attr.active   {background:#E6F1FB;border-color:#378ADD;color:#0C447C}
+.btn-method {border-color:#97C459}.btn-method.active {background:#EAF3DE;border-color:#639922;color:#27500A}
+.btn-param  {border-color:#AFA9EC}.btn-param.active  {background:#EEEDFE;border-color:#534AB7;color:#534AB7}
+.btn-arg    {border-color:#5DCAA5}.btn-arg.active    {background:#E1F5EE;border-color:#0F6E56;color:#0F6E56}
+.btn-inst   {border-color:#EF9F27}.btn-inst.active   {background:#FAEEDA;border-color:#BA7517;color:#854F0B}
+
+.dim{opacity:0.35}
+.cm{color:var(--color-text-tertiary)}
+.kw{color:#7F77DD}
+.plain{color:var(--color-text-primary)}
+</style>
+
+<div class="wrap">
+  <div class="code-col" id="code-view"></div>
+  <div>
+    <div class="terms-col">
+      <button class="term-btn btn-class"  data-term="class"  onclick="select('class')"><span class="dot" style="background:#7F77DD"></span>Class</button>
+      <button class="term-btn btn-object" data-term="object" onclick="select('object')"><span class="dot" style="background:#1D9E75"></span>Object / Instance</button>
+      <button class="term-btn btn-inst"   data-term="inst"   onclick="select('inst')"><span class="dot" style="background:#BA7517"></span>Instantiation</button>
+      <button class="term-btn btn-ctor"   data-term="ctor"   onclick="select('ctor')"><span class="dot" style="background:#EF9F27"></span>Constructor</button>
+      <button class="term-btn btn-self"   data-term="self"   onclick="select('self')"><span class="dot" style="background:#D85A30"></span>self</button>
+      <button class="term-btn btn-attr"   data-term="attr"   onclick="select('attr')"><span class="dot" style="background:#378ADD"></span>Attribute</button>
+      <button class="term-btn btn-method" data-term="method" onclick="select('method')"><span class="dot" style="background:#639922"></span>Method</button>
+      <button class="term-btn btn-param"  data-term="param"  onclick="select('param')"><span class="dot" style="background:#534AB7"></span>Parameter</button>
+      <button class="term-btn btn-arg"    data-term="arg"    onclick="select('arg')"><span class="dot" style="background:#0F6E56"></span>Argument</button>
+    </div>
+    <div class="info-box" id="info-box">
+      <div class="none-msg">Click a term to highlight it in the code.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const termInfo = {
+  class:  {label:"Class",           desc:"The blueprint. Defines what NUmart looks like and what it can do. Everything — attributes and methods — lives inside it."},
+  object: {label:"Object / Instance",desc:"The actual store created from the NUmart class. 'store' is one live object with its own cart, discount, and promo data."},
+  inst:   {label:"Instantiation",    desc:"The act of creating the object — writing NUmart(). This single line triggers __init__ and builds the store."},
+  ctor:   {label:"Constructor",      desc:"The __init__ method. Runs automatically the moment you write NUmart(). Sets up all starting values."},
+  self:   {label:"self",             desc:"Always the first parameter. Refers to the current object. Python passes it automatically — you never type it when calling."},
+  attr:   {label:"Attribute",        desc:"Data stored inside the object using self.something. self.discount and self.promo_used are your two key attributes."},
+  method: {label:"Method",           desc:"A function that belongs to the class. Your 4 functions — apply_promo, remove_promo, get_final_total, display_price_summary — are all methods."},
+  param:  {label:"Parameter",        desc:"The placeholder variable names in the def line. 'code' in apply_promo(self, code) is a parameter — no value yet."},
+  arg:    {label:"Argument",         desc:'The real value passed when calling. "STUDENT15" in store.apply_promo("STUDENT15") is the argument that fills the "code" parameter.'},
+};
+
+const lines = [
+  {t:`<span class="cm"># system.py + main.py — NUmart code</span>`},
+  {t:`<span class="cm"># ─────────────────────────────────────────────</span>`},
+  {t:``},
+  {
+    t:`<span class="kw">class</span> <span id="h-class" class="hl">NUmart</span>:`,
+    marks:{class:['h-class']}
+  },
+  {
+    t:`    <span class="cm">"""NUmart Shopping Cart System."""</span>`,
+  },
+  {t:``},
+  {
+    t:`    <span class="kw">def</span> <span id="h-ctor" class="hl">__init__</span>(<span id="h-self1" class="hl">self</span>):`,
+    marks:{ctor:['h-ctor'], self:['h-self1'], param:['h-self1']}
+  },
+  {
+    t:`        <span id="h-attr1" class="hl"><span id="h-self2" class="hl">self</span>.inventory</span>  = LinkedList()`,
+    marks:{attr:['h-attr1'], self:['h-self2']}
+  },
+  {
+    t:`        <span id="h-attr2" class="hl"><span id="h-self3" class="hl">self</span>.cart</span>       = CartLinkedList()`,
+    marks:{attr:['h-attr2'], self:['h-self3']}
+  },
+  {
+    t:`        <span id="h-attr3" class="hl"><span id="h-self4" class="hl">self</span>.discount</span>   = 0`,
+    marks:{attr:['h-attr3'], self:['h-self4']}
+  },
+  {
+    t:`        <span id="h-attr4" class="hl"><span id="h-self5" class="hl">self</span>.promo_used</span> = <span class="plain">""</span>`,
+    marks:{attr:['h-attr4'], self:['h-self5']}
+  },
+  {t:``},
+  {
+    t:`    <span class="kw">def</span> <span id="h-method1" class="hl">apply_promo</span>(<span id="h-self6" class="hl">self</span>, <span id="h-param1" class="hl">code</span>):`,
+    marks:{method:['h-method1'], self:['h-self6'], param:['h-param1']}
+  },
+  {
+    t:`        <span id="h-self7" class="hl">self</span>.discount = dict_Codes[code]`,
+    marks:{self:['h-self7']}
+  },
+  {
+    t:`        <span id="h-self8" class="hl">self</span>.promo_used = code`,
+    marks:{self:['h-self8']}
+  },
+  {
+    t:`        <span class="kw">return</span> <span class="kw">True</span>`,
+  },
+  {t:``},
+  {
+    t:`    <span class="kw">def</span> <span id="h-method2" class="hl">remove_promo</span>(<span id="h-self9" class="hl">self</span>):`,
+    marks:{method:['h-method2'], self:['h-self9'], param:['h-self9']}
+  },
+  {
+    t:`        <span id="h-self10" class="hl">self</span>.discount   = 0`,
+    marks:{self:['h-self10']}
+  },
+  {
+    t:`        <span id="h-self11" class="hl">self</span>.promo_used = <span class="plain">""</span>`,
+    marks:{self:['h-self11']}
+  },
+  {t:``},
+  {
+    t:`    <span class="kw">def</span> <span id="h-method3" class="hl">get_final_total</span>(<span id="h-self12" class="hl">self</span>):`,
+    marks:{method:['h-method3'], self:['h-self12'], param:['h-self12']}
+  },
+  {
+    t:`        total = <span id="h-self13" class="hl">self</span>.cart.compute_total()`,
+    marks:{self:['h-self13']}
+  },
+  {
+    t:`        discounted = total * (<span id="h-self14" class="hl">self</span>.discount / 100)`,
+    marks:{self:['h-self14']}
+  },
+  {
+    t:`        <span class="kw">return</span> total, discounted, total - discounted`,
+  },
+  {t:``},
+  {
+    t:`    <span class="kw">def</span> <span id="h-method4" class="hl">display_price_summary</span>(<span id="h-self15" class="hl">self</span>):`,
+    marks:{method:['h-method4'], self:['h-self15'], param:['h-self15']}
+  },
+  {
+    t:`        total, disc, final = <span id="h-self16" class="hl">self</span>.get_final_total()`,
+    marks:{self:['h-self16']}
+  },
+  {
+    t:`        <span class="cm"># ... print formatted summary</span>`,
+  },
+  {t:``},
+  {t:`<span class="cm"># ─── main.py ──────────────────────────────────</span>`},
+  {t:``},
+  {
+    t:`<span id="h-obj" class="hl">store</span> = <span id="h-inst" class="hl">NUmart()</span>`,
+    marks:{object:['h-obj'], inst:['h-inst'], class:['h-inst']}
+  },
+  {t:``},
+  {
+    t:`<span id="h-obj2" class="hl">store</span>.apply_promo(<span id="h-arg" class="hl">"STUDENT15"</span>)`,
+    marks:{object:['h-obj2'], arg:['h-arg']}
+  },
+  {
+    t:`<span id="h-obj3" class="hl">store</span>.remove_promo()`,
+    marks:{object:['h-obj3']}
+  },
+  {
+    t:`<span id="h-obj4" class="hl">store</span>.get_final_total()`,
+    marks:{object:['h-obj4']}
+  },
+];
+
+const codeView = document.getElementById('code-view');
+lines.forEach((l,i)=>{
+  const span = document.createElement('span');
+  span.className = 'line';
+  span.id = 'line-'+i;
+  span.innerHTML = l.t || ' ';
+  codeView.appendChild(span);
+});
+
+let active = null;
+const termClasses = {class:'t-class',object:'t-object',inst:'t-inst',ctor:'t-ctor',self:'t-self',attr:'t-attr',method:'t-method',param:'t-param',arg:'t-arg'};
+
+function select(term){
+  if(active === term){ clear(); return; }
+  clear();
+  active = term;
+  document.querySelectorAll('.term-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.term === term);
+  });
+  const allIds = new Set();
+  lines.forEach(l=>{
+    if(l.marks && l.marks[term]) l.marks[term].forEach(id=>allIds.add(id));
+  });
+  document.querySelectorAll('.hl').forEach(el=>{
+    if(allIds.has(el.id)) el.classList.add(termClasses[term]);
+    else el.classList.add('dim');
+  });
+  const info = termInfo[term];
+  document.getElementById('info-box').innerHTML = `<div class="info-term" style="color:${dotColor(term)}">${info.label}</div><div class="info-desc">${info.desc}</div>`;
+}
+
+function clear(){
+  active = null;
+  document.querySelectorAll('.term-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.hl').forEach(el=>{
+    Object.values(termClasses).forEach(c=>el.classList.remove(c));
+    el.classList.remove('dim');
+  });
+  document.getElementById('info-box').innerHTML = '<div class="none-msg">Click a term to highlight it in the code.</div>';
+}
+
+function dotColor(term){
+  const map={class:'#3C3489',object:'#085041',inst:'#854F0B',ctor:'#633806',self:'#712B13',attr:'#0C447C',method:'#27500A',param:'#534AB7',arg:'#0F6E56'};
+  return map[term]||'var(--color-text-primary)';
+}
+</script>
+
+</body>
+</html>
