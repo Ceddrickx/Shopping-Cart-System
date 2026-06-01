@@ -9,940 +9,1175 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#060c1a;--bg2:#0c1525;--bg3:#111e35;--bg4:#172540;--bg5:#1d2d4d;
-  --border:rgba(70,120,220,0.12);--border2:rgba(70,120,220,0.24);--border3:rgba(70,120,220,0.45);
-  --text:#d8e8ff;--text2:#6e8fcc;--text3:#344d70;
-  --purple:#b08bfa;--teal:#2dd4aa;--amber:#fbbf24;--coral:#f87171;
-  --blue:#5da8fa;--green:#7de8a0;--pink:#f472b6;--orange:#fb923c;--cyan:#22d3ee;--indigo:#818cf8;
+  --bg:#06080f;--bg2:#0b1120;--bg3:#101a30;--bg4:#162038;--bg5:#1c2a44;
+  --border:rgba(60,110,210,0.14);--border2:rgba(60,110,210,0.28);--border3:rgba(60,110,210,0.50);
+  --text:#dde8ff;--text2:#7a9ed4;--text3:#3a5278;
+  --purple:#cf9aff;--teal:#4ec9b0;--amber:#dcdcaa;--coral:#f28b82;
+  --blue:#569cd6;--green:#6a9955;--green2:#4ec94e;--pink:#c586c0;
+  --orange:#ce9178;--cyan:#9cdcfe;--indigo:#a0b4e0;--str:#ce9178;
   --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
-  --r:8px;--rl:14px;
+  --r:8px;--rl:12px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;
-  background-image:radial-gradient(ellipse at 20% 0%,rgba(30,50,120,0.18) 0%,transparent 60%),
-    radial-gradient(ellipse at 80% 100%,rgba(20,60,110,0.14) 0%,transparent 55%)}
-::-webkit-scrollbar{width:4px;height:4px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.65}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:99px}
 
 /* NAV */
-nav{position:sticky;top:0;z-index:200;background:rgba(6,12,26,0.96);backdrop-filter:blur(18px);
-  border-bottom:0.5px solid var(--border);padding:10px 28px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.nav-brand{font-weight:800;font-size:13px;color:var(--blue);letter-spacing:.06em;margin-right:10px;white-space:nowrap}
-.nav-a{font-size:11.5px;color:var(--text2);text-decoration:none;padding:4px 10px;border-radius:99px;
-  border:0.5px solid transparent;transition:all .15s;white-space:nowrap}
-.nav-a:hover{border-color:var(--border2);background:var(--bg3);color:var(--text)}
+nav{position:sticky;top:0;z-index:300;background:rgba(6,8,15,0.97);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;
+  gap:0;min-height:48px;overflow-x:auto;white-space:nowrap}
+.nav-brand{font-weight:800;font-size:13px;color:var(--blue);letter-spacing:.06em;
+  padding-right:16px;margin-right:8px;border-right:1px solid var(--border);flex-shrink:0}
+.nav-a{font-size:12px;color:var(--text2);text-decoration:none;padding:6px 12px;
+  border-radius:6px;transition:all .15s;flex-shrink:0;display:inline-block}
+.nav-a:hover,.nav-a.active{background:var(--bg3);color:var(--text)}
 
-/* LAYOUT */
-main{max-width:1100px;margin:0 auto;padding:36px 24px 120px}
-.hero{margin-bottom:40px;padding:28px 32px;background:var(--bg2);border:.5px solid var(--border2);
-  border-radius:var(--rl);position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;
-  border-radius:50%;background:radial-gradient(circle,rgba(93,168,250,0.07) 0%,transparent 70%)}
-.hero h1{font-size:26px;font-weight:800;color:var(--text);margin-bottom:5px;letter-spacing:-.01em}
+/* MAIN LAYOUT */
+.app{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 48px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);
+  position:sticky;top:48px;height:calc(100vh - 48px);overflow-y:auto;padding:16px 0}
+.sb-section{padding:8px 16px 4px;font-size:10px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text3);margin-top:8px}
+.sb-section:first-child{margin-top:0}
+.sb-btn{display:block;width:100%;text-align:left;padding:7px 16px;font-size:12.5px;
+  color:var(--text2);background:none;border:none;cursor:pointer;transition:all .12s;
+  font-family:var(--sans);border-left:2px solid transparent;line-height:1.4}
+.sb-btn:hover{background:var(--bg3);color:var(--text);border-left-color:var(--border2)}
+.sb-btn.active{background:var(--bg3);color:var(--cyan);border-left-color:var(--blue);font-weight:700}
+
+/* CONTENT AREA */
+.content{padding:28px 28px 80px;overflow-y:auto;max-width:860px}
+
+/* PAGE */
+.page{display:none}
+.page.active{display:block}
+
+/* HERO */
+.hero{padding:24px 26px;background:var(--bg2);border:1px solid var(--border2);
+  border-radius:var(--rl);margin-bottom:24px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;right:-50px;top:-50px;width:220px;height:220px;
+  border-radius:50%;background:radial-gradient(circle,rgba(86,156,214,0.07) 0%,transparent 70%)}
+.hero h1{font-size:22px;font-weight:800;color:var(--text);margin-bottom:4px}
 .hero p{font-size:13px;color:var(--text2);line-height:1.7}
-.hero .role-tag{display:inline-block;margin-top:8px;padding:3px 12px;border-radius:99px;
-  background:rgba(93,168,250,0.12);border:.5px solid rgba(93,168,250,0.3);font-size:11px;color:var(--blue);font-weight:700;letter-spacing:.05em}
+.hero .tag{display:inline-block;margin-top:10px;padding:3px 12px;border-radius:99px;
+  background:rgba(86,156,214,0.12);border:1px solid rgba(86,156,214,0.3);
+  font-size:11px;color:var(--blue);font-weight:700;letter-spacing:.05em}
 
-.sec-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--text3);margin:44px 0 14px;display:flex;align-items:center;gap:10px}
-.sec-label::after{content:'';flex:1;height:.5px;background:var(--border)}
+/* PAGE TITLE */
+.page-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6}
 
 /* CARDS */
-.card{background:var(--bg2);border:.5px solid var(--border);border-radius:var(--rl);overflow:hidden;margin-bottom:12px}
-.card-head{padding:10px 16px;border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rl);
+  overflow:hidden;margin-bottom:14px}
+.card-head{padding:10px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg3)}
 .card-body{padding:14px 16px}
-.badge{font-size:11px;font-weight:700;padding:3px 11px;border-radius:99px;font-family:var(--mono);white-space:nowrap;letter-spacing:.02em}
-.desc{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.full{grid-column:1/-1}
+.badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:99px;
+  font-family:var(--mono);white-space:nowrap}
+.desc{font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:14px}
 
-/* CODE BLOCK */
-.cb{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r);
-  padding:13px 16px;font-family:var(--mono);font-size:12px;line-height:2;overflow-x:auto;white-space:pre}
-.kw{color:var(--purple)}.fn{color:var(--blue)}.st{color:var(--teal)}.cm{color:var(--text3)}
-.sf{color:var(--coral)}.nm{color:var(--amber)}.rt{color:var(--pink)}.ky{color:var(--orange)}
+/* ── CODE BLOCK (PyCharm Dark theme) ── */
+.cb{background:#1e1e2e;border:1px solid rgba(60,110,210,0.18);border-radius:var(--r);
+  padding:14px 16px;font-family:var(--mono);font-size:12.5px;line-height:2;
+  overflow-x:auto;white-space:pre;color:#d4d4d4}
+/* Syntax colours matching PyCharm / VS Code dark */
+.kw{color:#cf9aff}         /* keywords: def, class, if, return, while, for, import, from */
+.fn{color:#dcdcaa}         /* function names */
+.st{color:#ce9178}         /* strings */
+.cm{color:#6a9955}         /* comments — PyCharm green */
+.sf{color:#9cdcfe}         /* self */
+.nm{color:#b5cea8}         /* numbers */
+.bi{color:#4ec9b0}         /* built-ins / class names */
+.op{color:#d4d4d4}         /* operators */
+.dc{color:#ce9178}         /* docstring (same as string) */
 
-/* ANNOTATED LINES */
-.anno-wrap{background:var(--bg);border:.5px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
-.anno-file{padding:6px 13px;border-bottom:.5px solid var(--border);font-size:11px;color:var(--text3);
-  font-family:var(--mono);display:flex;justify-content:space-between;align-items:center}
-.line-row{display:grid;grid-template-columns:44px 1fr;cursor:pointer;transition:background .1s;
-  border-bottom:.5px solid rgba(70,120,220,0.05)}
+/* ── ANNOTATED LINE VIEWER ── */
+.anno-wrap{background:#1e1e2e;border:1px solid rgba(60,110,210,0.18);
+  border-radius:var(--r);overflow:hidden;margin-bottom:12px}
+.anno-file{padding:6px 14px;border-bottom:1px solid rgba(60,110,210,0.18);
+  font-size:11px;color:#858585;font-family:var(--mono);
+  display:flex;justify-content:space-between;align-items:center;background:#1a1a2a}
+.anno-file span:last-child{color:#4a6a88;font-style:italic}
+.line-row{display:grid;grid-template-columns:42px 1fr;
+  border-bottom:1px solid rgba(255,255,255,0.04);transition:background .1s}
 .line-row:last-child{border-bottom:none}
-.line-row:hover{background:var(--bg3)}
-.line-row.open{background:var(--bg3)}
-.has-ann:hover .ln{color:var(--blue)}
-.ln{font-size:10px;color:var(--text3);padding:8px 8px;text-align:right;
-  border-right:.5px solid var(--border);font-family:var(--mono);user-select:none;transition:color .1s}
-.lc{font-size:12px;padding:7px 13px;font-family:var(--mono);white-space:pre;color:var(--text)}
-.anno-panel{display:none;grid-column:1/-1;border-top:.5px solid var(--border);padding:12px 16px;background:var(--bg2)}
+.line-row.clickable:hover{background:rgba(86,156,214,0.08);cursor:pointer}
+.line-row.open{background:rgba(86,156,214,0.1)}
+.ln{font-size:11px;color:#4a5568;padding:8px 6px;text-align:right;
+  border-right:1px solid rgba(60,110,210,0.14);font-family:var(--mono);
+  user-select:none;line-height:2}
+.lc{font-size:12.5px;padding:7px 14px;font-family:var(--mono);
+  white-space:pre;color:#d4d4d4;line-height:2;overflow-x:auto}
+.anno-panel{display:none;grid-column:1/-1;border-top:1px solid rgba(86,156,214,0.18);
+  padding:14px 18px;background:var(--bg2)}
 .line-row.open .anno-panel{display:block}
-.anno-tag{font-size:11px;font-weight:700;color:var(--amber);font-family:var(--sans);margin-bottom:5px;letter-spacing:.02em}
-.anno-text{font-size:13px;color:var(--text2);line-height:1.7}
-.anno-ex{margin-top:8px;padding:8px 12px;background:var(--bg);border-radius:var(--r);
-  font-family:var(--mono);font-size:11.5px;color:var(--text);white-space:pre;border:.5px solid var(--border)}
-.hint{font-size:11px;color:var(--text3);padding:5px 13px 0;font-style:italic;font-family:var(--mono)}
+.anno-tag{font-size:11px;font-weight:700;color:#fbbf24;font-family:var(--sans);
+  margin-bottom:6px;letter-spacing:.02em}
+.anno-text{font-size:13px;color:var(--text2);line-height:1.75}
+.anno-text code{background:var(--bg3);color:var(--cyan);padding:2px 6px;
+  border-radius:4px;font-family:var(--mono);font-size:12px}
+.anno-text em{color:var(--text);font-style:italic}
+.anno-text strong{color:var(--text);font-weight:700}
+.anno-ex{margin-top:10px;padding:10px 14px;background:#1e1e2e;border-radius:var(--r);
+  font-family:var(--mono);font-size:12px;color:#d4d4d4;white-space:pre;
+  border:1px solid rgba(60,110,210,0.18);overflow-x:auto;line-height:1.9}
+.click-hint{font-size:11px;color:#4a5568;padding:5px 14px 0;font-style:italic;
+  font-family:var(--mono)}
 
-/* RULE BOXES */
-.rule{background:var(--bg3);border:.5px solid var(--border2);border-radius:var(--r);
-  padding:11px 14px;font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:8px}
-.rule strong{color:var(--text);font-weight:700;display:block;margin-bottom:3px}
-.rule-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+/* ── RULE / INFO BOXES ── */
+.rule{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);
+  padding:12px 14px;font-size:13px;color:var(--text2);line-height:1.75;margin-bottom:10px}
+.rule strong{color:var(--text);font-weight:700;display:block;margin-bottom:4px}
+.rule code{background:var(--bg4);color:var(--cyan);padding:2px 6px;border-radius:4px;
+  font-family:var(--mono);font-size:12px}
+.rule em{color:var(--text);font-style:italic}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media(max-width:600px){.grid2{grid-template-columns:1fr}}
 
-/* TAB BAR */
+/* ── SECONDARY TABS (inside sections) ── */
 .tab-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.tab-btn{padding:6px 14px;border-radius:99px;border:.5px solid var(--border2);
-  background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;transition:all .15s;font-family:var(--sans)}
+.tab-btn{padding:7px 14px;border-radius:6px;border:1px solid var(--border2);
+  background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;
+  transition:all .15s;font-family:var(--sans);line-height:1.4}
 .tab-btn:hover{background:var(--bg3);color:var(--text)}
-.tab-btn.active{background:var(--bg4);border-color:var(--blue);color:var(--blue)}
+.tab-btn.active{background:var(--bg4);border-color:var(--blue);color:var(--blue);font-weight:700}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
-/* Q&A */
-.qa-item{border:.5px solid var(--border);border-radius:var(--r);margin-bottom:7px;overflow:hidden;background:var(--bg2)}
-.qa-q{padding:12px 16px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;gap:12px;transition:background .1s;line-height:1.5}
+/* ── Q&A ── */
+.qa-item{border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;
+  overflow:hidden;background:var(--bg2)}
+.qa-q{padding:13px 16px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  transition:background .12s;line-height:1.5}
 .qa-q:hover{background:var(--bg3)}
-.qa-icon{color:var(--text3);font-size:20px;transition:transform .2s;flex-shrink:0;font-style:normal;line-height:1}
+.qa-icon{color:var(--text3);font-size:20px;transition:transform .2s;
+  flex-shrink:0;font-style:normal;line-height:1;font-weight:400}
 .qa-item.open .qa-icon{transform:rotate(45deg);color:var(--blue)}
-.qa-a{display:none;padding:12px 16px 14px;font-size:13px;color:var(--text2);
-  line-height:1.75;border-top:.5px solid var(--border)}
+.qa-a{display:none;padding:12px 16px 16px;font-size:13px;color:var(--text2);
+  line-height:1.8;border-top:1px solid var(--border)}
+.qa-a code{background:var(--bg3);color:var(--cyan);padding:2px 6px;border-radius:4px;
+  font-family:var(--mono);font-size:12px}
+.qa-a em{color:var(--text);font-style:italic}
+.qa-a strong{color:var(--text)}
 .qa-item.open .qa-a{display:block}
 
-/* SYNTAX TABLE */
+/* ── SYNTAX TABLE ── */
 .syn-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.syn-table th{padding:9px 13px;font-size:11px;color:var(--text3);font-weight:600;
-  border-bottom:.5px solid var(--border);text-align:left;font-family:var(--sans);letter-spacing:.04em;text-transform:uppercase}
-.syn-table td{padding:10px 13px;border-bottom:.5px solid var(--border);vertical-align:top}
+.syn-table th{padding:9px 14px;font-size:10.5px;color:var(--text3);font-weight:700;
+  border-bottom:1px solid var(--border);text-align:left;font-family:var(--sans);
+  letter-spacing:.05em;text-transform:uppercase;background:var(--bg3)}
+.syn-table td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:top;
+  color:var(--text2)}
 .syn-table tr:last-child td{border-bottom:none}
 .syn-table tr:hover td{background:var(--bg3)}
-.syn-table td:first-child{font-family:var(--mono);color:var(--teal);font-weight:500;font-size:11.5px}
-.syn-table td:nth-child(2){color:var(--text2)}
+.syn-table td:first-child{font-family:var(--mono);color:var(--teal);font-size:12px}
 .syn-table td:last-child{color:var(--text3);font-family:var(--mono);font-size:11px}
+@media(max-width:600px){
+  .syn-table td:last-child{display:none}
+  .syn-table th:last-child{display:none}
+}
 
-/* MISC */
-code{font-family:var(--mono);font-size:12px;background:var(--bg3);padding:2px 6px;border-radius:4px;color:var(--text)}
-.math-demo{background:var(--bg);border:.5px solid var(--border2);border-radius:var(--r);padding:14px 16px;margin-top:10px}
-.math-demo .step{display:flex;align-items:baseline;gap:10px;font-family:var(--mono);font-size:12.5px;padding:4px 0;border-bottom:.5px solid var(--border)}
-.math-demo .step:last-child{border-bottom:none;color:var(--teal);font-weight:700}
-.math-demo .step-label{color:var(--text3);font-size:11px;min-width:110px}
-.math-demo .step-val{color:var(--text)}
-.math-demo .step-note{color:var(--text3);font-size:11px;margin-left:auto}
+/* ── MATH DEMO ── */
+.math-demo{background:#1e1e2e;border:1px solid rgba(60,110,210,0.2);
+  border-radius:var(--r);padding:14px 18px;margin-top:12px}
+.math-row{display:flex;align-items:baseline;gap:12px;font-family:var(--mono);
+  font-size:12.5px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.math-row:last-child{border-bottom:none;color:var(--teal);font-weight:700}
+.math-lbl{color:#858585;font-size:11px;min-width:130px;flex-shrink:0}
+.math-val{color:#d4d4d4}
+.math-note{color:#6a9955;font-size:11px;margin-left:auto}
+
+/* ── MOBILE ── */
+@media(max-width:680px){
+  .app{grid-template-columns:1fr}
+  .sidebar{display:none}
+  nav{padding:0 12px}
+  .content{padding:18px 14px 60px}
+}
+code{font-family:var(--mono);font-size:12px;background:var(--bg3);
+  padding:2px 6px;border-radius:4px;color:var(--cyan)}
 </style>
 </head>
 <body>
 
 <nav>
-  <span class="nav-brand">◈ VILLAR — NUmart</span>
-  <a class="nav-a" href="#s0">0 Foundation</a>
-  <a class="nav-a" href="#s1">1 dict_Codes</a>
-  <a class="nav-a" href="#s2">2 apply_promo</a>
-  <a class="nav-a" href="#s3">3 remove_promo</a>
-  <a class="nav-a" href="#s4">4 get_final_total</a>
-  <a class="nav-a" href="#s5">5 display_price_summary</a>
-  <a class="nav-a" href="#s6">6 main.py menu</a>
-  <a class="nav-a" href="#s7">7 Related</a>
-  <a class="nav-a" href="#s8">8 Syntax</a>
-  <a class="nav-a" href="#s9">9 Q&amp;A</a>
+  <span class="nav-brand">◈ NUmart — Villar</span>
+  <a class="nav-a" href="#" onclick="showPage('home');return false">Home</a>
+  <a class="nav-a" href="#" onclick="showPage('p-foundation');return false">Foundation</a>
+  <a class="nav-a" href="#" onclick="showPage('p-dict');return false">dict_Codes</a>
+  <a class="nav-a" href="#" onclick="showPage('p-apply');return false">apply_promo</a>
+  <a class="nav-a" href="#" onclick="showPage('p-remove');return false">remove_promo</a>
+  <a class="nav-a" href="#" onclick="showPage('p-total');return false">get_final_total</a>
+  <a class="nav-a" href="#" onclick="showPage('p-summary');return false">display_price_summary</a>
+  <a class="nav-a" href="#" onclick="showPage('p-menu');return false">main.py</a>
+  <a class="nav-a" href="#" onclick="showPage('p-related');return false">Related</a>
+  <a class="nav-a" href="#" onclick="showPage('p-syntax');return false">Syntax</a>
+  <a class="nav-a" href="#" onclick="showPage('p-qa');return false">Q&amp;A</a>
 </nav>
 
-<main>
+<div class="app">
 
-<div class="hero">
-  <h1>Member 5 — Villar, Kim Cedrick</h1>
-  <p>Role: Price Calculation &amp; Promo Codes &nbsp;·&nbsp; IT-252 MP5 Group 4<br>
-  Full line-by-line walkthrough — exact line numbers from actual source files.</p>
-  <span class="role-tag">PRICE CALCULATION &amp; PROMO CODES</span>
-</div>
+<!-- ══════════════════════════════
+     SIDEBAR
+══════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sb-section">Overview</div>
+  <button class="sb-btn active" onclick="showPage('home')">◈ Home</button>
 
-<!-- ══════════════════════════════════════════
-     SECTION 0 — FOUNDATION
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s0">0 — Foundation: imports, constants &amp; __init__</div>
-<p class="desc">Before your promo functions can work, the file must be set up. Lines 1–36 in system.py run before any user action. Your two attributes — <code>self.discount</code> and <code>self.promo_used</code> — are created in <code>__init__</code>. If they were never set here, your functions would crash on first use.</p>
+  <div class="sb-section">system.py</div>
+  <button class="sb-btn" onclick="showPage('p-foundation')">0 · Foundation &amp; __init__</button>
+  <button class="sb-btn" onclick="showPage('p-dict')">1 · dict_Codes (L8–13)</button>
+  <button class="sb-btn" onclick="showPage('p-apply')">2 · apply_promo (L206–222)</button>
+  <button class="sb-btn" onclick="showPage('p-remove')">3 · remove_promo (L224–231)</button>
+  <button class="sb-btn" onclick="showPage('p-total')">4 · get_final_total (L233–238)</button>
+  <button class="sb-btn" onclick="showPage('p-summary')">5 · display_price_summary (L240–262)</button>
 
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(176,139,250,.13);color:#b08bfa;border:.5px solid rgba(176,139,250,.35)">system.py — Lines 1–6</span>
-    <span style="font-size:12px;color:var(--text2)">Module docstring &amp; imports — runs before everything</span>
+  <div class="sb-section">main.py</div>
+  <button class="sb-btn" onclick="showPage('p-menu')">6 · menu_price_summary</button>
+
+  <div class="sb-section">Reference</div>
+  <button class="sb-btn" onclick="showPage('p-related')">7 · Related Code</button>
+  <button class="sb-btn" onclick="showPage('p-syntax')">8 · Syntax Guide</button>
+  <button class="sb-btn" onclick="showPage('p-qa')">9 · Q &amp; A</button>
+</aside>
+
+<!-- ══════════════════════════════
+     CONTENT
+══════════════════════════════ -->
+<div class="content">
+
+<!-- ────── HOME ────── -->
+<div class="page active" id="home">
+  <div class="hero">
+    <h1>Member 5 — Villar, Kim Cedrick</h1>
+    <p>Role: Price Calculation &amp; Promo Codes &nbsp;·&nbsp; IT-252 MP5 Group 4<br>
+    Complete line-by-line guide — exact line numbers verified from actual source files.</p>
+    <span class="tag">PRICE CALCULATION &amp; PROMO CODES</span>
   </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-imports"></div>
+
+  <div class="page-title">What this guide covers</div>
+  <p class="desc">This guide covers every line of code that belongs to Villar's role. Use the sidebar or navigation bar to jump to any section. Each section shows the exact code from the file, and clicking any annotated line opens a full explanation of what that line does, why it is written that way, and how it connects to other parts of the program.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(86,156,214,.12);color:#569cd6;border:1px solid rgba(86,156,214,.35)">Villar's Responsibilities</span>
+    </div>
+    <div class="card-body">
+      <div class="rule"><strong>system.py — Lines 8–13: dict_Codes</strong>The module-level dictionary that stores all four valid promo codes and their corresponding discount percentages.</div>
+      <div class="rule"><strong>system.py — Lines 206–222: apply_promo()</strong>Validates and applies a promo code. Normalizes input, checks two guard conditions, updates both attributes, and returns <code>True</code> or <code>False</code>.</div>
+      <div class="rule"><strong>system.py — Lines 224–231: remove_promo()</strong>Removes the active promo code. Contains a guard clause for when no code is active, then resets both <code>self.discount</code> and <code>self.promo_used</code>.</div>
+      <div class="rule"><strong>system.py — Lines 233–238: get_final_total()</strong>Computes and returns three values: the subtotal, the discount amount, and the final amount due. Used by three other functions.</div>
+      <div class="rule"><strong>system.py — Lines 240–262: display_price_summary()</strong>Formats and prints the full price breakdown. Shows optional promo rows only when a discount is active.</div>
+      <div class="rule"><strong>main.py — menu_price_summary()</strong>The user-facing menu that ties everything together — handles input loops, calls the system.py methods, and manages cancel logic.</div>
     </div>
   </div>
-</div>
 
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(176,139,250,.13);color:#b08bfa;border:.5px solid rgba(176,139,250,.35)">system.py — Lines 26–36</span>
-    <span style="font-size:12px;color:var(--text2)">NUmart class + __init__ — where self.discount and self.promo_used are born</span>
-  </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-init"></div>
-    </div>
-    <div class="rule" style="margin-top:12px">
-      <strong>Why __init__ matters for your part</strong>
-      Line 34 sets <code>self.discount = 0</code> and line 35 sets <code>self.promo_used = ""</code>. These are the two attributes YOUR functions read and write. Without <code>__init__</code> initializing them first, calling <code>apply_promo()</code> would raise an <code>AttributeError</code> because Python would have no idea what <code>self.discount</code> refers to.
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     SECTION 1 — DICT_CODES
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s1">1 — dict_Codes (Lines 8–13)</div>
-
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(251,191,36,.11);color:#fbbf24;border:.5px solid rgba(251,191,36,.35)">system.py — Lines 8–13</span>
-    <span style="font-size:12px;color:var(--text2)">Module-level constant — never changes at runtime</span>
-  </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-dict"></div>
-    </div>
-    <div class="rule-row">
-      <div class="rule"><strong>Dictionary syntax { key : value }</strong>Curly braces wrap the whole thing. Colon separates key from value. Comma separates pairs. Extra spaces before <code>:</code> are just alignment — Python ignores them.</div>
-      <div class="rule"><strong>Why outside the class?</strong>It's a module-level constant that never changes. All methods in NUmart access it by name directly — no <code>self</code> needed. One source of truth for all 4 codes.</div>
-      <div class="rule"><strong>Key and value types</strong>Keys are <code>str</code> ("SAVE10"). Values are <code>int</code> (the discount %). When you do <code>code in dict_Codes</code>, Python checks if that exact string is a key. O(1) — instant, no loop needed.</div>
-      <div class="rule"><strong>Accessing values</strong><code>dict_Codes["SAVE10"]</code> → <code>10</code>. The bracket notation retrieves the value for that key. If the key doesn't exist, you'd get a <code>KeyError</code> — which is why we check <code>if code in dict_Codes</code> first.</div>
-    </div>
+  <div class="rule" style="border-color:rgba(106,153,85,0.4);background:rgba(106,153,85,0.08)">
+    <strong>How to use this guide</strong>
+    Click any section in the sidebar. Inside each section, every code line is shown exactly as it appears in the source file. Lines with explanations are highlighted — click them to open the annotation panel. Click the same line again to close it.
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 2 — APPLY_PROMO
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s2">2 — apply_promo() (Lines 206–222)</div>
+<!-- ────── FOUNDATION ────── -->
+<div class="page" id="p-foundation">
+  <div class="page-title">0 — Foundation: Imports &amp; __init__</div>
+  <p class="desc">Before any promo function can work, the file must be set up. Lines 1–6 of system.py load the required modules. Lines 26–36 define the <code>NUmart</code> class and its constructor, which creates the two attributes that Villar's functions depend on: <code>self.discount</code> and <code>self.promo_used</code>. If <code>__init__</code> never created these attributes, calling <code>apply_promo()</code> or <code>get_final_total()</code> would immediately raise an <code>AttributeError</code>.</p>
 
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(45,212,170,.1);color:#2dd4aa;border:.5px solid rgba(45,212,170,.3)">system.py — Lines 206–222</span>
-    <span style="font-size:12px;color:var(--text2)">Validates input, checks both guards, applies code. Returns True or False.</span>
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="sectTab(this,'ft','ft-imports')">system.py · Lines 1–6</button>
+    <button class="tab-btn" onclick="sectTab(this,'ft','ft-init')">system.py · Lines 26–36</button>
   </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-apply"></div>
-    </div>
-    <div class="rule-row">
-      <div class="rule"><strong>Two-layer guard system</strong>Guard 1 (line 210): <code>if self.promo_used:</code> — blocks a second promo while one is active. Guard 2 (line 215): <code>if code in dict_Codes:</code> — blocks invalid codes. Both must pass for the promo to apply.</div>
-      <div class="rule"><strong>Return value controls the menu loop</strong><code>return True</code> tells main.py "success, stop asking." <code>return False</code> tells it "failed, ask again." The <code>while True</code> loop in main.py uses <code>if store.apply_promo(code): break</code> to decide.</div>
-      <div class="rule"><strong>.strip().upper() — both are needed</strong><code>.strip()</code> removes accidental spaces from both ends. <code>.upper()</code> converts all letters to uppercase. Chained together: <code>" save10 "</code> → <code>"SAVE10"</code>. Without this, valid codes in lowercase would always fail.</div>
-      <div class="rule"><strong>Two attributes set together</strong><code>self.discount</code> stores the number (e.g. 15). <code>self.promo_used</code> stores the code name (e.g. "STUDENT15"). Discount is used in math. promo_used is used in display messages and as the guard flag.</div>
-    </div>
-  </div>
-</div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 3 — REMOVE_PROMO
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s3">3 — remove_promo() (Lines 224–231)</div>
-
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(248,113,113,.1);color:#f87171;border:.5px solid rgba(248,113,113,.3)">system.py — Lines 224–231</span>
-    <span style="font-size:12px;color:var(--text2)">Guard check, print confirmation, reset both attributes.</span>
-  </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-remove"></div>
+  <div class="tab-panel active" id="ft-imports">
+    <div class="card">
+      <div class="card-head">
+        <span class="badge" style="background:rgba(207,154,255,.1);color:#cf9aff;border:1px solid rgba(207,154,255,.3)">system.py — Lines 1–6</span>
+        <span style="font-size:12px;color:var(--text2)">Module docstring &amp; imports — executes before any function runs</span>
+      </div>
+      <div class="card-body">
+        <div class="anno-wrap">
+          <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+          <div id="li-imports"></div>
+        </div>
+      </div>
     </div>
-    <div class="rule" style="margin-top:10px">
-      <strong>Why BOTH attributes must be reset together</strong>
-      If only <code>self.discount = 0</code> is reset but <code>self.promo_used</code> still holds <code>"STUDENT15"</code>, the guard on line 210 of <code>apply_promo()</code> would see a non-empty string and treat it as truthy — permanently blocking any new promo code from being applied, even after the user tries to "remove" it. Both must be cleared at the same time.
+  </div>
+
+  <div class="tab-panel" id="ft-init">
+    <div class="card">
+      <div class="card-head">
+        <span class="badge" style="background:rgba(207,154,255,.1);color:#cf9aff;border:1px solid rgba(207,154,255,.3)">system.py — Lines 26–36</span>
+        <span style="font-size:12px;color:var(--text2)">NUmart class + __init__ — where self.discount and self.promo_used are created</span>
+      </div>
+      <div class="card-body">
+        <div class="anno-wrap">
+          <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+          <div id="li-init"></div>
+        </div>
+        <div class="rule" style="margin-top:12px">
+          <strong>Why __init__ matters for Villar's part</strong>
+          Line 34 sets <code>self.discount = 0</code> and line 35 sets <code>self.promo_used = ""</code>. These are the two attributes that all of Villar's functions read and modify. Without <code>__init__</code> creating them first, any call to <code>apply_promo()</code>, <code>remove_promo()</code>, <code>get_final_total()</code>, or <code>display_price_summary()</code> would raise an <code>AttributeError</code>, because Python would have no record of those names on the object.
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 4 — GET_FINAL_TOTAL
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s4">4 — get_final_total() (Lines 233–238)</div>
+<!-- ────── DICT_CODES ────── -->
+<div class="page" id="p-dict">
+  <div class="page-title">1 — dict_Codes (Lines 8–13)</div>
+  <p class="desc">A module-level dictionary defined outside the class. It maps each valid promo code string to its integer discount percentage. Defined at module level so that any method in <code>NUmart</code> can access it by name without needing <code>self</code>.</p>
 
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(93,168,250,.1);color:#5da8fa;border:.5px solid rgba(93,168,250,.3)">system.py — Lines 233–238</span>
-    <span style="font-size:12px;color:var(--text2)">The math engine — computes and returns 3 values: total, discounted amount, final due.</span>
-  </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-total"></div>
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(220,220,170,.1);color:#dcdcaa;border:1px solid rgba(220,220,170,.3)">system.py — Lines 8–13</span>
+      <span style="font-size:12px;color:var(--text2)">Module-level constant — never changes at runtime</span>
     </div>
-
-    <div class="math-demo">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:10px;font-family:var(--mono)">LIVE EXAMPLE — STUDENT15 applied, cart = ₱200.00</div>
-      <div class="step"><span class="step-label">compute_total()</span><span class="step-val">total = 200.00</span><span class="step-note">loops cart: price × qty each item</span></div>
-      <div class="step"><span class="step-label">15 / 100</span><span class="step-val">= 0.15</span><span class="step-note">convert % to decimal</span></div>
-      <div class="step"><span class="step-label">200 × 0.15</span><span class="step-val">discounted = 30.00</span><span class="step-note">amount saved</span></div>
-      <div class="step"><span class="step-label">200 − 30</span><span class="step-val">final = 170.00</span><span class="step-note">₱170.00 — what user pays</span></div>
-    </div>
-
-    <div class="rule-row" style="margin-top:10px">
-      <div class="rule"><strong>Why return 3 values?</strong><code>display_price_summary()</code> needs all 3 for the breakdown. <code>process_payment()</code> (line 270) needs <code>final</code> for Amount Due. <code>_generate_receipt()</code> (line 404) needs all 3 for the receipt. Returning once avoids recomputing the same math three times.</div>
-      <div class="rule"><strong>What if discount = 0?</strong><code>discounted = total × (0/100) = 0</code>. <code>final = total − 0 = total</code>. No promo = no discount. The math always works correctly — no special case needed.</div>
+    <div class="card-body">
+      <div class="anno-wrap">
+        <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+        <div id="li-dict"></div>
+      </div>
+      <div class="grid2">
+        <div class="rule"><strong>Dictionary syntax { key : value }</strong>Curly braces <code>{}</code> wrap the whole structure. A colon <code>:</code> separates each key from its value. A comma separates each pair. The extra spaces before the colons are purely for visual alignment — Python ignores them.</div>
+        <div class="rule"><strong>Why is it defined outside the class?</strong>Because it is a constant — it never changes while the program runs. Placing it at module level means every method in <code>NUmart</code> can access it directly by name, without needing <code>self.</code>. It acts as a single source of truth for all four valid codes.</div>
+        <div class="rule"><strong>Key and value types</strong>Keys are strings (e.g., <code>"SAVE10"</code>). Values are integers (e.g., <code>10</code>) representing the discount percentage. When Python evaluates <code>code in dict_Codes</code>, it checks whether that exact string is among the keys. Lookup is O(1) — instant, regardless of how many entries exist.</div>
+        <div class="rule"><strong>Accessing a value by key</strong><code>dict_Codes["SAVE10"]</code> returns <code>10</code>. If the key does not exist, Python raises a <code>KeyError</code>. This is exactly why <code>apply_promo()</code> checks <code>if code in dict_Codes</code> first — it confirms the key exists before accessing it.</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 5 — DISPLAY_PRICE_SUMMARY
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s5">5 — display_price_summary() (Lines 240–262)</div>
+<!-- ────── APPLY_PROMO ────── -->
+<div class="page" id="p-apply">
+  <div class="page-title">2 — apply_promo() (Lines 206–222)</div>
+  <p class="desc">Validates and applies a promo code. It normalizes the user input, checks two guard conditions in sequence, sets both attributes if the code is valid, and returns <code>True</code> on success or <code>False</code> on failure. The return value is used by the retry loop in <code>main.py</code> to decide whether to ask for another code.</p>
 
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(125,232,160,.1);color:#7de8a0;border:.5px solid rgba(125,232,160,.3)">system.py — Lines 240–262</span>
-    <span style="font-size:12px;color:var(--text2)">Guard empty cart, call get_final_total(), format and print the full price breakdown.</span>
-  </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>system.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-display"></div>
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(78,201,176,.1);color:#4ec9b0;border:1px solid rgba(78,201,176,.3)">system.py — Lines 206–222</span>
+      <span style="font-size:12px;color:var(--text2)">Normalizes input → two guards → apply → return True / False</span>
     </div>
-    <div class="rule-row" style="margin-top:10px">
-      <div class="rule"><strong>Guard clause first</strong>Lines 242–244: if the cart is empty, print warning and <code>return</code> immediately. This prevents showing a confusing ₱0.00 price summary. Nothing below line 244 runs if the cart is empty.</div>
-      <div class="rule"><strong>f-string :.2f</strong><code>f"₱{total:.2f}"</code> — the <code>:.2f</code> format specifier forces exactly 2 decimal places. Without it, <code>170.0</code> would print as <code>170.0</code> instead of <code>₱170.00</code>.</div>
-      <div class="rule"><strong>discounted_str is always computed (line 248)</strong>Note: <code>discounted_str</code> is formatted on line 248 regardless — but it is only <em>printed</em> inside the <code>if self.discount &gt; 0</code> block on line 257. If no promo is active, the string is computed but never shown.</div>
-      <div class="rule"><strong>Calls YOUR function</strong>Line 246 calls <code>self.get_final_total()</code> and unpacks all 3 return values in one line. This is Python multiple assignment: <code>a, b, c = func()</code> when <code>func()</code> returns a tuple of 3.</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     SECTION 6 — MAIN.PY MENU
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s6">6 — main.py — menu_price_summary() (Lines 118–190)</div>
-
-<div class="card">
-  <div class="card-head">
-    <span class="badge" style="background:rgba(129,140,248,.1);color:#818cf8;border:.5px solid rgba(129,140,248,.3)">main.py — Lines 118–190</span>
-    <span style="font-size:12px;color:var(--text2)">User-facing menu that drives your system.py functions. Handles input loops &amp; cancel logic.</span>
-  </div>
-  <div class="card-body">
-    <div class="anno-wrap">
-      <div class="anno-file"><span>main.py</span><span>↓ click any line to explain</span></div>
-      <div id="lines-menu"></div>
-    </div>
-    <div class="rule" style="margin-top:10px">
-      <strong>How main.py and system.py connect</strong>
-      <code>main.py</code> handles everything the user sees and types. <code>system.py</code> handles all the logic and data. When main.py calls <code>store.apply_promo(code)</code>, Python translates that to <code>NUmart.apply_promo(store, code)</code> — your method runs with <code>self = store</code> and <code>code = whatever the user typed</code>.
+    <div class="card-body">
+      <div class="anno-wrap">
+        <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+        <div id="li-apply"></div>
+      </div>
+      <div class="grid2">
+        <div class="rule"><strong>Two-layer guard system</strong>Guard 1 (line 210): <code>if self.promo_used:</code> — blocks a second promo while one is already active. Guard 2 (line 215): <code>if code in dict_Codes:</code> — blocks invalid codes. Both conditions must pass for the promo to be applied.</div>
+        <div class="rule"><strong>Return value controls the menu loop</strong><code>return True</code> tells <code>main.py</code> the code was accepted — stop asking. <code>return False</code> tells it the attempt failed — ask again. The <code>while True</code> loop in <code>main.py</code> checks this result with <code>if store.apply_promo(code): break</code>.</div>
+        <div class="rule"><strong>.strip().upper() — why both are needed</strong><code>.strip()</code> removes accidental leading and trailing spaces. <code>.upper()</code> converts all letters to uppercase. Chained together: <code>" save10 "</code> becomes <code>"SAVE10"</code>. Without this step, a valid code typed in lowercase would always be rejected.</div>
+        <div class="rule"><strong>Two attributes set at the same time</strong><code>self.discount</code> stores the percentage integer (e.g., <code>15</code>), which is used in the price calculation. <code>self.promo_used</code> stores the code name (e.g., <code>"STUDENT15"</code>), which is used in display messages and as the guard flag for blocking a second code.</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 7 — RELATED CODE
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s7">7 — Other places that use your attributes</div>
-<p class="desc" style="margin-bottom:14px">Your <code>self.discount</code> and <code>self.promo_used</code> are read or reset by three other functions. You don't have to defend these lines, but knowing they exist lets you answer follow-up questions confidently.</p>
+<!-- ────── REMOVE_PROMO ────── -->
+<div class="page" id="p-remove">
+  <div class="page-title">3 — remove_promo() (Lines 224–231)</div>
+  <p class="desc">Removes the currently active promo code. It uses a guard clause to exit early when no code is active, then resets both <code>self.discount</code> and <code>self.promo_used</code> to their default values. Both must be reset together — resetting only one would leave the system in a broken state.</p>
 
-<div class="tab-bar">
-  <button class="tab-btn active" onclick="switchTab('r','display-cart')">display_cart() · L155–167</button>
-  <button class="tab-btn" onclick="switchTab('r','process-pay')">process_payment() · L265–270</button>
-  <button class="tab-btn" onclick="switchTab('r','receipt')">_generate_receipt() · L440–460</button>
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(242,139,130,.1);color:#f28b82;border:1px solid rgba(242,139,130,.3)">system.py — Lines 224–231</span>
+      <span style="font-size:12px;color:var(--text2)">Guard → confirm → reset self.discount → reset self.promo_used</span>
+    </div>
+    <div class="card-body">
+      <div class="anno-wrap">
+        <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+        <div id="li-remove"></div>
+      </div>
+      <div class="rule" style="margin-top:12px">
+        <strong>Why both attributes must be reset together</strong>
+        If only <code>self.discount</code> is reset to <code>0</code> but <code>self.promo_used</code> still holds <code>"STUDENT15"</code>, the guard on line 210 of <code>apply_promo()</code> would see a non-empty string and treat it as truthy — permanently blocking any new promo code from being applied, even after the user explicitly removes it. Resetting both attributes at the same time is the only way to fully restore the default state.
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="tab-panel active" id="r-display-cart">
-  <div class="card"><div class="card-body">
-    <div class="rule"><strong>display_cart() — Lines 163–167</strong>Reads <code>self.discount</code> to show a live discount preview right in the cart view, before the user even goes to the Price Summary or Payment screens. If discount &gt; 0, it prints the deduction and final Amount Due inline under the cart table.</div>
-    <div class="cb"><span class="cm"># Lines 163–167 (system.py)</span>
-<span class="kw">if</span> <span class="sf">self</span>.discount > <span class="nm">0</span>:
+<!-- ────── GET_FINAL_TOTAL ────── -->
+<div class="page" id="p-total">
+  <div class="page-title">4 — get_final_total() (Lines 233–238)</div>
+  <p class="desc">Computes and returns three values: the cart subtotal, the peso amount saved by the discount, and the final amount the customer must pay. It is called by <code>display_price_summary()</code>, <code>process_payment()</code>, and <code>_generate_receipt()</code> — so returning all three values at once avoids recomputing the same math in multiple places.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(86,156,214,.1);color:#569cd6;border:1px solid rgba(86,156,214,.3)">system.py — Lines 233–238</span>
+      <span style="font-size:12px;color:var(--text2)">get total → compute discount amount → subtract → return all three</span>
+    </div>
+    <div class="card-body">
+      <div class="anno-wrap">
+        <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+        <div id="li-total"></div>
+      </div>
+
+      <div class="math-demo" style="margin-top:12px">
+        <div style="font-size:11px;color:#6a9955;margin-bottom:10px;font-family:var(--mono)"># Live example — STUDENT15 applied, cart total = ₱200.00</div>
+        <div class="math-row"><span class="math-lbl">compute_total()</span><span class="math-val">total = 200.00</span><span class="math-note"># loops cart: price × qty per item</span></div>
+        <div class="math-row"><span class="math-lbl">15 / 100</span><span class="math-val">= 0.15</span><span class="math-note"># convert % to a decimal multiplier</span></div>
+        <div class="math-row"><span class="math-lbl">200.00 × 0.15</span><span class="math-val">discounted = 30.00</span><span class="math-note"># amount saved (the deduction)</span></div>
+        <div class="math-row"><span class="math-lbl">200.00 − 30.00</span><span class="math-val">final = 170.00</span><span class="math-note"># ₱170.00 — what the customer pays</span></div>
+      </div>
+
+      <div class="grid2">
+        <div class="rule"><strong>Why return three values?</strong><code>display_price_summary()</code> needs all three to show the full breakdown. <code>process_payment()</code> needs only <code>final</code> for the Amount Due display. <code>_generate_receipt()</code> needs all three for the receipt printout. Returning them together avoids repeating the same calculation.</div>
+        <div class="rule"><strong>What if no promo is active?</strong>When <code>self.discount</code> is <code>0</code>: <code>discounted = total × (0 / 100) = 0</code> and <code>final = total − 0 = total</code>. The customer pays full price. No special case is needed — the math works correctly either way.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── DISPLAY_PRICE_SUMMARY ────── -->
+<div class="page" id="p-summary">
+  <div class="page-title">5 — display_price_summary() (Lines 240–262)</div>
+  <p class="desc">Formats and prints the full price breakdown to the terminal. It first guards against an empty cart, then calls <code>get_final_total()</code> to retrieve all three computed values, formats them as peso strings with two decimal places, and conditionally prints the promo and discount rows only when a discount is active.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(125,232,160,.1);color:#7de8a0;border:1px solid rgba(125,232,160,.3)">system.py — Lines 240–262</span>
+      <span style="font-size:12px;color:var(--text2)">Guard → get totals → format strings → print (with optional promo rows)</span>
+    </div>
+    <div class="card-body">
+      <div class="anno-wrap">
+        <div class="anno-file"><span>system.py</span><span>click any line to expand</span></div>
+        <div id="li-display"></div>
+      </div>
+      <div class="grid2" style="margin-top:12px">
+        <div class="rule"><strong>Guard clause first</strong>Lines 242–244 check whether the cart is empty before doing anything else. If it is, a warning is printed and <code>return</code> exits the function immediately. This prevents a confusing ₱0.00 price summary from appearing when the cart has nothing in it.</div>
+        <div class="rule"><strong>f-string :.2f format specifier</strong><code>f"₱{total:.2f}"</code> — the <code>:.2f</code> part means "format this number as a fixed-point decimal with exactly two decimal places." Without it, Python might print <code>170.0</code> or even <code>170.00000001</code> due to floating-point imprecision.</div>
+        <div class="rule"><strong>discounted_str is always computed</strong><code>discounted_str</code> is formatted on line 248 regardless of whether a promo is active — but it is only <em>printed</em> inside the <code>if self.discount &gt; 0</code> block on line 256. When no promo is active, the string is computed but never displayed.</div>
+        <div class="rule"><strong>Calls get_final_total() on line 246</strong>The result is unpacked into three separate variables in one statement: <code>total, discounted, final = self.get_final_total()</code>. This is Python's multiple assignment — the function returns a tuple of three, and they are split into named variables instantly.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── MAIN.PY MENU ────── -->
+<div class="page" id="p-menu">
+  <div class="page-title">6 — main.py — menu_price_summary()</div>
+  <p class="desc">The user-facing menu that drives Villar's system.py functions. It handles the outer menu loop, the inner promo-code retry loop, cancel logic, and empty-input validation. It calls <code>store.display_price_summary()</code>, <code>store.apply_promo()</code>, and <code>store.remove_promo()</code> in response to the user's menu choice.</p>
+
+  <div class="card">
+    <div class="card-head">
+      <span class="badge" style="background:rgba(160,180,224,.1);color:#a0b4e0;border:1px solid rgba(160,180,224,.3)">main.py</span>
+      <span style="font-size:12px;color:var(--text2)">User input → route to system.py methods → retry loops → cancel</span>
+    </div>
+    <div class="card-body">
+      <div class="anno-wrap">
+        <div class="anno-file"><span>main.py</span><span>click any line to expand</span></div>
+        <div id="li-menu"></div>
+      </div>
+      <div class="rule" style="margin-top:12px">
+        <strong>How main.py and system.py connect</strong>
+        <code>main.py</code> handles everything the user sees and types — menus, input prompts, loops, and messages. <code>system.py</code> handles all business logic — applying discounts, computing totals, and managing cart state. When <code>main.py</code> calls <code>store.apply_promo(code)</code>, Python internally translates that to <code>NUmart.apply_promo(store, code)</code> — the method runs with <code>self = store</code> and <code>code</code> equal to whatever the user typed.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ────── RELATED ────── -->
+<div class="page" id="p-related">
+  <div class="page-title">7 — Other Code That Uses Villar's Attributes</div>
+  <p class="desc"><code>self.discount</code> and <code>self.promo_used</code> are read or reset by three other functions in <code>system.py</code>. You are not responsible for defending these lines, but understanding how they interact with your attributes lets you answer follow-up questions confidently.</p>
+
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="sectTab(this,'rel','rel-cart')">display_cart()</button>
+    <button class="tab-btn" onclick="sectTab(this,'rel','rel-pay')">process_payment()</button>
+    <button class="tab-btn" onclick="sectTab(this,'rel','rel-rec')">_generate_receipt()</button>
+  </div>
+
+  <div class="tab-panel active" id="rel-cart">
+    <div class="card"><div class="card-body">
+      <div class="rule"><strong>display_cart() — system.py Lines 163–167</strong>Reads <code>self.discount</code> to show a live discount preview directly in the cart view — before the user navigates to the Price Summary or Payment screens. If <code>discount &gt; 0</code>, it computes the discount amount and prints the deduction and final Amount Due inline beneath the cart table.</div>
+      <div class="cb"><span class="cm"># system.py — Lines 163–167</span>
+<span class="kw">if</span> <span class="sf">self</span>.discount &gt; <span class="nm">0</span>:
     discounted = total * (<span class="sf">self</span>.discount / <span class="nm">100</span>)
     final      = total - discounted
-    print(<span class="st">f"  Discount  : {self.discount}% (-₱{discounted:.2f})"</span>)
-    print(<span class="st">f"  Amount Due: ₱{final:.2f}"</span>)</div>
-  </div></div>
-</div>
+    <span class="bi">print</span>(<span class="st">f"  Discount  : {self.discount}% (-₱{discounted:.2f})"</span>)
+    <span class="bi">print</span>(<span class="st">f"  Amount Due: ₱{final:.2f}"</span>)</div>
+    </div></div>
+  </div>
 
-<div class="tab-panel" id="r-process-pay">
-  <div class="card"><div class="card-body">
-    <div class="rule"><strong>process_payment() — Line 270</strong>Calls <code>self.get_final_total()</code> — YOUR function — to get the final amount due before displaying the payment method selector. Whatever discount your promo set is already baked into <code>final</code> shown as "Amount Due".</div>
-    <div class="cb"><span class="cm"># Lines 265–270 (system.py)</span>
+  <div class="tab-panel" id="rel-pay">
+    <div class="card"><div class="card-body">
+      <div class="rule"><strong>process_payment() — system.py Line 270</strong>Calls <code>self.get_final_total()</code> — Villar's function — to retrieve the final amount due before displaying the payment method selector. Whatever discount the active promo set is already factored into the <code>final</code> value shown as "Amount Due."</div>
+      <div class="cb"><span class="cm"># system.py — Lines 265–270</span>
 <span class="kw">def</span> <span class="fn">process_payment</span>(<span class="sf">self</span>):
-    <span class="st">"""Handle payment method selection and processing."""</span>
+    <span class="dc">"""Handle payment method selection and processing."""</span>
     <span class="kw">if</span> <span class="sf">self</span>.cart.<span class="fn">is_empty</span>():
-        print(<span class="st">"\n  [!] Your cart is empty. Add items before paying."</span>)
+        <span class="bi">print</span>(<span class="st">"\n  [!] Your cart is empty. Add items before paying."</span>)
         <span class="kw">return</span>
-    total, discounted, final = <span class="sf">self</span>.<span class="fn">get_final_total</span>()  <span class="cm"># ← calls YOUR function</span></div>
-  </div></div>
-</div>
+    total, discounted, final = <span class="sf">self</span>.<span class="fn">get_final_total</span>()  <span class="cm"># ← calls Villar's function</span></div>
+    </div></div>
+  </div>
 
-<div class="tab-panel" id="r-receipt">
-  <div class="card"><div class="card-body">
-    <div class="rule"><strong>_generate_receipt() — Lines 440–460</strong>Checks <code>self.discount &gt; 0</code> to decide whether to print the discount line on the receipt (line 440). Saves <code>self.discount</code> into the transaction history record (line 453). Then resets BOTH your attributes — exactly like <code>remove_promo()</code> does — after checkout (lines 459–460).</div>
-    <div class="cb"><span class="cm"># Line 440 (system.py) — receipt shows discount only if active</span>
-<span class="kw">if</span> <span class="sf">self</span>.discount > <span class="nm">0</span>:
+  <div class="tab-panel" id="rel-rec">
+    <div class="card"><div class="card-body">
+      <div class="rule"><strong>_generate_receipt() — system.py Lines 440–460</strong>Checks <code>self.discount &gt; 0</code> to decide whether to print the discount line on the receipt. Saves <code>self.discount</code> into the transaction history record. Then resets both <code>self.discount</code> and <code>self.promo_used</code> — exactly as <code>remove_promo()</code> does — after checkout is complete.</div>
+      <div class="cb"><span class="cm"># system.py — Line 440 — receipt shows discount line only if active</span>
+<span class="kw">if</span> <span class="sf">self</span>.discount &gt; <span class="nm">0</span>:
     discounted_str = <span class="st">f"-₱{discounted:.2f}"</span>
-    print(<span class="st">f"  |  Discount  : {discounted_str:<29}|"</span>)
+    <span class="bi">print</span>(<span class="st">f"  |  Discount  : {discounted_str:&lt;29}|"</span>)
 
-<span class="cm"># Lines 449–456 — saves to history, including discount %</span>
-<span class="sf">self</span>.history.enqueue({
+<span class="cm"># Lines 449–456 — saves transaction to history queue</span>
+<span class="sf">self</span>.history.<span class="fn">enqueue</span>({
     <span class="st">"datetime"</span>  : dt_string,
     <span class="st">"method"</span>    : method,
     <span class="st">"total"</span>     : total,
-    <span class="st">"discount"</span>  : <span class="sf">self</span>.discount,  <span class="cm"># ← YOUR attribute saved here</span>
+    <span class="st">"discount"</span>  : <span class="sf">self</span>.discount,   <span class="cm"># ← Villar's attribute saved here</span>
     <span class="st">"total_paid"</span>: final,
     <span class="st">"items"</span>     : items_record
 })
 
-<span class="cm"># Lines 459–460 — reset after checkout (same as remove_promo)</span>
-<span class="sf">self</span>.discount   = <span class="nm">0</span>   <span class="cm"># ← resets YOUR attribute</span>
-<span class="sf">self</span>.promo_used = <span class="st">""</span>  <span class="cm"># ← resets YOUR attribute</span></div>
-  </div></div>
-</div>
-
-<!-- ══════════════════════════════════════════
-     SECTION 8 — SYNTAX TABLE
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s8">8 — Syntax &amp; semantics quick reference</div>
-<div class="card">
-  <div class="card-body">
-    <table class="syn-table">
-      <thead><tr><th>Syntax / Expression</th><th>What it means</th><th>Where in your code</th></tr></thead>
-      <tbody id="syn-body"></tbody>
-    </table>
+<span class="cm"># Lines 459–460 — reset after checkout (mirrors remove_promo)</span>
+<span class="sf">self</span>.discount   = <span class="nm">0</span>    <span class="cm"># ← resets Villar's attribute</span>
+<span class="sf">self</span>.promo_used = <span class="st">""</span>   <span class="cm"># ← resets Villar's attribute</span></div>
+    </div></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SECTION 9 — Q&A
-══════════════════════════════════════════ -->
-<div class="sec-label" id="s9">9 — Q&amp;A</div>
-<p class="desc" style="margin-bottom:16px">Questions your professor might ask during the defense. <strong style="color:var(--text)">My Part</strong> covers promo codes and price calculation specifically. <strong style="color:var(--text)">General</strong> covers the whole system — data structures, flow, and design decisions.</p>
-
-<div class="tab-bar" id="qa-tabs">
-  <button class="tab-btn active" onclick="switchQaTab('my-part')">My Part — Promo &amp; Price</button>
-  <button class="tab-btn" onclick="switchQaTab('general')">General — Whole System</button>
+<!-- ────── SYNTAX ────── -->
+<div class="page" id="p-syntax">
+  <div class="page-title">8 — Syntax &amp; Semantics Quick Reference</div>
+  <p class="desc">Every syntax pattern used in Villar's code, explained plainly. The third column shows exactly where each pattern appears.</p>
+  <div class="card">
+    <div class="card-body">
+      <table class="syn-table">
+        <thead><tr><th>Syntax / Expression</th><th>What it means</th><th>Where in the code</th></tr></thead>
+        <tbody id="syn-body"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<div id="qa-my-part"></div>
-<div id="qa-general" style="display:none"></div>
+<!-- ────── Q&A ────── -->
+<div class="page" id="p-qa">
+  <div class="page-title">9 — Q &amp; A</div>
+  <p class="desc">Questions a professor is likely to ask during the defense. <strong>My Part</strong> covers promo codes and price calculation specifically. <strong>General</strong> covers the whole system — data structures, design decisions, and how the components work together.</p>
 
-</main>
+  <div class="tab-bar" id="qa-tab-bar">
+    <button class="tab-btn active" onclick="sectTab(this,'qa','qa-my')">My Part — Promo &amp; Price</button>
+    <button class="tab-btn" onclick="sectTab(this,'qa','qa-gen')">General — Whole System</button>
+  </div>
+
+  <div class="tab-panel active" id="qa-my"></div>
+  <div class="tab-panel" id="qa-gen"></div>
+</div>
+
+</div><!-- end .content -->
+</div><!-- end .app -->
 
 <script>
-/* ─── COLOUR HELPERS ─── */
-const KW='<span class="kw">',ST='<span class="st">',CM='<span class="cm">',SF='<span class="sf">',
-      FN='<span class="fn">',NM='<span class="nm">',RT='<span class="rt">',KY='<span class="ky">',E='</span>';
+/* ══════════════════════════════════════
+   PAGE NAVIGATION
+══════════════════════════════════════ */
+const PAGES = ['home','p-foundation','p-dict','p-apply','p-remove','p-total','p-summary','p-menu','p-related','p-syntax','p-qa'];
 
-/* ─── LINE BUILDER ─── */
-function makeLines(id, lines){
-  const c = document.getElementById(id);
+function showPage(id){
+  PAGES.forEach(p => {
+    const el = document.getElementById(p);
+    if(el) el.classList.toggle('active', p === id);
+  });
+  document.querySelectorAll('.sb-btn').forEach(b => {
+    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'"));
+  });
+  document.querySelector('.content').scrollTop = 0;
+}
+
+/* ══════════════════════════════════════
+   SECTION-LEVEL TABS
+══════════════════════════════════════ */
+function sectTab(btn, group, panelId){
+  const prefix = group + '-';
+  document.querySelectorAll('[id^="' + prefix + '"]').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(panelId);
+  if(target) target.classList.add('active');
+  const bar = btn.closest('.tab-bar');
+  if(bar) bar.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   SYNTAX COLOURS
+══════════════════════════════════════ */
+const KW = s => `<span class="kw">${s}</span>`;
+const FN = s => `<span class="fn">${s}</span>`;
+const ST = s => `<span class="st">${s}</span>`;
+const CM = s => `<span class="cm">${s}</span>`;
+const SF = s => `<span class="sf">${s}</span>`;
+const NM = s => `<span class="nm">${s}</span>`;
+const BI = s => `<span class="bi">${s}</span>`;
+const DC = s => `<span class="dc">${s}</span>`;
+
+/* ══════════════════════════════════════
+   ANNOTATED LINE BUILDER
+══════════════════════════════════════ */
+function makeLines(containerId, lines){
+  const c = document.getElementById(containerId);
   if(!c) return;
-  let hasAnn = false;
-  lines.forEach(l=>{
+  let hasClickable = false;
+  lines.forEach(l => {
     const row = document.createElement('div');
-    row.className = 'line-row' + (l.ann ? ' has-ann' : '');
-    if(l.ann){
-      hasAnn = true;
-      row.innerHTML =
-        `<div class="ln">${l.n}</div><div class="lc">${l.code}</div>`+
-        `<div class="anno-panel"><div class="anno-tag">Line ${l.n} — ${l.ann.tag}</div>`+
-        `<div class="anno-text">${l.ann.text}</div>`+
-        (l.ann.ex ? `<div class="anno-ex">${l.ann.ex}</div>` : '')+
-        `</div>`;
-      row.addEventListener('click',()=>{
-        const was = row.classList.contains('open');
-        c.querySelectorAll('.line-row.open').forEach(r=>r.classList.remove('open'));
-        if(!was) row.classList.add('open');
+    const clickable = !!l.ann;
+    if(clickable) hasClickable = true;
+    row.className = 'line-row' + (clickable ? ' clickable' : '');
+
+    const lnDiv  = `<div class="ln">${l.n}</div>`;
+    const lcDiv  = `<div class="lc">${l.code}</div>`;
+    const annDiv = clickable
+      ? `<div class="anno-panel"><div class="anno-tag">Line ${l.n} — ${l.ann.tag}</div><div class="anno-text">${l.ann.text}</div>${l.ann.ex ? '<div class="anno-ex">'+l.ann.ex+'</div>' : ''}</div>`
+      : '';
+    row.innerHTML = lnDiv + lcDiv + annDiv;
+
+    if(clickable){
+      row.addEventListener('click', () => {
+        const wasOpen = row.classList.contains('open');
+        c.querySelectorAll('.line-row.open').forEach(r => r.classList.remove('open'));
+        if(!wasOpen) row.classList.add('open');
       });
-    } else {
-      row.innerHTML = `<div class="ln">${l.n}</div><div class="lc">${l.code}</div>`;
     }
     c.appendChild(row);
   });
-  if(hasAnn){
+  if(hasClickable){
     const h = document.createElement('div');
-    h.className='hint'; h.textContent='↑ Click highlighted lines for explanation';
+    h.className = 'click-hint';
+    h.textContent = '↑ Click any line to open its explanation';
     c.parentElement.insertBefore(h, c);
   }
 }
 
 /* ══════════════════════════════════════
-   LINE DATA — exact from source files
+   LINE DATA — IMPORTS (Lines 1–6)
 ══════════════════════════════════════ */
-
-/* IMPORTS — lines 1–6 */
-makeLines('lines-imports',[
-  {n:1, code:`${CM}"""System logic: Inventory setup (25 items), Cart & Undo operations,${E}`,
-    ann:{tag:'Module docstring (line 1–2)',
-    text:'A triple-quoted string placed at the very top of the file. Python stores it as the module\'s <code>__doc__</code> attribute but does NOT execute it — it is purely documentation. It describes what this entire file contains.',ex:null}},
-  {n:2, code:`${CM}Pricing & Promos, Payment, Receipt, Buyer Login"""${E}`,ann:null},
-  {n:4, code:`${KW}import${E} datetime`,
-    ann:{tag:'import datetime',
-    text:'Loads Python\'s built-in <code>datetime</code> module. Used later in <code>_generate_receipt()</code> on line 406–407 to stamp the exact date and time on each receipt. Your promo functions do not use it directly, but the file needs it to run.',ex:null}},
-  {n:5, code:`${KW}import${E} math`,
-    ann:{tag:'import math',
-    text:'Loads Python\'s built-in <code>math</code> module. Used in <code>_pay_cash()</code> on line 320 to detect invalid numbers like <code>NaN</code> or <code>infinity</code> via <code>math.isnan()</code> and <code>math.isinf()</code>. Not used in your promo functions.',ex:null}},
-  {n:6, code:`${KW}from${E} structures ${KW}import${E} LinkedList, CartLinkedList, Stack, Queue`,
-    ann:{tag:'from structures import ...',
-    text:'"from structures" means: look in the file <code>structures.py</code> in the same folder. "import LinkedList, CartLinkedList, Stack, Queue" brings those 4 class definitions into this file. Without this line, line 30 (<code>LinkedList()</code>) would crash with a <code>NameError: name \'LinkedList\' is not defined</code>.',
-    ex:'Without this line:\n  self.inventory = LinkedList()  → NameError: LinkedList not defined'}},
+makeLines('li-imports', [
+  { n:1, code: DC('"""System logic: Inventory setup (25 items), Cart &amp; Undo operations,'),
+    ann:{ tag:'Module docstring (lines 1–2)',
+    text:'A triple-quoted string placed at the very top of the file. Python stores it as the module\'s <code>__doc__</code> attribute but does <em>not</em> execute it — it is purely documentation that describes what the file contains.',
+    ex: null }},
+  { n:2, code: DC('Pricing &amp; Promos, Payment, Receipt, Buyer Login"""'), ann: null },
+  { n:3, code: '', ann: null },
+  { n:4, code: KW('import') + ' datetime',
+    ann:{ tag:'import datetime',
+    text:'Loads Python\'s built-in <code>datetime</code> module. Used later in <code>_generate_receipt()</code> to stamp the exact date and time on each receipt. Villar\'s promo functions do not use it directly, but the file requires it to run.',
+    ex: null }},
+  { n:5, code: KW('import') + ' math',
+    ann:{ tag:'import math',
+    text:'Loads Python\'s built-in <code>math</code> module. Used in <code>_pay_cash()</code> to detect invalid number inputs such as <code>NaN</code> or <code>Infinity</code> via <code>math.isnan()</code> and <code>math.isinf()</code>. Not used in Villar\'s promo functions.',
+    ex: null }},
+  { n:6, code: KW('from') + ' structures ' + KW('import') + ' ' + BI('LinkedList') + ', ' + BI('CartLinkedList') + ', ' + BI('Stack') + ', ' + BI('Queue'),
+    ann:{ tag:'from structures import ...',
+    text:'"from structures" means: look in the file <code>structures.py</code> in the same directory. "import LinkedList, CartLinkedList, Stack, Queue" brings those four class definitions into this file. Without this line, line 30 (<code>LinkedList()</code>) would raise a <code>NameError: name \'LinkedList\' is not defined</code>.',
+    ex: 'Without this import:\n  self.inventory = LinkedList()  →  NameError: LinkedList is not defined' }},
 ]);
 
-/* __INIT__ — lines 26–36 */
-makeLines('lines-init',[
-  {n:26, code:`${KW}class${E} NUmart:`,
-    ann:{tag:'class NUmart:',
-    text:'Defines the NUmart class — the blueprint for the entire store. The colon <code>:</code> starts the class body. Everything indented inside belongs to this class.',ex:null}},
-  {n:27, code:`    ${CM}"""Main system class for NUmart Shopping Cart System.${E}`,ann:null},
-  {n:28, code:`    ${CM}Manages inventory, cart, undo stack, and transaction history queue."""${E}`,ann:null},
-  {n:29, code:`    ${KW}def${E} ${FN}__init__${E}(${SF}self${E}):`,
-    ann:{tag:'def __init__(self)',
-    text:'The constructor. Python calls this <em>automatically</em> the instant <code>store = NUmart()</code> runs in main.py. No extra parameters — all starting values are hardcoded inside. <code>self</code> refers to the new object being created.',
-    ex:'main.py last line:\n  store = NUmart()  ← __init__ fires here immediately'}},
-  {n:30, code:`        ${SF}self${E}.inventory  = LinkedList()      ${CM}# stores all shop items${E}`,
-    ann:{tag:'self.inventory = LinkedList()',
-    text:'Creates a brand-new empty <code>LinkedList</code> object and attaches it to this NUmart as the attribute <code>inventory</code>. The <code>LinkedList</code> class came from the import on line 6.',ex:null}},
-  {n:31, code:`        ${SF}self${E}.cart       = CartLinkedList()  ${CM}# stores items added by customer${E}`,
-    ann:{tag:'self.cart = CartLinkedList()',
-    text:'Creates the shopping cart. All cart operations — add, remove, compute total — go through this object. Your <code>get_final_total()</code> calls <code>self.cart.compute_total()</code> on line 235.',ex:null}},
-  {n:32, code:`        ${SF}self${E}.undo_stack = Stack()           ${CM}# tracks cart actions for undo${E}`,
-    ann:{tag:'self.undo_stack = Stack()',
-    text:'Creates the undo stack. Tracks add/remove actions so the user can undo them. Not used in your promo functions.',ex:null}},
-  {n:33, code:`        ${SF}self${E}.history    = Queue()           ${CM}# stores completed transactions${E}`,
-    ann:{tag:'self.history = Queue()',
-    text:'Creates the transaction history queue. After a successful payment, <code>_generate_receipt()</code> saves the transaction record here.',ex:null}},
-  {n:34, code:`        ${SF}self${E}.discount   = ${NM}0${E}                 ${CM}# current applied discount (%)${E}`,
-    ann:{tag:'self.discount = 0  ← YOUR ATTRIBUTE',
-    text:'Sets the starting discount to <code>0</code>. This integer is what YOUR functions read and write. <code>apply_promo()</code> sets it to 10/15/30/45. <code>remove_promo()</code> resets it to 0. <code>get_final_total()</code> uses it in the math. <code>display_price_summary()</code> checks it before printing discount rows.',
-    ex:'self.discount = 0    → no promo applied yet\nself.discount = 15   → STUDENT15 active\nself.discount = 0    → after remove_promo() or checkout'}},
-  {n:35, code:`        ${SF}self${E}.promo_used = ${ST}""${E}                ${CM}# currently applied promo code${E}`,
-    ann:{tag:'self.promo_used = ""  ← YOUR ATTRIBUTE',
-    text:'Sets the promo code name to an empty string. <code>apply_promo()</code> sets this to e.g. <code>"STUDENT15"</code>. <code>remove_promo()</code> resets it to <code>""</code>. The guard on line 210 checks <code>if self.promo_used:</code> — an empty string is <strong>falsy</strong>, a non-empty string is <strong>truthy</strong>.',
-    ex:'self.promo_used = ""          → falsy  → no promo (guard passes)\nself.promo_used = "STUDENT15" → truthy → promo active (guard blocks)\nself.promo_used = ""          → falsy  → cleared by remove_promo()'}},
-  {n:36, code:`        ${SF}self${E}.${FN}_load_inventory${E}()              ${CM}# load the 25 pre-loaded items on startup${E}`,
-    ann:{tag:'self._load_inventory()',
-    text:'Calls the private method <code>_load_inventory()</code> immediately, inserting all 25 school supply items into the inventory LinkedList. The underscore prefix <code>_</code> is a convention meaning "internal use only — don\'t call from outside the class."',ex:null}},
+/* LINE DATA — __INIT__ (Lines 26–36) */
+makeLines('li-init', [
+  { n:26, code: KW('class') + ' ' + BI('NUmart') + ':',
+    ann:{ tag:'class NUmart:',
+    text:'Defines the <code>NUmart</code> class — the blueprint for the entire store system. The colon <code>:</code> begins the class body. All code indented inside belongs to this class.',
+    ex: null }},
+  { n:27, code: '    ' + DC('"""Main system class for NUmart Shopping Cart System.'),
+    ann:{ tag:'Class docstring (lines 27–28)',
+    text:'A triple-quoted string immediately after the class definition. Python stores it as <code>NUmart.__doc__</code>. Not executed — it documents what the class does.',
+    ex: null }},
+  { n:28, code: '    ' + DC('Manages inventory, cart, undo stack, and transaction history queue."""'), ann: null },
+  { n:29, code: '    ' + KW('def') + ' ' + FN('__init__') + '(' + SF('self') + '):',
+    ann:{ tag:'def __init__(self)',
+    text:'The constructor method. Python calls this <em>automatically</em> the moment <code>store = NUmart()</code> is executed in <code>main.py</code>. No extra arguments are needed because all starting values are hardcoded inside. <code>self</code> refers to the new object being created.',
+    ex: '# main.py — last lines\nstore = NUmart()   # __init__ is called here automatically' }},
+  { n:30, code: '        ' + SF('self') + '.inventory  = ' + BI('LinkedList') + '()      ' + CM('# stores all shop items'),
+    ann:{ tag:'self.inventory = LinkedList()',
+    text:'Creates a new, empty <code>LinkedList</code> object and attaches it to this <code>NUmart</code> instance as the <code>inventory</code> attribute. The <code>LinkedList</code> class was imported from <code>structures.py</code> on line 6.',
+    ex: null }},
+  { n:31, code: '        ' + SF('self') + '.cart       = ' + BI('CartLinkedList') + '()  ' + CM('# stores items added by customer'),
+    ann:{ tag:'self.cart = CartLinkedList()',
+    text:'Creates the shopping cart as a <code>CartLinkedList</code> object. All cart operations — adding, removing, computing totals — happen through this object. Villar\'s <code>get_final_total()</code> calls <code>self.cart.compute_total()</code> on line 235.',
+    ex: null }},
+  { n:32, code: '        ' + SF('self') + '.undo_stack = ' + BI('Stack') + '()           ' + CM('# tracks cart actions for undo'),
+    ann:{ tag:'self.undo_stack = Stack()',
+    text:'Creates an empty <code>Stack</code> for tracking add and remove actions so the user can undo them. Not used directly by Villar\'s promo functions.',
+    ex: null }},
+  { n:33, code: '        ' + SF('self') + '.history    = ' + BI('Queue') + '()           ' + CM('# stores completed transactions'),
+    ann:{ tag:'self.history = Queue()',
+    text:'Creates an empty <code>Queue</code> for storing completed transaction records in chronological order. After a successful payment, <code>_generate_receipt()</code> adds the transaction to this queue.',
+    ex: null }},
+  { n:34, code: '        ' + SF('self') + '.discount   = ' + NM('0') + '                 ' + CM('# active discount percentage (0 = no promo)'),
+    ann:{ tag:'self.discount = 0  ← Villar\'s attribute',
+    text:'Sets the starting discount to <code>0</code>. This integer holds the active discount percentage and is one of the two attributes that Villar\'s functions own. <code>apply_promo()</code> sets it to <code>10</code>, <code>15</code>, <code>30</code>, or <code>45</code>. <code>remove_promo()</code> resets it to <code>0</code>. <code>get_final_total()</code> uses it in the discount calculation. <code>display_price_summary()</code> checks it before printing the promo rows.',
+    ex: 'self.discount = 0    →  no promo applied\nself.discount = 15   →  STUDENT15 is active\nself.discount = 0    →  after remove_promo() or checkout' }},
+  { n:35, code: '        ' + SF('self') + '.promo_used = ' + ST('""') + '                ' + CM('# name of the currently active promo code'),
+    ann:{ tag:'self.promo_used = ""  ← Villar\'s attribute',
+    text:'Sets the active promo code name to an empty string. <code>apply_promo()</code> sets this to the code string, e.g. <code>"STUDENT15"</code>. <code>remove_promo()</code> resets it to <code>""</code>. The guard on line 210 of <code>apply_promo()</code> checks <code>if self.promo_used:</code> — an empty string is <em>falsy</em>, so no promo is blocked. A non-empty string is <em>truthy</em>, so a second promo is blocked.',
+    ex: 'self.promo_used = ""           →  falsy  →  no promo active\nself.promo_used = "STUDENT15"  →  truthy →  promo is active\nself.promo_used = ""           →  falsy  →  cleared after remove_promo()' }},
+  { n:36, code: '        ' + SF('self') + '.' + FN('_load_inventory') + '()              ' + CM('# populate the 25 pre-loaded items on startup'),
+    ann:{ tag:'self._load_inventory()',
+    text:'Calls the private method <code>_load_inventory()</code> immediately, which inserts all 25 school supply items into the inventory linked list. The leading underscore convention signals that this is an internal method not intended to be called from outside the class.',
+    ex: null }},
 ]);
 
-/* DICT_CODES — lines 8–13 */
-makeLines('lines-dict',[
-  {n:8,  code:`${CM}# ----- CONSTANTS -----${E}`,ann:null},
-  {n:9,  code:`dict_Codes = {`,
-    ann:{tag:'dict_Codes = {',
-    text:'Starts the dictionary literal. <code>dict_Codes</code> is a module-level variable — it lives outside the class, so every method in NUmart can access it by name without <code>self.</code>. The opening <code>{</code> begins the dictionary.',ex:null}},
-  {n:10, code:`    ${ST}"SAVE10"${E}        : ${NM}10${E},`,
-    ann:{tag:'"SAVE10" : 10',
-    text:'First key-value pair. Key = <code>"SAVE10"</code> (string), Value = <code>10</code> (integer = 10% discount). The comma separates it from the next pair. Aligned spaces before <code>:</code> are just style.',
-    ex:'dict_Codes["SAVE10"]  →  10'}},
-  {n:11, code:`    ${ST}"STUDENT15"${E}     : ${NM}15${E},`,
-    ann:{tag:'"STUDENT15" : 15',
-    text:'15% discount for students. Key = <code>"STUDENT15"</code>, Value = <code>15</code>.',
-    ex:'dict_Codes["STUDENT15"]  →  15'}},
-  {n:12, code:`    ${ST}"NUFV30"${E}        : ${NM}30${E},`,
-    ann:{tag:'"NUFV30" : 30',
-    text:'30% discount — NU Fairview promo. Key = <code>"NUFV30"</code>, Value = <code>30</code>.',ex:null}},
-  {n:13, code:`    ${ST}"BACKTOSCHOOL45"${E}: ${NM}45${E} }`,
-    ann:{tag:'"BACKTOSCHOOL45" : 45 }',
-    text:'45% discount. The closing <code>}</code> on the same line ends the dictionary. No comma after the last item (optional in Python — both with and without trailing comma are valid).',
-    ex:'dict_Codes["BACKTOSCHOOL45"]  →  45\nlen(dict_Codes)  →  4  (four promo codes total)'}},
+/* LINE DATA — dict_Codes (Lines 8–13) */
+makeLines('li-dict', [
+  { n:8,  code: CM('# ----- CONSTANTS -----'), ann: null },
+  { n:9,  code: 'dict_Codes = {',
+    ann:{ tag:'dict_Codes = {',
+    text:'Begins the dictionary literal. <code>dict_Codes</code> is a module-level variable — it lives outside any class, so all methods in <code>NUmart</code> can access it by name without <code>self.</code>. The opening <code>{</code> starts the dictionary.',
+    ex: null }},
+  { n:10, code: '    ' + ST('"SAVE10"') + '        : ' + NM('10') + ',',
+    ann:{ tag:'"SAVE10" : 10',
+    text:'The first key-value pair. The key is the string <code>"SAVE10"</code> and the value is the integer <code>10</code>, representing a 10% discount. The comma separates it from the next pair. The extra spaces before the colon are purely for visual alignment — Python ignores them.',
+    ex: 'dict_Codes["SAVE10"]  →  10' }},
+  { n:11, code: '    ' + ST('"STUDENT15"') + '     : ' + NM('15') + ',',
+    ann:{ tag:'"STUDENT15" : 15',
+    text:'A 15% discount for students. The key is <code>"STUDENT15"</code> and the value is <code>15</code>.',
+    ex: 'dict_Codes["STUDENT15"]  →  15' }},
+  { n:12, code: '    ' + ST('"NUFV30"') + '        : ' + NM('30') + ',',
+    ann:{ tag:'"NUFV30" : 30',
+    text:'A 30% discount for NU Fairview. The key is <code>"NUFV30"</code> and the value is <code>30</code>.',
+    ex: 'dict_Codes["NUFV30"]  →  30' }},
+  { n:13, code: '    ' + ST('"BACKTOSCHOOL45"') + ': ' + NM('45') + ' }',
+    ann:{ tag:'"BACKTOSCHOOL45" : 45  }',
+    text:'A 45% discount. The closing <code>}</code> ends the dictionary. No trailing comma is required after the last entry (though Python accepts one). The dictionary now has four entries in total.',
+    ex: 'dict_Codes["BACKTOSCHOOL45"]  →  45\nlen(dict_Codes)               →  4' }},
 ]);
 
-/* APPLY_PROMO — lines 206–222 */
-makeLines('lines-apply',[
-  {n:205, code:`    ${CM}# ----- PROMO CODE & PRICE CALCULATION -----${E}`,ann:null},
-  {n:206, code:`    ${KW}def${E} ${FN}apply_promo${E}(${SF}self${E}, code):`,
-    ann:{tag:'def apply_promo(self, code)',
-    text:'Defines the method. <code>self</code> = the NUmart object (Python passes automatically when you write <code>store.apply_promo(...)</code>). <code>code</code> = the promo string the user typed, passed from main.py line 170.',
-    ex:'Caller (main.py):  store.apply_promo("save10")\nInside method:     self = store,  code = "save10"'}},
-  {n:207, code:`        ${CM}"""Apply a promo code if valid. Updates the discount rate."""${E}`,
-    ann:{tag:'docstring',
-    text:'Documentation string — not executed. Python stores it as <code>apply_promo.__doc__</code>.',ex:null}},
-  {n:208, code:`        code = code.${FN}strip${E}().${FN}upper${E}()`,
-    ann:{tag:'code = code.strip().upper()',
-    text:'<strong>Normalizes</strong> the user input. <code>.strip()</code> removes leading and trailing whitespace. <code>.upper()</code> converts all letters to uppercase. The two calls are <em>chained</em> — strip() runs first, then upper() runs on its result. The cleaned value is reassigned back to <code>code</code>.',
-    ex:'"  save10  "  → strip() → "save10"  → upper() → "SAVE10"\n"Student15"  → strip() → "Student15" → upper() → "STUDENT15"\n" NUFV30 "   → strip() → "NUFV30"   → upper() → "NUFV30"'}},
-  {n:210, code:`        ${KW}if${E} ${SF}self${E}.promo_used:`,
-    ann:{tag:'if self.promo_used:  — Guard 1',
-    text:'Truthy check: any non-empty string is truthy, empty string <code>""</code> is falsy. If <code>self.promo_used</code> is not empty, a promo is already active — block the new one. This is the "one promo per transaction" rule.',
-    ex:'self.promo_used = ""          → falsy  → skip this block (no promo yet)\nself.promo_used = "STUDENT15" → truthy → enter this block (already applied)'}},
-  {n:211, code:`            print(${ST}f"\\n  [!] You can only use 1 promo code per transaction."${E})`,
-    ann:{tag:'line 211 — one-promo limit message',
-    text:'Tells the user a code is already active. <code>\\n</code> is a newline character — moves the cursor to a new line before printing.',ex:null}},
-  {n:212, code:`            print(${ST}f"\\n  [!] Remove '{${SF}self${E}.promo_used}' first before applying a new one."${E})`,
-    ann:{tag:'line 212 — shows which code to remove',
-    text:'Uses an f-string to embed <code>self.promo_used</code> in the message. If SAVE10 is active: <em>"Remove \'SAVE10\' first before applying a new one."</em> The <code>{self.promo_used}</code> is replaced by the actual value at runtime.',ex:null}},
-  {n:213, code:`            ${KW}return${E} ${KW}False${E}`,
-    ann:{tag:'return False — early exit',
-    text:'Exits the function immediately. Nothing below this line runs. Returns <code>False</code> to signal failure to the caller. In main.py, the <code>while True</code> loop checks this — <code>False</code> means "ask again".',ex:null}},
-  {n:215, code:`        ${KW}if${E} code ${KW}in${E} dict_Codes:`,
-    ann:{tag:'if code in dict_Codes:  — Guard 2',
-    text:'The <code>in</code> operator checks if <code>code</code> is a <em>key</em> in the dictionary. O(1) — instant lookup regardless of dictionary size. Evaluates to <code>True</code> if found, <code>False</code> if not.',
-    ex:'"SAVE10"    in dict_Codes  → True\n"STUDENT15" in dict_Codes  → True\n"FAKE99"    in dict_Codes  → False\n"save10"    in dict_Codes  → False  (still lowercase — strip().upper() must run first)'}},
-  {n:216, code:`            ${SF}self${E}.discount = dict_Codes[code]`,
-    ann:{tag:'self.discount = dict_Codes[code]',
-    text:'Dictionary access: <code>dict_Codes[code]</code> retrieves the value (integer %) for the given key. The result is stored in <code>self.discount</code>, overwriting the old value (was 0).',
-    ex:'code = "STUDENT15"\ndict_Codes["STUDENT15"]  →  15\nself.discount = 15'}},
-  {n:217, code:`            ${SF}self${E}.promo_used = code`,
-    ann:{tag:'self.promo_used = code',
-    text:'Saves the normalized code string into <code>self.promo_used</code>. Two purposes: (1) displayed in <code>display_price_summary()</code> and the receipt. (2) Makes the guard on line 210 truthy — blocks a second promo.',
-    ex:'self.promo_used = "STUDENT15"'}},
-  {n:218, code:`            print(${ST}f"\\n  [OK] Promo code '{code}' applied! You get {${SF}self${E}.discount}% off."${E})`,
-    ann:{tag:'line 218 — success message',
-    text:'Confirmation f-string. <code>{code}</code> inserts the promo code. <code>{self.discount}</code> inserts the discount number.',
-    ex:'"[OK] Promo code \'STUDENT15\' applied! You get 15% off."'}},
-  {n:219, code:`            ${KW}return${E} ${KW}True${E}`,
-    ann:{tag:'return True — success',
-    text:'Exits the function. Returns <code>True</code> to signal success. In main.py line 170: <code>if store.apply_promo(code): break</code> — <code>True</code> causes <code>break</code> to run, exiting the retry loop.',ex:null}},
-  {n:220, code:`        ${KW}else${E}:`,
-    ann:{tag:'else:',
-    text:'Runs only when the <code>if code in dict_Codes</code> check on line 215 was <code>False</code> — meaning the code was not found in the dictionary at all.',ex:null}},
-  {n:221, code:`            print(${ST}f"\\n  [!] Invalid promo code '{code}'. Please try again."${E})`,
-    ann:{tag:'line 221 — invalid code message',
-    text:'Tells the user the code is wrong. The <code>while True</code> retry loop in main.py will ask for input again.',ex:null}},
-  {n:222, code:`            ${KW}return${E} ${KW}False${E}`,
-    ann:{tag:'return False — invalid code',
-    text:'Returns <code>False</code>. main.py checks this — if <code>False</code>, the while loop continues and asks for another code.',ex:null}},
+/* LINE DATA — apply_promo (Lines 205–222) */
+makeLines('li-apply', [
+  { n:205, code: '    ' + CM('# ----- PROMO CODE &amp; PRICE CALCULATION -----'), ann: null },
+  { n:206, code: '    ' + KW('def') + ' ' + FN('apply_promo') + '(' + SF('self') + ', code):',
+    ann:{ tag:'def apply_promo(self, code)',
+    text:'Defines the method. <code>self</code> is the <code>NUmart</code> object — Python passes it automatically when the method is called as <code>store.apply_promo(...)</code>. <code>code</code> is the promo string the user typed, passed from <code>main.py</code>.',
+    ex: '# Caller in main.py:\nstore.apply_promo("save10")\n# Inside the method:\n#   self = store\n#   code = "save10"' }},
+  { n:207, code: '        ' + DC('"""Apply a promo code if valid. Updates the discount rate."""'),
+    ann:{ tag:'Docstring',
+    text:'A single-line docstring that documents what this method does. Python stores it as <code>apply_promo.__doc__</code> but does not execute it.',
+    ex: null }},
+  { n:208, code: '        code = code.' + FN('strip') + '().' + FN('upper') + '()',
+    ann:{ tag:'code = code.strip().upper()',
+    text:'Normalizes the user\'s input. <code>.strip()</code> removes any leading and trailing whitespace. <code>.upper()</code> converts all letters to uppercase. The two calls are <em>chained</em> — <code>.strip()</code> runs first and returns a new string, then <code>.upper()</code> runs on that result. The cleaned value is stored back into <code>code</code>, overwriting the original.',
+    ex: '"  save10  "  →  strip()  →  "save10"   →  upper()  →  "SAVE10"\n"Student15"  →  strip()  →  "Student15" →  upper()  →  "STUDENT15"' }},
+  { n:209, code: '', ann: null },
+  { n:210, code: '        ' + KW('if') + ' ' + SF('self') + '.promo_used:',
+    ann:{ tag:'if self.promo_used:  — Guard 1',
+    text:'A <em>truthy check</em>. In Python, an empty string <code>""</code> is falsy (evaluates to <code>False</code>), and any non-empty string is truthy (evaluates to <code>True</code>). If <code>self.promo_used</code> is not empty, a promo code is already active, and the new one must be blocked.',
+    ex: 'self.promo_used = ""           →  falsy   →  skip this block\nself.promo_used = "STUDENT15"  →  truthy  →  enter this block' }},
+  { n:211, code: '            ' + BI('print') + '(' + ST('"\\n  [!] You can only use 1 promo code per transaction."') + ')', ann: null },
+  { n:212, code: '            ' + BI('print') + '(' + ST('f"\\n  [!] Remove \'{') + SF('self') + ST('.promo_used}\' first before applying a new one."') + ')',
+    ann:{ tag:'f-string with self.promo_used embedded',
+    text:'Uses an f-string to embed the name of the currently active code in the message. If <code>self.promo_used</code> is <code>"SAVE10"</code>, this prints: <em>"Remove \'SAVE10\' first before applying a new one."</em>',
+    ex: null }},
+  { n:213, code: '            ' + KW('return') + ' ' + KW('False'),
+    ann:{ tag:'return False — early exit (Guard 1 triggered)',
+    text:'Exits the function immediately. Nothing below this line runs. Returns <code>False</code> to signal failure. In <code>main.py</code>, the <code>while True</code> input loop checks this result — <code>False</code> means the attempt failed, so the loop continues and asks for another code.',
+    ex: null }},
+  { n:214, code: '', ann: null },
+  { n:215, code: '        ' + KW('if') + ' code ' + KW('in') + ' dict_Codes:',
+    ann:{ tag:'if code in dict_Codes:  — Guard 2',
+    text:'The <code>in</code> operator checks whether <code>code</code> is a <em>key</em> in the dictionary. Dictionary key lookup is O(1) — instant, regardless of dictionary size. Evaluates to <code>True</code> if the key exists, <code>False</code> if it does not.',
+    ex: '"SAVE10"    in dict_Codes  →  True\n"STUDENT15" in dict_Codes  →  True\n"FAKE99"    in dict_Codes  →  False\n"save10"    in dict_Codes  →  False  (not uppercase — must run strip().upper() first)' }},
+  { n:216, code: '            ' + SF('self') + '.discount = dict_Codes[code]',
+    ann:{ tag:'self.discount = dict_Codes[code]',
+    text:'Retrieves the integer discount percentage from the dictionary using <code>code</code> as the key. The result is stored in <code>self.discount</code>, overwriting the previous value of <code>0</code>.',
+    ex: 'code = "STUDENT15"\ndict_Codes["STUDENT15"]  →  15\nself.discount = 15' }},
+  { n:217, code: '            ' + SF('self') + '.promo_used = code',
+    ann:{ tag:'self.promo_used = code',
+    text:'Saves the normalized code string into <code>self.promo_used</code>. This serves two purposes: it is displayed in <code>display_price_summary()</code> and on the receipt, and it makes the Guard 1 check on line 210 truthy, blocking any second promo from being applied.',
+    ex: 'self.promo_used = "STUDENT15"' }},
+  { n:218, code: '            ' + BI('print') + '(' + ST('f"\\n  [OK] Promo code \'{code}\' applied! You get {') + SF('self') + ST('.discount}% off."') + ')',
+    ann:{ tag:'Success message using f-string',
+    text:'Confirms the promo was applied. The f-string embeds both <code>code</code> (the code name) and <code>self.discount</code> (the percentage) directly in the printed message.',
+    ex: '"[OK] Promo code \'STUDENT15\' applied! You get 15% off."' }},
+  { n:219, code: '            ' + KW('return') + ' ' + KW('True'),
+    ann:{ tag:'return True — success',
+    text:'Exits the function and returns <code>True</code> to signal success. In <code>main.py</code>, the retry loop checks: <code>if store.apply_promo(code): break</code>. When <code>True</code> is returned, <code>break</code> executes and the input loop ends.',
+    ex: null }},
+  { n:220, code: '        ' + KW('else') + ':',
+    ann:{ tag:'else:',
+    text:'This block runs only when the <code>if code in dict_Codes:</code> check on line 215 evaluated to <code>False</code> — meaning the code the user typed was not found among the dictionary keys.',
+    ex: null }},
+  { n:221, code: '            ' + BI('print') + '(' + ST('f"\\n  [!] Invalid promo code \'{code}\'. Please try again."') + ')',
+    ann:{ tag:'Invalid code message',
+    text:'Tells the user the code was not recognized. The <code>while True</code> retry loop in <code>main.py</code> will ask for another code on the next iteration.',
+    ex: null }},
+  { n:222, code: '            ' + KW('return') + ' ' + KW('False'),
+    ann:{ tag:'return False — invalid code',
+    text:'Returns <code>False</code> to signal failure. The <code>main.py</code> retry loop checks this — <code>False</code> causes the loop to continue and prompt the user again.',
+    ex: null }},
 ]);
 
-/* REMOVE_PROMO — lines 224–231 */
-makeLines('lines-remove',[
-  {n:224, code:`    ${KW}def${E} ${FN}remove_promo${E}(${SF}self${E}):`,
-    ann:{tag:'def remove_promo(self)',
-    text:'Defines the method. Only <code>self</code> — no other parameters needed. All the data it needs (<code>self.discount</code>, <code>self.promo_used</code>) is already stored on the object.',ex:null}},
-  {n:225, code:`        ${CM}"""Remove the currently applied promo code."""${E}`,ann:{tag:'docstring',text:'Documentation. Not executed.',ex:null}},
-  {n:226, code:`        ${KW}if${E} ${SF}self${E}.discount == ${NM}0${E}:`,
-    ann:{tag:'if self.discount == 0:  — guard clause',
-    text:'Checks whether a promo is even active. <code>==</code> is the <em>equality comparison</em> operator — it returns <code>True</code> or <code>False</code>. Do NOT confuse with <code>=</code> which is assignment. If discount is already 0, there\'s nothing to remove.',
-    ex:'self.discount = 0   → True  → no promo, print warning and return early\nself.discount = 15  → False → skip warning, go to reset lines'}},
-  {n:227, code:`            print(${ST}"\\n  [!] No promo code is currently applied."${E})`,
-    ann:{tag:'line 227 — no promo warning',
-    text:'Tells the user there is nothing to remove. Prevents silent confusing behaviour.',ex:null}},
-  {n:228, code:`            ${KW}return${E}`,
-    ann:{tag:'return  — bare return (no value)',
-    text:'<code>return</code> with no value just exits the function immediately. No value is sent back to the caller because main.py does not check what <code>remove_promo()</code> returns. The reset lines below do NOT run — this is a guard clause early exit.',ex:null}},
-  {n:229, code:`        print(${ST}f"\\n  [OK] Promo code '{${SF}self${E}.promo_used}' removed."${E})`,
-    ann:{tag:'line 229 — removed confirmation',
-    text:'Prints which code was removed. Uses <code>self.promo_used</code> in the f-string — so if SAVE10 was active, it prints: <em>"[OK] Promo code \'SAVE10\' removed."</em> This line only runs when line 226 evaluated to <code>False</code> (a promo WAS active).',
-    ex:'self.promo_used = "SAVE10"\n→ "[OK] Promo code \'SAVE10\' removed."'}},
-  {n:230, code:`        ${SF}self${E}.discount   = ${NM}0${E}`,
-    ann:{tag:'self.discount = 0',
-    text:'Resets discount to 0. After this, <code>get_final_total()</code> computes <code>total × (0/100) = 0</code> discount. Full price again.',ex:null}},
-  {n:231, code:`        ${SF}self${E}.promo_used = ${ST}""${E}`,
-    ann:{tag:'self.promo_used = ""',
-    text:'Clears the promo code name back to empty string. After this, <code>self.promo_used</code> is falsy again, so the guard on line 210 will allow a new code to be applied.',ex:null}},
+/* LINE DATA — remove_promo (Lines 224–231) */
+makeLines('li-remove', [
+  { n:224, code: '    ' + KW('def') + ' ' + FN('remove_promo') + '(' + SF('self') + '):',
+    ann:{ tag:'def remove_promo(self)',
+    text:'Defines the method. Only <code>self</code> is needed — no extra parameters. All the data this method requires (<code>self.discount</code>, <code>self.promo_used</code>) is already stored on the object.',
+    ex: null }},
+  { n:225, code: '        ' + DC('"""Remove the currently applied promo code."""'),
+    ann:{ tag:'Docstring',
+    text:'Documentation string. Not executed.',
+    ex: null }},
+  { n:226, code: '        ' + KW('if') + ' ' + SF('self') + '.discount == ' + NM('0') + ':',
+    ann:{ tag:'if self.discount == 0:  — guard clause',
+    text:'Checks whether a promo is even active before attempting to remove one. <code>==</code> is the <em>equality comparison</em> operator — it returns <code>True</code> or <code>False</code>. Do not confuse it with <code>=</code>, which is the assignment operator. If <code>self.discount</code> is already <code>0</code>, there is nothing to remove.',
+    ex: 'self.discount = 0   →  True  →  nothing active, warn and exit\nself.discount = 15  →  False →  a promo is active, proceed to reset' }},
+  { n:227, code: '            ' + BI('print') + '(' + ST('"\\n  [!] No promo code is currently applied."') + ')',
+    ann:{ tag:'No promo warning',
+    text:'Informs the user that there is no active code to remove. This prevents confusing or silent behavior when the user selects "Remove Promo" without having applied one.',
+    ex: null }},
+  { n:228, code: '            ' + KW('return'),
+    ann:{ tag:'return — bare return with no value',
+    text:'<code>return</code> with no value exits the function immediately. The reset lines below do <em>not</em> run. This is called a <em>guard clause</em> — it gets the edge case out of the way at the top so the main logic only runs when appropriate.',
+    ex: null }},
+  { n:229, code: '        ' + BI('print') + '(' + ST('f"\\n  [OK] Promo code \'{') + SF('self') + ST('.promo_used}\' removed."') + ')',
+    ann:{ tag:'Removal confirmation message',
+    text:'Prints which code was removed. This line only runs if the guard on line 226 evaluated to <code>False</code> — meaning a promo was active. The f-string embeds <code>self.promo_used</code> in the message.',
+    ex: 'self.promo_used = "SAVE10"\n→  "[OK] Promo code \'SAVE10\' removed."' }},
+  { n:230, code: '        ' + SF('self') + '.discount   = ' + NM('0'),
+    ann:{ tag:'self.discount = 0',
+    text:'Resets the discount percentage to zero. After this line, <code>get_final_total()</code> will compute <code>total × (0 / 100) = 0</code>, meaning no discount is applied and the customer pays full price.',
+    ex: null }},
+  { n:231, code: '        ' + SF('self') + '.promo_used = ' + ST('""'),
+    ann:{ tag:'self.promo_used = ""',
+    text:'Clears the promo code name back to an empty string. After this line, <code>self.promo_used</code> is falsy again, so the guard on line 210 of <code>apply_promo()</code> will allow a new code to be applied.',
+    ex: null }},
 ]);
 
-/* GET_FINAL_TOTAL — lines 233–238 */
-makeLines('lines-total',[
-  {n:233, code:`    ${KW}def${E} ${FN}get_final_total${E}(${SF}self${E}):`,
-    ann:{tag:'def get_final_total(self)',
-    text:'Only <code>self</code> — no extra parameters needed. All data is already in the object: <code>self.cart</code> provides the subtotal, <code>self.discount</code> provides the percentage.',ex:null}},
-  {n:234, code:`        ${CM}"""Calculate and return the final payable amount after discount."""${E}`,ann:{tag:'docstring',text:'Documentation. Not executed.',ex:null}},
-  {n:235, code:`        total      = ${SF}self${E}.cart.${FN}compute_total${E}()`,
-    ann:{tag:'total = self.cart.compute_total()',
-    text:'Calls <code>compute_total()</code> on the <code>CartLinkedList</code>. That method (in structures.py) loops through every cart node: <code>price × quantity</code> per item, adds them all, returns a <code>float</code>. This is your subtotal before any discount.',
-    ex:'Cart has: 3x Ballpen ₱12 + 1x Notebook ₱60\ncompute_total() → (12×3) + (60×1) = 36 + 60 = 96.0\ntotal = 96.0'}},
-  {n:236, code:`        discounted = total * (${SF}self${E}.discount / ${NM}100${E})`,
-    ann:{tag:'discounted = total × (self.discount / 100)',
-    text:'<code>self.discount / 100</code> converts the percentage integer to a decimal: <code>15 / 100 = 0.15</code>. Multiplied by total: <code>96 × 0.15 = 14.4</code>. This is the <em>amount saved</em> — the deduction — NOT the final price.',
-    ex:'discount=15 → 15/100=0.15 → 96×0.15=14.4\ndiscounted = 14.4   (₱14.40 saved)\n\nIf discount=0: 0/100=0 → 96×0=0 → discounted=0 (no discount)'}},
-  {n:237, code:`        final      = total - discounted`,
-    ann:{tag:'final = total − discounted',
-    text:'Subtracts the discount amount from the subtotal. This is what the user actually pays.',
-    ex:'total=96.0, discounted=14.4\nfinal = 96.0 - 14.4 = 81.6  →  ₱81.60 to pay\n\nNo promo: total=96.0, discounted=0\nfinal = 96.0 - 0 = 96.0  →  ₱96.00 (full price)'}},
-  {n:238, code:`        ${KW}return${E} total, discounted, final`,
-    ann:{tag:'return total, discounted, final  — tuple of 3',
-    text:'Returns all 3 values at once as a Python <em>tuple</em>. The caller unpacks them: <code>a, b, c = self.get_final_total()</code>. Three different callers use these: <code>display_price_summary()</code> uses all 3, <code>process_payment()</code> uses <code>final</code>, <code>_generate_receipt()</code> uses all 3.',
-    ex:'Caller:\n  total, discounted, final = self.get_final_total()\n  # total=96.0, discounted=14.4, final=81.6\n\nEquivalent to:\n  result = self.get_final_total()  # result = (96.0, 14.4, 81.6)\n  total      = result[0]           # 96.0\n  discounted = result[1]           # 14.4\n  final      = result[2]           # 81.6'}},
+/* LINE DATA — get_final_total (Lines 233–238) */
+makeLines('li-total', [
+  { n:233, code: '    ' + KW('def') + ' ' + FN('get_final_total') + '(' + SF('self') + '):',
+    ann:{ tag:'def get_final_total(self)',
+    text:'Only <code>self</code> is needed — all required data is already on the object. <code>self.cart</code> provides the subtotal via <code>compute_total()</code>, and <code>self.discount</code> provides the percentage.',
+    ex: null }},
+  { n:234, code: '        ' + DC('"""Calculate and return the final payable amount after discount."""'),
+    ann:{ tag:'Docstring', text:'Documentation string. Not executed.', ex: null }},
+  { n:235, code: '        total      = ' + SF('self') + '.cart.' + FN('compute_total') + '()',
+    ann:{ tag:'total = self.cart.compute_total()',
+    text:'Calls <code>compute_total()</code> on the <code>CartLinkedList</code>. That method loops through every node in the cart, multiplies each item\'s price by its quantity, sums the results, and returns a <code>float</code>. This is the cart subtotal before any discount.',
+    ex: '# Cart: 3x Ballpen ₱12.00 + 1x Notebook ₱60.00\n# compute_total(): (12 × 3) + (60 × 1) = 36 + 60 = 96.0\ntotal = 96.0' }},
+  { n:236, code: '        discounted = total * (' + SF('self') + '.discount / ' + NM('100') + ')',
+    ann:{ tag:'discounted = total × (self.discount / 100)',
+    text:'<code>self.discount / 100</code> converts the percentage integer to a decimal multiplier: <code>15 / 100 = 0.15</code>. Multiplied by <code>total</code>: <code>96.0 × 0.15 = 14.4</code>. The result is the <em>amount saved</em> — the peso deduction — not the final price.',
+    ex: '# discount = 15:\n15 / 100 = 0.15  →  96.0 × 0.15 = 14.4\ndiscounted = 14.4   (₱14.40 saved)\n\n# discount = 0 (no promo):\n0 / 100 = 0.0   →  96.0 × 0.0 = 0.0\ndiscounted = 0.0   (no deduction)' }},
+  { n:237, code: '        final      = total - discounted',
+    ann:{ tag:'final = total − discounted',
+    text:'Subtracts the discount amount from the subtotal. This is the amount the customer actually pays.',
+    ex: '# With promo:\ntotal = 96.0, discounted = 14.4\nfinal = 96.0 - 14.4 = 81.6  →  ₱81.60\n\n# Without promo:\ntotal = 96.0, discounted = 0.0\nfinal = 96.0 - 0.0 = 96.0   →  ₱96.00 (full price)' }},
+  { n:238, code: '        ' + KW('return') + ' total, discounted, final',
+    ann:{ tag:'return total, discounted, final — tuple of three',
+    text:'Returns all three values at once as a Python <em>tuple</em>. The caller unpacks them with multiple assignment: <code>a, b, c = self.get_final_total()</code>. Three different callers use this function: <code>display_price_summary()</code> uses all three, <code>process_payment()</code> uses only <code>final</code>, and <code>_generate_receipt()</code> uses all three.',
+    ex: '# Caller:\ntotal, discounted, final = self.get_final_total()\n# With STUDENT15 on ₱96.00 cart:\n#   total = 96.0, discounted = 14.4, final = 81.6\n\n# Equivalent to:\nresult     = self.get_final_total()  # result = (96.0, 14.4, 81.6)\ntotal      = result[0]               # 96.0\ndiscounted = result[1]               # 14.4\nfinal      = result[2]               # 81.6' }},
 ]);
 
-/* DISPLAY_PRICE_SUMMARY — lines 240–262 */
-makeLines('lines-display',[
-  {n:240, code:`    ${KW}def${E} ${FN}display_price_summary${E}(${SF}self${E}):`,
-    ann:{tag:'def display_price_summary(self)',
-    text:'Only <code>self</code> — reads everything from the object. No user input needed here; that is handled by the menu in main.py.',ex:null}},
-  {n:241, code:`        ${CM}"""Show the full price breakdown."""${E}`,ann:{tag:'docstring',text:'Documentation. Not executed.',ex:null}},
-  {n:242, code:`        ${KW}if${E} ${SF}self${E}.cart.${FN}is_empty${E}():`,
-    ann:{tag:'if self.cart.is_empty():  — guard',
-    text:'Calls <code>is_empty()</code> on the CartLinkedList (returns <code>True</code> if the cart has no items). If the cart is empty, skip the entire summary and return early. Prevents a confusing ₱0.00 breakdown showing on screen.',ex:null}},
-  {n:243, code:`            print(${ST}"\\n  [!] Your cart is empty."${E})`,ann:{tag:'line 243 — empty cart warning',text:'Prints the warning.',ex:null}},
-  {n:244, code:`            ${KW}return${E}`,ann:{tag:'return — early exit',text:'Exits the function immediately. Nothing below runs.',ex:null}},
-  {n:246, code:`        total, discounted, final = ${SF}self${E}.${FN}get_final_total${E}()`,
-    ann:{tag:'total, discounted, final = self.get_final_total()',
-    text:'Calls YOUR <code>get_final_total()</code> method and unpacks all 3 return values in one line. This is Python <em>multiple assignment</em> — the tuple <code>(96.0, 14.4, 81.6)</code> is split into 3 separate variables instantly.',
-    ex:'get_final_total() returns (96.0, 14.4, 81.6)\ntotal=96.0, discounted=14.4, final=81.6'}},
-  {n:247, code:`        total_str      = ${ST}f"₱{total:.2f}"${E}`,
-    ann:{tag:'f"₱{total:.2f}"  — format with 2 decimal places',
-    text:'Creates a display string. <code>:.2f</code> is a <em>format specifier</em> inside the f-string: <code>.</code> means decimal point, <code>2</code> means 2 digits after it, <code>f</code> means fixed-point notation.',
-    ex:'total=96.0  → total_str = "₱96.00"\ntotal=170.0 → total_str = "₱170.00"\ntotal=81.6  → total_str = "₱81.60"'}},
-  {n:248, code:`        discounted_str = ${ST}f"-₱{discounted:.2f}"${E}`,
-    ann:{tag:'f"-₱{discounted:.2f}"',
-    text:'Prefixes with <code>-</code> to visually show this as a deduction. Note: this string is <em>always computed here</em> whether or not a promo is active — but it is only <em>printed</em> inside the <code>if self.discount &gt; 0</code> block below on line 257.',
-    ex:'discounted=14.4 → discounted_str = "-₱14.40"\ndiscounted=0    → discounted_str = "-₱0.00" (computed but never printed)'}},
-  {n:249, code:`        final_str      = ${ST}f"₱{final:.2f}"${E}`,ann:{tag:'f"₱{final:.2f}"',text:'Formats the final payable amount.',ex:'final=81.6 → final_str = "₱81.60"'}},
-  {n:251, code:`        print(${ST}"\\n  +-----------------------------------+"${E}`,
-    ann:{tag:'lines 251–254 — print header and subtotal row',
-    text:'Prints the box borders and the Subtotal row. Uses <code>total_str</code> formatted with <code>:<21</code> — left-align and pad to 21 characters — so the right <code>|</code> border lines up perfectly.',ex:null}},
-  {n:252, code:`              ${ST}"\\n  |         [ PRICE SUMMARY ]         |"${E}`,ann:null},
-  {n:253, code:`              ${ST}"\\n  +-----------------------------------+"${E}`,ann:null},
-  {n:254, code:`              ${ST}f"\\n  |  Subtotal  : {total_str:<21}|"${E})`,ann:null},
-  {n:256, code:`        ${KW}if${E} ${SF}self${E}.discount > ${NM}0${E}:`,
-    ann:{tag:'if self.discount > 0:  — conditional promo rows',
-    text:'Only print the Promo and Discount rows when a promo is actually active. If discount is 0, these two lines are skipped entirely — no blank "Promo: " row or "-₱0.00" showing.',
-    ex:'discount=0  → skip (clean summary, no promo rows)\ndiscount=15 → enter block (print promo name + discount amount)'}},
-  {n:257, code:`            print(${ST}f"  |  Promo     : {${SF}self${E}.promo_used:<21}|"${E}`,
-    ann:{tag:'lines 257–258 — print promo name and discount amount',
-    text:'Two f-strings printed together. <code>self.promo_used:<21</code> left-aligns the code name to 21 chars. <code>discounted_str:<21</code> does the same for the discount amount. Both keep the <code>|</code> borders aligned.',
-    ex:'self.promo_used="STUDENT15", discounted_str="-₱14.40"\n→ "  |  Promo     : STUDENT15             |"\n→ "  |  Discount  : -₱14.40              |"'}},
-  {n:258, code:`                  ${ST}f"\\n  |  Discount  : {discounted_str:<21}|"${E})`,ann:null},
-  {n:260, code:`        print(${ST}"  +-----------------------------------+"${E}`,
-    ann:{tag:'lines 260–262 — TOTAL DUE row and closing border',
-    text:'Prints the final row with <code>final_str</code> and the closing border.',ex:null}},
-  {n:261, code:`              ${ST}f"\\n  |  TOTAL DUE : {final_str:<21}|"${E}`,ann:null},
-  {n:262, code:`              ${ST}"\\n  +-----------------------------------+"${E})`,ann:null},
+/* LINE DATA — display_price_summary (Lines 240–262) */
+makeLines('li-display', [
+  { n:240, code: '    ' + KW('def') + ' ' + FN('display_price_summary') + '(' + SF('self') + '):',
+    ann:{ tag:'def display_price_summary(self)',
+    text:'Only <code>self</code> is needed — all data is read from the object. No additional arguments are required because the cart, discount, and promo name are all already stored as attributes.',
+    ex: null }},
+  { n:241, code: '        ' + DC('"""Show the full price breakdown."""'),
+    ann:{ tag:'Docstring', text:'Documentation string. Not executed.', ex: null }},
+  { n:242, code: '        ' + KW('if') + ' ' + SF('self') + '.cart.' + FN('is_empty') + '():',
+    ann:{ tag:'if self.cart.is_empty():  — guard clause',
+    text:'Calls <code>is_empty()</code> on the <code>CartLinkedList</code>. That method returns <code>True</code> if the cart has no items. If the cart is empty, the function should not display a price summary — doing so would show a confusing ₱0.00 breakdown.',
+    ex: null }},
+  { n:243, code: '            ' + BI('print') + '(' + ST('"\\n  [!] Your cart is empty."') + ')', ann: null },
+  { n:244, code: '            ' + KW('return'),
+    ann:{ tag:'return — early exit if cart is empty',
+    text:'Exits the function immediately. Nothing below this line runs. This is a guard clause that prevents the price summary from being displayed when there is nothing in the cart.',
+    ex: null }},
+  { n:245, code: '', ann: null },
+  { n:246, code: '        total, discounted, final = ' + SF('self') + '.' + FN('get_final_total') + '()',
+    ann:{ tag:'Multiple assignment — unpack three return values',
+    text:'Calls Villar\'s <code>get_final_total()</code> and unpacks the returned tuple into three separate variables in one statement. <code>total</code> is the subtotal, <code>discounted</code> is the peso amount saved, and <code>final</code> is the amount due.',
+    ex: '# get_final_total() returns (96.0, 14.4, 81.6)\ntotal = 96.0, discounted = 14.4, final = 81.6' }},
+  { n:247, code: '        total_str      = ' + ST('f"₱{total:.2f}"'),
+    ann:{ tag:'f"₱{total:.2f}" — format with two decimal places',
+    text:'Creates a formatted display string. The <code>:.2f</code> inside the braces is a <em>format specifier</em>: the colon <code>:</code> begins it, <code>.2</code> means two digits after the decimal point, and <code>f</code> stands for fixed-point notation.',
+    ex: 'total = 96.0   →  total_str = "₱96.00"\ntotal = 170.0  →  total_str = "₱170.00"\ntotal = 81.6   →  total_str = "₱81.60"' }},
+  { n:248, code: '        discounted_str = ' + ST('f"-₱{discounted:.2f}"'),
+    ann:{ tag:'f"-₱{discounted:.2f}"',
+    text:'Formats the discount amount as a string, prefixed with a minus sign to visually indicate a deduction. Note: this string is <em>always computed here</em>, whether or not a promo is active. However, it is only <em>printed</em> inside the <code>if self.discount &gt; 0</code> block on line 256.',
+    ex: 'discounted = 14.4  →  discounted_str = "-₱14.40"\ndiscounted = 0.0   →  discounted_str = "-₱0.00"  (computed but never printed)' }},
+  { n:249, code: '        final_str      = ' + ST('f"₱{final:.2f}"'),
+    ann:{ tag:'f"₱{final:.2f}"',
+    text:'Formats the final payable amount as a display string.',
+    ex: 'final = 81.6   →  final_str = "₱81.60"' }},
+  { n:250, code: '', ann: null },
+  { n:251, code: '        ' + BI('print') + '(' + ST('"\\n  +-----------------------------------+"'),
+    ann:{ tag:'Lines 251–254 — print the header box and Subtotal row',
+    text:'Prints the decorative box border, the title row, a separator, and the Subtotal row. The Subtotal row uses <code>total_str</code> with a <code>:&lt;21</code> format specifier — left-aligned and padded to 21 characters — so the right-side <code>|</code> border stays aligned.',
+    ex: null }},
+  { n:252, code: '              ' + ST('"\\n  |         [ PRICE SUMMARY ]         |"'), ann: null },
+  { n:253, code: '              ' + ST('"\\n  +-----------------------------------+"'), ann: null },
+  { n:254, code: '              ' + ST('f"\\n  |  Subtotal  : {total_str:&lt;21}|"') + ')', ann: null },
+  { n:255, code: '', ann: null },
+  { n:256, code: '        ' + KW('if') + ' ' + SF('self') + '.discount &gt; ' + NM('0') + ':',
+    ann:{ tag:'if self.discount > 0:  — conditional promo rows',
+    text:'Only prints the Promo and Discount rows when a promo code is actually active. If <code>self.discount</code> is <code>0</code>, these two rows are skipped entirely — no blank "Promo: " label or "-₱0.00" discount row appears on screen.',
+    ex: 'self.discount = 0   →  skip (summary shows only Subtotal and Total Due)\nself.discount = 15  →  enter block (Promo and Discount rows are printed)' }},
+  { n:257, code: '            ' + BI('print') + '(' + ST('f"  |  Promo     : {') + SF('self') + ST('.promo_used:&lt;21}|"'),
+    ann:{ tag:'Lines 257–258 — Promo name and Discount amount rows',
+    text:'Two f-strings printed together in one <code>print()</code> call. The <code>:&lt;21</code> left-aligns each value to 21 characters, keeping the right-side <code>|</code> borders perfectly aligned.',
+    ex: 'self.promo_used = "STUDENT15", discounted_str = "-₱14.40"\n→  "  |  Promo     : STUDENT15             |"\n→  "  |  Discount  : -₱14.40              |"' }},
+  { n:258, code: '                  ' + ST('f"\\n  |  Discount  : {discounted_str:&lt;21}|"') + ')', ann: null },
+  { n:259, code: '', ann: null },
+  { n:260, code: '        ' + BI('print') + '(' + ST('"  +-----------------------------------+"'),
+    ann:{ tag:'Lines 260–262 — Total Due row and closing border',
+    text:'Prints the TOTAL DUE row using <code>final_str</code> and the closing border of the box.',
+    ex: null }},
+  { n:261, code: '              ' + ST('f"\\n  |  TOTAL DUE : {final_str:&lt;21}|"'), ann: null },
+  { n:262, code: '              ' + ST('"\\n  +-----------------------------------+"') + ')', ann: null },
 ]);
 
-/* MAIN.PY MENU — lines 118–190 */
-makeLines('lines-menu',[
-  {n:118, code:`${KW}def${E} ${FN}menu_price_summary${E}(store):`,
-    ann:{tag:'def menu_price_summary(store)',
-    text:'Regular function (NOT a class method). <code>store</code> is the NUmart object passed from <code>main_menu()</code>. Note: <code>store</code> here plays the same role as <code>self</code> in a method — it is the NUmart object.',
-    ex:'Called from main_menu():\n  menu_price_summary(store)\n  # store = the NUmart object created at program start'}},
-  {n:119, code:`    ${CM}"""Show price summary and allow promo code application."""${E}`,ann:{tag:'docstring',text:'Documentation.',ex:null}},
-  {n:120, code:`    ${KW}while${E} ${KW}True${E}:`,
-    ann:{tag:'while True:  — outer menu loop',
-    text:'Infinite loop — the menu keeps showing until the user enters 0. Only a <code>break</code> statement inside can exit it.',ex:null}},
-  {n:121, code:`        clear_screen()`,ann:null},
-  {n:122, code:`        print_header()`,ann:null},
-  {n:123, code:`        print(${ST}"\\n  +-----------------------------------+"${E}`,ann:null},
-  {n:124, code:`              ${ST}"\\n  |     [ PRICE SUMMARY & PROMO ]     |"${E}`,ann:null},
-  {n:125, code:`              ${ST}"\\n  +-----------------------------------+"${E}`,ann:null},
-  {n:126, code:`              ${ST}"\\n  |  [1] View Price Summary           |"${E}`,ann:null},
-  {n:127, code:`              ${ST}"\\n  |  [2] Apply Promo Code             |"${E}`,ann:null},
-  {n:128, code:`              ${ST}"\\n  |  [3] Remove Promo Code            |"${E}`,ann:null},
-  {n:129, code:`              ${ST}"\\n  |  [0] Back to Main Menu            |"${E}`,ann:null},
-  {n:130, code:`              ${ST}"\\n  +-----------------------------------+"${E})`,ann:null},
-  {n:132, code:`        choice = input(${ST}"\\n  Enter choice: "${E}).${FN}strip${E}()`,
-    ann:{tag:'choice = input(...).strip()',
-    text:'Gets user menu choice. <code>.strip()</code> removes accidental spaces so <code>" 2 "</code> and <code>"2"</code> both work.',ex:null}},
-  {n:133, code:`        ${KW}if${E} choice == ${ST}"1"${E}:`,ann:{tag:'choice 1 — view price summary',text:'If user typed "1", run display_price_summary.',ex:null}},
-  {n:134, code:`            store.${FN}display_price_summary${E}()`,
-    ann:{tag:'store.display_price_summary()  ← calls YOUR function',
-    text:'Calls <code>display_price_summary()</code> on the store — YOUR method in system.py. Python translates this to: <code>NUmart.display_price_summary(store)</code>.',ex:null}},
-  {n:135, code:`            ${FN}pause${E}()`,ann:{tag:'pause()',text:'Calls the utility function at top of main.py — waits for user to press Enter before redrawing the menu.',ex:null}},
-  {n:136, code:`        ${KW}elif${E} choice == ${ST}"2"${E}:`,ann:{tag:'elif choice == "2"  — apply promo',text:'<code>elif</code> = "else if". Only checked if the previous <code>if</code> was False.',ex:null}},
-  {n:137, code:`            print(${ST}"\\n  +-----------------------------------+"${E} ...)`,ann:{tag:'lines 137–143 — promo info display',text:'Prints the promo info box telling the user where to find codes.',ex:null}},
-  {n:144, code:`            ${KW}while${E} ${KW}True${E}:`,
-    ann:{tag:'while True:  — retry loop for promo input',
-    text:'Inner loop — keeps asking for a promo code until the user cancels (types 0) or enters a valid code that <code>apply_promo()</code> accepts.',ex:null}},
-  {n:145, code:`                code = input(${ST}"\\n  Enter promo code (or 0 to return...): "${E}).${FN}strip${E}()`,
-    ann:{tag:'code = input(...).strip()',
-    text:'Reads the raw promo code. <code>.strip()</code> removes spaces here too. The code is then passed to <code>apply_promo()</code> which does its own <code>.strip().upper()</code> internally.',ex:null}},
-  {n:146, code:`                ${KW}if${E} code == ${ST}"0"${E}:`,ann:{tag:'if code == "0"  — cancel option',text:'User wants to cancel. Enter the block below.',ex:null}},
-  {n:147, code:`                    print(${ST}"  [!] Promo code application cancelled."${E})`,ann:{tag:'cancel message',text:'Prints cancellation notice.',ex:null}},
-  {n:148, code:`                    ${KW}break${E}`,
-    ann:{tag:'break — exit the retry loop',
-    text:'<code>break</code> exits the inner <code>while True</code> loop entirely. No promo applied. Control returns to the outer menu loop.',ex:null}},
-  {n:149, code:`                ${KW}if${E} code == ${ST}""${E}:`,ann:{tag:'if code == ""  — catch empty input',text:'If user just pressed Enter with nothing typed.',ex:null}},
-  {n:150, code:`                    print(${ST}"  [!] Promo code cannot be empty. Please try again."${E})`,ann:{tag:'empty input warning',text:'Warns the user.',ex:null}},
-  {n:151, code:`                    ${KW}continue${E}`,
-    ann:{tag:'continue — skip, loop again',
-    text:'<code>continue</code> skips the rest of this loop cycle and jumps back to the top of the <code>while True</code> — immediately asking for input again. Unlike <code>break</code>, it does NOT exit the loop.',ex:'break    → EXIT the loop completely\ncontinue → skip this iteration, go back to top'}},
-  {n:152, code:`                ${KW}if${E} store.${FN}apply_promo${E}(code):`,
-    ann:{tag:'if store.apply_promo(code):  ← calls YOUR function',
-    text:'Calls YOUR <code>apply_promo(code)</code> method. If it returns <code>True</code> (valid code applied), enter the block. If it returns <code>False</code> (promo already active or invalid code), skip the block and the loop continues asking again.',
-    ex:'apply_promo("SAVE10")    → True  → enter block (break)\napply_promo("STUDENT15") → False (promo exists) → loop again\napply_promo("FAKE99")    → False (invalid) → loop again'}},
-  {n:153, code:`                    ${FN}pause${E}()`,ann:{tag:'pause on success',text:'Wait for Enter so user can read the [OK] confirmation.',ex:null}},
-  {n:154, code:`                    ${KW}break${E}`,
-    ann:{tag:'break — exit retry loop on success',
-    text:'Exits the inner while True loop after a successful promo application. Returns to the outer menu.',ex:null}},
-  {n:156, code:`        ${KW}elif${E} choice == ${ST}"3"${E}:`,ann:{tag:'choice 3 — remove promo',text:'If user typed "3", run the remove promo block.',ex:null}},
-  {n:157, code:`            store.${FN}remove_promo${E}()`,
-    ann:{tag:'store.remove_promo()  ← calls YOUR function',
-    text:'Calls YOUR <code>remove_promo()</code> — resets <code>self.discount</code> to 0 and <code>self.promo_used</code> to "".',ex:null}},
-  {n:158, code:`            ${FN}pause${E}()`,ann:{tag:'pause',text:'Wait for Enter.',ex:null}},
-  {n:159, code:`        ${KW}elif${E} choice == ${ST}"0"${E}:`,ann:{tag:'choice 0 — go back',text:'User wants to return to the main menu.',ex:null}},
-  {n:160, code:`            ${KW}break${E}`,
-    ann:{tag:'break — exit menu loop',
-    text:'Exits the outer <code>while True</code> menu loop. Returns to <code>main_menu()</code>.',ex:null}},
-  {n:161, code:`        ${KW}else${E}:`,ann:{tag:'else — invalid choice',text:'If none of the if/elif matched — user typed something not in 0–3.',ex:null}},
-  {n:162, code:`            print(${ST}"\\n  [!] Invalid choice. Please enter 0-3."${E})`,ann:{tag:'invalid warning',text:'Warns the user. The outer while True loop continues and shows the menu again.',ex:null}},
-  {n:163, code:`            ${FN}pause${E}()`,ann:null},
+/* LINE DATA — main.py menu */
+makeLines('li-menu', [
+  { n:118, code: KW('def') + ' ' + FN('menu_price_summary') + '(store):',
+    ann:{ tag:'def menu_price_summary(store)',
+    text:'A regular function — not a class method. <code>store</code> is the <code>NUmart</code> object passed in from <code>main_menu()</code>. It plays the same role as <code>self</code> inside a method: it is the object whose attributes and methods are called.',
+    ex: '# Called from main_menu():\nmenu_price_summary(store)\n# store = the NUmart object created at program start' }},
+  { n:119, code: '    ' + DC('"""Show price summary and allow promo code application."""'),
+    ann:{ tag:'Docstring', text:'Documentation string. Not executed.', ex: null }},
+  { n:120, code: '    ' + KW('while') + ' ' + KW('True') + ':',
+    ann:{ tag:'while True:  — outer menu loop',
+    text:'An infinite loop. The menu keeps redrawing until the user enters <code>0</code> to go back. Only a <code>break</code> statement inside the loop can exit it.',
+    ex: null }},
+  { n:121, code: '        ' + FN('clear_screen') + '()', ann: null },
+  { n:122, code: '        ' + FN('print_header') + '()', ann: null },
+  { n:130, code: '        ...' + CM('  # print menu box (choices 1, 2, 3, 0)'), ann: null },
+  { n:132, code: '        choice = ' + BI('input') + '(' + ST('"\\n  Enter choice: "') + ').' + FN('strip') + '()',
+    ann:{ tag:'choice = input(...).strip()',
+    text:'Reads the user\'s menu choice as a string. <code>.strip()</code> removes any accidental leading or trailing spaces so that <code>" 2 "</code> and <code>"2"</code> are treated identically.',
+    ex: null }},
+  { n:133, code: '        ' + KW('if') + ' choice == ' + ST('"1"') + ':',
+    ann:{ tag:'choice == "1"  — View Price Summary',
+    text:'If the user typed <code>1</code>, call <code>display_price_summary()</code> and pause.',
+    ex: null }},
+  { n:134, code: '            store.' + FN('display_price_summary') + '()',
+    ann:{ tag:'store.display_price_summary()  — calls Villar\'s function',
+    text:'Calls <code>display_price_summary()</code> on the <code>store</code> object. Python internally translates this to <code>NUmart.display_price_summary(store)</code>.',
+    ex: null }},
+  { n:135, code: '            ' + FN('pause') + '()', ann: null },
+  { n:136, code: '        ' + KW('elif') + ' choice == ' + ST('"2"') + ':',
+    ann:{ tag:'elif choice == "2"  — Apply Promo Code',
+    text:'<code>elif</code> means "else if" — it is only evaluated if the preceding <code>if</code> was <code>False</code>. If the user typed <code>2</code>, show the promo entry section.',
+    ex: null }},
+  { n:137, code: '            ...' + CM('  # print promo info box'), ann: null },
+  { n:144, code: '            ' + KW('while') + ' ' + KW('True') + ':',
+    ann:{ tag:'while True:  — promo code retry loop',
+    text:'An inner infinite loop that keeps asking for a promo code until the user either cancels by typing <code>0</code> or enters a code that <code>apply_promo()</code> accepts.',
+    ex: null }},
+  { n:145, code: '                code = ' + BI('input') + '(' + ST('"\\n  Enter promo code (or 0 to return...): "') + ').' + FN('strip') + '()',
+    ann:{ tag:'Read the promo code input',
+    text:'Reads the user\'s promo code entry and strips surrounding spaces. The code is then passed to <code>apply_promo()</code>, which applies its own <code>.strip().upper()</code> normalization internally.',
+    ex: null }},
+  { n:146, code: '                ' + KW('if') + ' code == ' + ST('"0"') + ':',
+    ann:{ tag:'if code == "0"  — cancel',
+    text:'If the user types <code>0</code>, they want to cancel without applying a code.',
+    ex: null }},
+  { n:147, code: '                    ' + BI('print') + '(' + ST('"  [!] Promo code application cancelled."') + ')', ann: null },
+  { n:148, code: '                    ' + KW('break'),
+    ann:{ tag:'break — exit the retry loop',
+    text:'<code>break</code> exits the inner <code>while True</code> loop entirely. No promo is applied. Control returns to the outer menu loop.',
+    ex: null }},
+  { n:149, code: '                ' + KW('if') + ' code == ' + ST('""') + ':',
+    ann:{ tag:'if code == ""  — empty input',
+    text:'Catches the case where the user pressed Enter without typing anything.',
+    ex: null }},
+  { n:150, code: '                    ' + BI('print') + '(' + ST('"  [!] Promo code cannot be empty. Please try again."') + ')', ann: null },
+  { n:151, code: '                    ' + KW('continue'),
+    ann:{ tag:'continue — skip this iteration',
+    text:'<code>continue</code> skips the remainder of the current loop iteration and jumps back to the top of the <code>while True</code> loop — immediately prompting the user for input again. Unlike <code>break</code>, it does not exit the loop.',
+    ex: 'break    →  EXIT the loop entirely\ncontinue →  SKIP to the top of the loop, ask again' }},
+  { n:152, code: '                ' + KW('if') + ' store.' + FN('apply_promo') + '(code):',
+    ann:{ tag:'if store.apply_promo(code):  — calls Villar\'s function',
+    text:'Calls <code>apply_promo(code)</code>. If it returns <code>True</code> (valid code, successfully applied), the <code>if</code> block runs. If it returns <code>False</code> (already has a promo, or code is invalid), the block is skipped and the retry loop continues.',
+    ex: 'apply_promo("SAVE10")      →  True   →  break (success)\napply_promo("STUDENT15")  →  False  →  loop (already has a promo)\napply_promo("FAKE99")     →  False  →  loop (invalid code)' }},
+  { n:153, code: '                    ' + FN('pause') + '()',
+    ann:{ tag:'pause() — wait for user to press Enter',
+    text:'Lets the user read the <code>[OK]</code> success message before the menu redraws.',
+    ex: null }},
+  { n:154, code: '                    ' + KW('break'),
+    ann:{ tag:'break — exit retry loop on success',
+    text:'Exits the inner <code>while True</code> loop after a promo code has been successfully applied. Control returns to the outer menu loop.',
+    ex: null }},
+  { n:156, code: '        ' + KW('elif') + ' choice == ' + ST('"3"') + ':',
+    ann:{ tag:'elif choice == "3"  — Remove Promo',
+    text:'If the user typed <code>3</code>, call <code>remove_promo()</code>.',
+    ex: null }},
+  { n:157, code: '            store.' + FN('remove_promo') + '()',
+    ann:{ tag:'store.remove_promo()  — calls Villar\'s function',
+    text:'Calls <code>remove_promo()</code> on the store — Villar\'s method. Resets <code>self.discount</code> to <code>0</code> and <code>self.promo_used</code> to <code>""</code>.',
+    ex: null }},
+  { n:158, code: '            ' + FN('pause') + '()', ann: null },
+  { n:159, code: '        ' + KW('elif') + ' choice == ' + ST('"0"') + ':',
+    ann:{ tag:'elif choice == "0"  — go back',
+    text:'If the user typed <code>0</code>, exit the menu and return to the main menu.',
+    ex: null }},
+  { n:160, code: '            ' + KW('break'),
+    ann:{ tag:'break — exit the outer menu loop',
+    text:'Exits the outer <code>while True</code> menu loop. The function returns, and control goes back to <code>main_menu()</code>.',
+    ex: null }},
+  { n:161, code: '        ' + KW('else') + ':',
+    ann:{ tag:'else — invalid choice',
+    text:'Runs when none of the <code>if</code> / <code>elif</code> conditions matched — the user typed something other than 1, 2, 3, or 0.',
+    ex: null }},
+  { n:162, code: '            ' + BI('print') + '(' + ST('"\\n  [!] Invalid choice. Please enter 0-3."') + ')', ann: null },
+  { n:163, code: '            ' + FN('pause') + '()', ann: null },
 ]);
 
-/* TAB SWITCHER */
-function switchTab(group, tab){
-  const panels = {r: ['display-cart','process-pay','receipt']};
-  const btns = document.querySelectorAll('.tab-btn');
-  btns.forEach(b=>{
-    if(b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+tab+"'")){
-      b.classList.add('active');
-    } else if(b.getAttribute('onclick') && panels[group] && panels[group].includes(
-      b.getAttribute('onclick').match(/'([^']+)'/)?.[1]
-    )){
-      b.classList.remove('active');
-    }
-  });
-  if(panels[group]){
-    panels[group].forEach(t=>{
-      const p = document.getElementById(group+'-'+t);
-      if(p) p.classList.toggle('active', t===tab);
-    });
-  }
-}
-
-/* SYNTAX TABLE */
+/* ══════════════════════════════════════
+   SYNTAX TABLE
+══════════════════════════════════════ */
 const synRows = [
-  ['class NUmart:',                 'Defines the NUmart class blueprint',                           'system.py line 26'],
-  ['def __init__(self):',           'Constructor — runs automatically on NUmart()',                 'system.py line 29'],
-  ['self.discount = 0',             'Creates attribute "discount" on the object, sets it to 0',    'system.py line 34'],
-  ['self.promo_used = ""',          'Creates attribute "promo_used", sets to empty string',         'system.py line 35'],
-  ['def apply_promo(self, code):',  'Method with 1 extra param. self=auto, code=caller passes',    'system.py line 206'],
-  ['code.strip().upper()',          'Remove spaces (strip) then uppercase (upper) — chained',      'system.py line 208'],
-  ['if self.promo_used:',           'Truthy check — "" is falsy, "SAVE10" is truthy',              'system.py line 210'],
-  ['if code in dict_Codes:',        'Check if code is a KEY in the dictionary. O(1) lookup',       'system.py line 215'],
-  ['dict_Codes[code]',              'Dictionary access by key — returns the int value',             'system.py line 216'],
-  ['return True',                   'Exit function + send True to caller (success)',                 'system.py lines 219'],
-  ['return False',                  'Exit function + send False to caller (failure)',                'system.py lines 213, 222'],
-  ['return',                        'Exit function immediately, send nothing',                       'system.py line 228'],
-  ['if self.discount == 0:',        '== is equality comparison, not assignment (= is assignment)',  'system.py line 226'],
-  ['total * (self.discount / 100)', 'Divide by 100 converts % to decimal for multiply',            'system.py line 236'],
-  ['return total, discounted, final','Return 3 values as a tuple; caller unpacks with a, b, c =', 'system.py line 238'],
-  ['f"₱{total:.2f}"',               'f-string: :.2f = exactly 2 decimal places',                  'system.py lines 247–249'],
-  ['if self.discount > 0:',         'Greater-than — only show promo rows if promo is active',       'system.py lines 256, 440'],
-  ['while True:',                   'Infinite loop — runs until break is hit',                      'main.py menus'],
-  ['break',                         'Stop the loop immediately, jump out',                          'main.py various'],
-  ['continue',                      'Skip this iteration, go back to loop top',                     'main.py line 151'],
-  ['elif',                          '"else if" — checked only if previous if was False',            'main.py menu choices'],
+  ['class NUmart:',                  'Defines a class — the blueprint for creating objects',                    'system.py line 26'],
+  ['def __init__(self):',            'Constructor — runs automatically when NUmart() is called',               'system.py line 29'],
+  ['self.discount = 0',              'Creates the "discount" attribute on the object and sets it to 0',        'system.py line 34'],
+  ['self.promo_used = ""',           'Creates the "promo_used" attribute and sets it to an empty string',      'system.py line 35'],
+  ['def apply_promo(self, code):',   'Method definition — self is automatic, code is passed by the caller',   'system.py line 206'],
+  ['code.strip().upper()',           'Remove surrounding spaces, then convert to uppercase — chained calls',   'system.py line 208'],
+  ['if self.promo_used:',            'Truthy check — "" is falsy, any non-empty string is truthy',             'system.py line 210'],
+  ['if code in dict_Codes:',         'Check if code is a key in the dictionary — O(1) lookup',                'system.py line 215'],
+  ['dict_Codes[code]',               'Access the dictionary by key — returns the integer value',               'system.py line 216'],
+  ['return True',                    'Exit the function and send True to the caller (success signal)',         'system.py line 219'],
+  ['return False',                   'Exit the function and send False to the caller (failure signal)',        'system.py lines 213, 222'],
+  ['return',                         'Exit the function immediately with no return value',                      'system.py line 228'],
+  ['if self.discount == 0:',         '== is equality comparison; = is assignment — do not confuse them',       'system.py line 226'],
+  ['total * (self.discount / 100)',   'Dividing by 100 converts a percentage integer to a decimal multiplier', 'system.py line 236'],
+  ['return total, discounted, final', 'Return three values as a tuple; the caller unpacks them as a, b, c =', 'system.py line 238'],
+  ['f"₱{total:.2f}"',                'f-string: :.2f forces exactly two decimal places',                      'system.py lines 247–249'],
+  ['if self.discount > 0:',           '> is a greater-than comparison — only show promo rows when active',     'system.py line 256'],
+  ['while True:',                     'An infinite loop — runs until a break statement is reached',            'main.py menu loops'],
+  ['break',                           'Exit the current loop immediately',                                     'main.py various'],
+  ['continue',                        'Skip the rest of this iteration and return to the top of the loop',    'main.py line 151'],
+  ['elif',                            '"else if" — evaluated only when the preceding if was False',            'main.py menu choices'],
 ];
 const sb = document.getElementById('syn-body');
-synRows.forEach(r=>{
+synRows.forEach(r => {
   const tr = document.createElement('tr');
   tr.innerHTML = `<td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td>`;
   sb.appendChild(tr);
 });
 
-/* Q&A */
-const qaData = [
-  {q:'What is your specific role in the group project?',
-   a:'My role is Price Calculation and Promo Codes. I am responsible for: the <code>dict_Codes</code> constant (lines 9–13 in system.py), <code>apply_promo()</code> (lines 206–222), <code>remove_promo()</code> (lines 224–231), <code>get_final_total()</code> (lines 233–238), <code>display_price_summary()</code> (lines 240–262), and the price/promo menu in main.py (<code>menu_price_summary()</code>).'},
-  {q:'What are the two attributes your functions use, and where do they come from?',
-   a:'<code>self.discount</code> and <code>self.promo_used</code>. Both are created and initialized in <code>__init__</code> on lines 34–35 of system.py. <code>self.discount</code> starts at <code>0</code> (integer — the discount percentage). <code>self.promo_used</code> starts at <code>""</code> (empty string — the active promo code name). Without <code>__init__</code> creating them, any function that tries to read or write them would raise an <code>AttributeError</code>.'},
-  {q:'Why is dict_Codes defined outside the class?',
-   a:'Because it is a constant that never changes at runtime. Placing it at module level (outside the class, at the top of the file) means every method in NUmart can access it directly by name — no <code>self.</code> needed. It acts as a single source of truth for all 4 valid promo codes and their discount values.'},
-  {q:'What does .strip().upper() do and why are both needed?',
-   a:'<code>.strip()</code> removes leading and trailing whitespace from the string — so if the user accidentally typed spaces around the code, they are removed. <code>.upper()</code> converts all letters to uppercase. Both are chained in one expression. Without this, a user typing <code>"save10"</code> or <code>" SAVE10 "</code> would always get "Invalid code" even though it is valid — because <code>"save10"</code> is not a key in <code>dict_Codes</code> (which only has <code>"SAVE10"</code>).',
-   ex:'" save10 " → strip() → "save10" → upper() → "SAVE10" ✓ matches key\n"Student15" → strip() → "Student15" → upper() → "STUDENT15" ✓ matches key'},
-  {q:'How does apply_promo() prevent two promo codes being used at once?',
-   a:'It uses a guard on line 210: <code>if self.promo_used:</code>. Since <code>self.promo_used</code> is set to the code string (e.g. <code>"STUDENT15"</code>) when a promo is applied, it becomes truthy. The guard detects this and immediately prints a message and <code>return False</code>, blocking the new code entirely. The user must call <code>remove_promo()</code> first, which resets <code>self.promo_used</code> back to <code>""</code> (falsy), before a new code can be applied.'},
-  {q:'What does "if code in dict_Codes" do exactly?',
-   a:'The <code>in</code> operator on a dictionary checks whether the given value is a <em>key</em> in that dictionary. It returns <code>True</code> if found, <code>False</code> if not. Dictionary key lookup is O(1) — instant, regardless of how many entries the dictionary has. No loop is needed.',
-   ex:'"SAVE10"    in dict_Codes → True\n"STUDENT15" in dict_Codes → True\n"FAKE99"    in dict_Codes → False'},
-  {q:'What does return True and return False do, and how does main.py use them?',
-   a:'<code>return</code> exits the function immediately. <code>return True</code> sends the boolean value <code>True</code> back to whoever called the function. <code>return False</code> sends <code>False</code>. In main.py, the retry loop on line 152 checks: <code>if store.apply_promo(code): break</code>. If <code>True</code> is returned (success), the <code>break</code> runs and exits the retry loop. If <code>False</code> (failure), the <code>if</code> is skipped and the <code>while True</code> loop runs again, asking for another code.'},
-  {q:'Why does remove_promo() reset both self.discount AND self.promo_used?',
-   a:'Because the guard in <code>apply_promo()</code> (line 210) checks <code>if self.promo_used:</code> to block a second promo. If only <code>self.discount</code> is reset to 0 but <code>self.promo_used</code> still holds <code>"STUDENT15"</code>, the guard would see a truthy string and permanently block any new promo from being applied. Both attributes must be cleared together to fully reset the promo state.',
-   ex:'Wrong — reset only discount:\n  self.discount = 0\n  self.promo_used still = "STUDENT15"  → guard still blocks!\n\nCorrect — reset both:\n  self.discount = 0\n  self.promo_used = ""  → guard now passes ✓'},
-  {q:'What does dividing by 100 do in get_final_total()?',
-   a:'It converts the discount percentage (an integer like 15) into a decimal multiplier (0.15) that can be used in multiplication. Without the division by 100, the math would be catastrophically wrong.',
-   ex:'WRONG (missing /100):\n  discounted = 200 * 15    → 3000.0  (way too much)\n\nCORRECT:\n  discounted = 200 * (15/100)  → 200 * 0.15 → 30.0  ✓'},
-  {q:'Why does get_final_total() return three values instead of just the final amount?',
-   a:'Because three different callers each need a different subset of the results. <code>display_price_summary()</code> needs all three to show the full breakdown (subtotal, discount amount, total due). <code>process_payment()</code> needs only <code>final</code> for the Amount Due display. <code>_generate_receipt()</code> needs all three for the receipt. Returning all three at once avoids recomputing the same math multiple times.',
-   ex:'a, b, c = self.get_final_total()\n# returns tuple: (total, discounted, final)\n# e.g.           (96.0,  14.4,      81.6)'},
-  {q:'What does the "if self.discount > 0" check do in display_price_summary()?',
-   a:'It conditionally shows or hides the Promo and Discount rows. If no promo is active (<code>self.discount == 0</code>), those two rows are skipped entirely — the summary only shows Subtotal and Total Due. This prevents a confusing display with a blank "Promo: " and a "Discount: -₱0.00" row when nothing was actually applied.'},
-  {q:'What is :.2f inside an f-string?',
-   a:'It is a format specifier. The colon <code>:</code> starts the format spec. <code>.2</code> means 2 digits after the decimal point. <code>f</code> means fixed-point notation (a regular decimal number, not scientific notation). Without it, Python might print <code>170.0</code> or <code>96.00000000000001</code>. With <code>:.2f</code>, it always prints exactly two decimal places.',
-   ex:'f"₱{170.0:.2f}"   →  "₱170.00"\nf"₱{96.0:.2f}"    →  "₱96.00"\nf"₱{81.6:.2f}"    →  "₱81.60"'},
-  {q:'What is the difference between = and ==?',
-   a:'<code>=</code> is the <em>assignment</em> operator — it stores a value into a variable: <code>self.discount = 0</code>. <code>==</code> is the <em>equality comparison</em> operator — it checks if two values are equal and evaluates to <code>True</code> or <code>False</code>: <code>if self.discount == 0</code>. Using <code>=</code> inside an <code>if</code> condition is a bug (Python raises a <code>SyntaxError</code>).',
-   ex:'self.discount = 0          # assignment: set it to 0\nif self.discount == 0:     # comparison: is it 0? True/False'},
-  {q:'What is the difference between break and continue?',
-   a:'<code>break</code> exits the loop entirely — execution jumps to the first line after the loop. <code>continue</code> skips the rest of the current iteration and goes back to the top of the loop for the next cycle. In the promo input loop: typing "0" triggers <code>break</code> (cancel, exit). Typing nothing triggers <code>continue</code> (skip, ask again).',
-   ex:'while True:\n    code = input("Promo: ").strip()\n    if code == "0": break     # EXIT the loop entirely\n    if code == "":  continue  # SKIP to top, ask again\n    if store.apply_promo(code): break  # SUCCESS, EXIT'},
-  {q:'What is a guard clause?',
-   a:'A guard clause is an early <code>return</code> (or <code>return False</code>) placed at the very start of a function to handle invalid or edge-case conditions, preventing the main logic from running unnecessarily. Examples in your code: <code>remove_promo()</code> line 226 — if no promo is active, return early. <code>display_price_summary()</code> line 242 — if cart is empty, return early. Guards make code easier to read by "getting the bad cases out of the way first."'},
-  {q:'What is an f-string and how does it work?',
-   a:'An f-string (formatted string literal) is a string prefixed with <code>f</code> that allows embedding variable values or expressions directly inside <code>{}</code> braces. Python evaluates whatever is inside the braces at runtime and inserts the result as text.',
-   ex:'name = "STUDENT15"\namt  = 15\nf"Promo \'{name}\' gives {amt}% off."\n→  "Promo \'STUDENT15\' gives 15% off."'},
-  {q:'How do main.py and system.py work together?',
-   a:'They follow a separation of concerns: main.py handles everything the user sees and types (menus, input, loops, validation messages). system.py handles all the data logic (apply discount, compute total, manage cart). When main.py calls <code>store.apply_promo(code)</code>, Python translates that to <code>NUmart.apply_promo(store, code)</code> — the method in system.py runs with <code>self = store</code> and <code>code</code> = whatever the user typed.'},
-];
-
-/* ─── Q&A TAB SWITCHER ─── */
-function switchQaTab(tab){
-  document.getElementById('qa-my-part').style.display = tab==='my-part' ? '' : 'none';
-  document.getElementById('qa-general').style.display  = tab==='general'  ? '' : 'none';
-  document.querySelectorAll('#qa-tabs .tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active', (i===0 && tab==='my-part') || (i===1 && tab==='general'));
-  });
-}
-
-function buildQaList(containerId, data){
-  const ql = document.getElementById(containerId);
-  data.forEach(item=>{
+/* ══════════════════════════════════════
+   Q&A DATA
+══════════════════════════════════════ */
+function buildQA(containerId, data){
+  const c = document.getElementById(containerId);
+  data.forEach(item => {
     const el = document.createElement('div');
     el.className = 'qa-item';
     el.innerHTML =
-      `<div class="qa-q"><span>${item.q}</span><i class="qa-icon" aria-hidden="true">+</i></div>`+
+      `<div class="qa-q"><span>${item.q}</span><i class="qa-icon">+</i></div>`+
       `<div class="qa-a">${item.a}`+
-      (item.ex ? `<div class="cb" style="margin-top:10px;line-height:1.9">${item.ex}</div>` : '')+
+      (item.ex ? `<div class="cb" style="margin-top:10px;line-height:1.9;font-size:12px">${item.ex}</div>` : '')+
       `</div>`;
-    el.querySelector('.qa-q').addEventListener('click',()=>el.classList.toggle('open'));
-    ql.appendChild(el);
+    el.querySelector('.qa-q').addEventListener('click', () => el.classList.toggle('open'));
+    c.appendChild(el);
   });
 }
 
-buildQaList('qa-my-part', qaData);
+buildQA('qa-my', [
+  { q: 'What is your specific role in this group project?',
+    a: 'My role is Price Calculation and Promo Codes. I am responsible for: the <code>dict_Codes</code> constant (lines 8–13 in system.py), <code>apply_promo()</code> (lines 206–222), <code>remove_promo()</code> (lines 224–231), <code>get_final_total()</code> (lines 233–238), <code>display_price_summary()</code> (lines 240–262), and the user-facing promo menu in main.py (<code>menu_price_summary()</code>).',
+    ex: null },
+  { q: 'What are the two attributes your functions use, and where do they come from?',
+    a: '<code>self.discount</code> and <code>self.promo_used</code>. Both are created and initialized in <code>__init__</code> on lines 34–35 of system.py. <code>self.discount</code> starts at <code>0</code> — an integer representing the active discount percentage. <code>self.promo_used</code> starts at <code>""</code> — an empty string representing the active promo code name. Without <code>__init__</code> creating these attributes, any function that tries to read or write them would raise an <code>AttributeError</code>.',
+    ex: null },
+  { q: 'Why is dict_Codes defined outside the class?',
+    a: 'Because it is a constant that never changes while the program runs. Placing it at module level — outside the class — means every method in <code>NUmart</code> can access it directly by name without needing <code>self.</code>. It acts as a single source of truth for all four valid promo codes and their corresponding discount percentages.',
+    ex: null },
+  { q: 'What does .strip().upper() do, and why are both calls necessary?',
+    a: '<code>.strip()</code> removes any leading and trailing whitespace from the string. <code>.upper()</code> converts all letters to uppercase. The two calls are chained — <code>.strip()</code> runs first and produces a new string, then <code>.upper()</code> runs on that result. Without this step, a user typing <code>"save10"</code> or <code>" SAVE10 "</code> would always be rejected, even though the code is valid, because neither would match the dictionary key <code>"SAVE10"</code> exactly.',
+    ex: '"  save10  "  →  strip()  →  "save10"   →  upper()  →  "SAVE10"  ✓\n"Student15"  →  strip()  →  "Student15" →  upper()  →  "STUDENT15" ✓' },
+  { q: 'How does apply_promo() prevent a user from using two promo codes at once?',
+    a: 'It uses a guard clause on line 210: <code>if self.promo_used:</code>. Since <code>self.promo_used</code> is set to a non-empty string (e.g., <code>"STUDENT15"</code>) when a promo is applied, it becomes truthy. The guard detects this and immediately prints a message, then executes <code>return False</code>, blocking the new code entirely. The user must first call <code>remove_promo()</code>, which resets <code>self.promo_used</code> to <code>""</code> (falsy), before a new code can be applied.',
+    ex: null },
+  { q: 'What does "if code in dict_Codes" check exactly?',
+    a: 'The <code>in</code> operator on a dictionary checks whether the given value is a <em>key</em> in that dictionary. It returns <code>True</code> if the key is found and <code>False</code> if it is not. Dictionary key lookup is O(1) — constant time — regardless of how many entries the dictionary contains. No loop is needed.',
+    ex: '"SAVE10"    in dict_Codes  →  True\n"STUDENT15" in dict_Codes  →  True\n"FAKE99"    in dict_Codes  →  False' },
+  { q: 'What do return True and return False do, and how does main.py use them?',
+    a: '<code>return</code> exits the function immediately. <code>return True</code> sends the boolean value <code>True</code> back to the caller. <code>return False</code> sends <code>False</code>. In main.py, the promo retry loop on line 152 checks: <code>if store.apply_promo(code): break</code>. When <code>True</code> is returned, the <code>break</code> executes and the loop ends. When <code>False</code> is returned, the <code>if</code> condition fails and the loop continues, prompting the user again.',
+    ex: null },
+  { q: 'Why does remove_promo() reset both self.discount and self.promo_used?',
+    a: 'Because the guard in <code>apply_promo()</code> (line 210) checks <code>if self.promo_used:</code>. If only <code>self.discount</code> is reset to <code>0</code> but <code>self.promo_used</code> still holds <code>"STUDENT15"</code>, the guard would see a non-empty string — truthy — and permanently block any new promo from being applied. Both attributes must be cleared together to fully restore the default state.',
+    ex: 'Incorrect (reset only one):\n  self.discount = 0\n  self.promo_used = "STUDENT15"  →  guard still blocks new codes!\n\nCorrect (reset both):\n  self.discount = 0\n  self.promo_used = ""           →  guard now passes ✓' },
+  { q: 'Why is dividing by 100 necessary in get_final_total()?',
+    a: 'It converts the discount percentage — an integer such as <code>15</code> — into a decimal multiplier — <code>0.15</code> — that can be correctly used in multiplication. Without the division by 100, the math would produce a completely wrong result.',
+    ex: 'INCORRECT (missing / 100):\n  discounted = 200 * 15      →  3000.0  ← completely wrong\n\nCORRECT:\n  discounted = 200 * (15/100) →  200 * 0.15 = 30.0  ✓' },
+  { q: 'Why does get_final_total() return three values instead of just the final amount?',
+    a: 'Because three separate functions each need a different subset of the results. <code>display_price_summary()</code> needs all three to print the full breakdown — subtotal, discount amount, and total due. <code>process_payment()</code> needs only <code>final</code> for the Amount Due display. <code>_generate_receipt()</code> needs all three for the receipt printout. Returning all three at once avoids recomputing the same calculation in multiple places.',
+    ex: 'total, discounted, final = self.get_final_total()\n# Returns a tuple e.g. (96.0, 14.4, 81.6)\n# total=96.0, discounted=14.4, final=81.6' },
+  { q: 'What does the "if self.discount > 0" check do in display_price_summary()?',
+    a: 'It conditionally shows or hides the Promo and Discount rows in the price summary. If no promo is active (<code>self.discount == 0</code>), those two rows are skipped entirely — the summary shows only the Subtotal and the Total Due. This prevents a confusing display where a blank "Promo: " label and a "Discount: -₱0.00" row appear even when no code has been applied.',
+    ex: null },
+  { q: 'What is :.2f inside an f-string?',
+    a: 'It is a <em>format specifier</em>. The colon <code>:</code> begins the format specification. <code>.2</code> means two digits after the decimal point. <code>f</code> stands for fixed-point notation — a regular decimal number, not scientific notation. Without it, Python might print <code>170.0</code> or <code>96.00000000001</code> due to floating-point precision. With <code>:.2f</code>, the output is always exactly two decimal places.',
+    ex: 'f"₱{170.0:.2f}"  →  "₱170.00"\nf"₱{96.0:.2f}"   →  "₱96.00"\nf"₱{81.6:.2f}"   →  "₱81.60"' },
+  { q: 'What is the difference between = and ==?',
+    a: '<code>=</code> is the <em>assignment operator</em> — it stores a value into a variable: <code>self.discount = 0</code>. <code>==</code> is the <em>equality comparison operator</em> — it checks whether two values are equal and evaluates to <code>True</code> or <code>False</code>: <code>if self.discount == 0</code>. Using <code>=</code> inside an <code>if</code> condition is a syntax error in Python.',
+    ex: 'self.discount = 0          # assignment: set the value to 0\nif self.discount == 0:     # comparison: is the value 0?' },
+  { q: 'What is the difference between break and continue?',
+    a: '<code>break</code> exits the loop entirely — execution jumps to the first line after the loop. <code>continue</code> skips the rest of the current iteration and jumps back to the top of the loop for the next cycle. In the promo input loop, typing <code>"0"</code> triggers <code>break</code> (cancel and exit). Typing nothing triggers <code>continue</code> (skip this attempt and ask again).',
+    ex: 'while True:\n    code = input("Promo: ").strip()\n    if code == "0": break     # EXIT the loop entirely\n    if code == "":  continue  # SKIP to top, ask again\n    if store.apply_promo(code): break  # SUCCESS, then exit' },
+  { q: 'What is a guard clause?',
+    a: 'A guard clause is an early <code>return</code> placed at the beginning of a function to handle edge cases or invalid conditions, preventing the main logic from running unnecessarily. In <code>remove_promo()</code>, line 226 returns early if no promo is active. In <code>display_price_summary()</code>, line 242 returns early if the cart is empty. Guards make code easier to read by handling the "should not proceed" cases at the top, so the rest of the function can assume normal conditions.',
+    ex: null },
+  { q: 'How do main.py and system.py work together?',
+    a: 'They follow a <em>separation of concerns</em> design. <code>main.py</code> handles everything the user sees and interacts with — menus, input prompts, loops, and retry logic. <code>system.py</code> handles all the business logic — validating promo codes, computing totals, managing cart state, and processing payments. When <code>main.py</code> calls <code>store.apply_promo(code)</code>, Python internally translates that to <code>NUmart.apply_promo(store, code)</code> — the method in system.py executes with <code>self = store</code>.',
+    ex: null },
+]);
 
-/* ─── GENERAL Q&A ─── */
-const qaGeneral = [
-  {q:'What is the overall purpose of the NUmart system?',
-   a:'NUmart is a terminal-based shopping cart system for a school supply store. It lets a buyer log in, browse inventory, add or remove items from a cart, apply promo codes, view a price summary, and pay through cash, card, or e-wallet. All completed transactions are saved to a history. The system is built using fundamental data structures — linked list, stack, and queue — to demonstrate how those structures work in a real application.',
-   ex:null},
-  {q:'What data structures are used in the project and what is each one for?',
-   a:'Four data structures are used. A <strong>Singly Linked List</strong> (<code>LinkedList</code>) stores the inventory — each item is a node pointing to the next. A second <strong>Singly Linked List</strong> (<code>CartLinkedList</code>) stores the shopping cart — it adds, removes, and merges quantities. A <strong>Stack</strong> stores undo actions — last action added is the first one that can be undone (LIFO). A <strong>Queue</strong> stores transaction history — transactions are shown in the order they happened, oldest first (FIFO).',
-   ex:null},
-  {q:'Why use a linked list for inventory instead of a Python list?',
-   a:'A linked list demonstrates the data structure concept directly — each <code>ItemNode</code> holds a reference to the next node, and traversal, insertion at the tail, and search by ID are all done manually without built-in shortcuts. This shows the underlying mechanics of how a list works at a lower level rather than relying on Python\'s native <code>list</code>, which hides all of that from the programmer.',
-   ex:null},
-  {q:'Why are there two separate linked lists — LinkedList and CartLinkedList?',
-   a:'They serve different purposes. <code>LinkedList</code> is the inventory — it is built at startup, never modified during shopping (only searched and displayed). <code>CartLinkedList</code> needs more operations: add items, merge quantities when the same item is added twice, remove items, compute totals, iterate for receipts, and clear itself after checkout. Separating them keeps each class focused on its own behavior, and changes to cart logic do not affect inventory logic.',
-   ex:null},
-  {q:'How does CartLinkedList handle adding the same item twice?',
-   a:'The <code>add_item()</code> method calls <code>search()</code> first. If the item already exists in the cart, it simply adds the new quantity to the existing node\'s <code>quantity</code> field — no new node is created. Only if the item is not yet in the cart does it create and append a new <code>CartNode</code> at the tail.',
-   ex:'# structures.py — add_item()\nexisting = self.search(item_id)\nif existing is not None:\n    existing.quantity += quantity  ← merge, no new node\n    return\nnew_node = CartNode(...)          ← only if not found'},
-  {q:'How does add_to_cart() in system.py prevent exceeding available stock?',
-   a:'It checks how much of the item is already in the cart: <code>already_in_cart = cart_item.quantity if cart_item else 0</code>. Then it computes <code>total_requested = already_in_cart + quantity</code>. If <code>total_requested</code> exceeds the inventory quantity, it calculates what is still available and returns <code>"maxed"</code> or <code>False</code>. This means even across multiple add actions, the cart can never hold more units than what is in stock.',
-   ex:'# system.py lines 103–117\nalready_in_cart = cart_item.quantity if cart_item else 0\ntotal_requested = already_in_cart + quantity\nif total_requested > item.quantity:\n    available = item.quantity - already_in_cart\n    ...'},
-  {q:'Why does remove_from_cart() save item details before actually removing the node?',
-   a:'Once a node is removed from the cart linked list, its data is gone. The undo stack needs the item\'s <code>category</code> and <code>price</code> to reconstruct the exact cart entry if the user undoes the removal. Those details are saved into local variables — <code>removed_qty</code>, <code>removed_name</code>, <code>removed_category</code>, <code>removed_price</code> — before calling <code>self.cart.remove_item()</code>, so the undo action dict always has complete information.',
-   ex:'# system.py lines 140–152\nremoved_qty      = cart_item.quantity\nremoved_name     = cart_item.name\nremoved_category = cart_item.category\nremoved_price    = cart_item.price\nself.cart.remove_item(item_id)  ← remove AFTER saving'},
-  {q:'Why does the undo feature use a Stack instead of a regular list?',
-   a:'A Stack is LIFO — Last In, First Out. The most recently performed action should always be the first one that can be undone. A regular list used as a queue (FIFO) would try to undo the oldest action first, which is the wrong order. The Stack\'s <code>pop()</code> naturally returns the last pushed action, which is exactly what undo needs.',
-   ex:'Stack (LIFO) — correct:\n  Action 1: add Ballpen  ← pushed first\n  Action 2: add Notebook ← pushed second\n  Undo → pops Notebook first ✓\n\nQueue (FIFO) — wrong:\n  Undo → would pop Ballpen first ✗'},
-  {q:'What happens when the user undoes an add but they also manually removed some of that item in between?',
-   a:'<code>undo_last_action()</code> checks the current <code>cart_item.quantity</code> against the quantity stored in the undo record. If the current quantity is greater than the undo amount, it subtracts. If the current quantity is equal to or less than the undo amount, it removes the item from the cart entirely. This prevents the cart quantity from going negative.',
-   ex:'# system.py lines 183–188\nif cart_item.quantity > quantity:\n    cart_item.quantity -= quantity  ← partial undo\nelse:\n    self.cart.remove_item(item_id) ← full removal'},
-  {q:'Why does transaction history use a Queue instead of a Stack?',
-   a:'A Queue is FIFO — First In, First Out. Transaction history should be displayed in chronological order: oldest transaction first, newest last. The Queue\'s <code>enqueue()</code> adds to the back and <code>display()</code> reads from index 0 forward, preserving that natural order. A Stack would show the most recent transaction first, which would be confusing for a history log.',
-   ex:null},
-  {q:'What does max(0, ...) protect against in _generate_receipt()?',
-   a:'After a successful checkout, inventory quantities are reduced by the purchased amounts. The expression <code>inv_item.quantity = max(0, inv_item.quantity - item_data["qty"])</code> ensures the quantity can never go below zero. Without this guard, a logic error or edge case could result in a negative stock number being stored, which is not a valid inventory state.',
-   ex:'# system.py line 418\ninv_item.quantity = max(0, inv_item.quantity - item_data["qty"])\n# e.g. qty=5, sold=5 → max(0, 0) = 0  ✓\n# e.g. qty=3, sold=5 → max(0,-2) = 0  ✓ (clamped)'},
-  {q:'What happens to the undo stack and cart after a successful checkout?',
-   a:'After <code>_generate_receipt()</code> runs, three things are reset: <code>self.cart.clear()</code> empties the cart linked list (line 458). <code>self.undo_stack.clear()</code> empties the undo stack (line 461). <code>self.discount</code> and <code>self.promo_used</code> are reset to <code>0</code> and <code>""</code> (lines 459–460). The undo stack is cleared because the cart is now empty — there is nothing to undo anymore, and old undo entries would be meaningless for the next transaction.',
-   ex:'# system.py lines 458–461\nself.cart.clear()\nself.discount   = 0\nself.promo_used = ""\nself.undo_stack.clear()'},
-  {q:'How does buyer_login() validate the password?',
-   a:'It checks two things in order. First, it verifies the password is exactly 12 characters using <code>len(password) != 12</code> — if not, it prints an error and loops back. Second, it checks both the username and password against the <code>dict_Buyer</code> dictionary: <code>username in dict_Buyer and dict_Buyer[username] == password</code>. Both conditions must be true. If either fails, the user is asked to try again.',
-   ex:'# system.py lines 84–92\nif len(password) != 12:         ← length check first\n    print(...)\n    continue\nif username in dict_Buyer and dict_Buyer[username] == password:\n    return True                   ← only if both match'},
-  {q:'How does the system separate user interface from business logic?',
-   a:'main.py handles everything the user sees and interacts with — menus, input prompts, loops, and validation messages. system.py handles all business logic — applying promos, computing totals, managing the cart, processing payments, generating receipts. This is called <em>separation of concerns</em>. The benefit is that if the menu layout needs to change, you only edit main.py. If the pricing logic changes, you only edit system.py. The two files communicate through method calls on the <code>store</code> object.',
-   ex:null},
-];
-
-buildQaList('qa-general', qaGeneral);
+buildQA('qa-gen', [
+  { q: 'What is the overall purpose of the NUmart system?',
+    a: 'NUmart is a terminal-based shopping cart system for a school supply store. It allows a logged-in buyer to browse inventory, add or remove items from a shopping cart, apply promo codes, view a price summary, and pay through cash, card, or e-wallet. All completed transactions are saved to a history log. The system is built using fundamental data structures — a linked list, a stack, and a queue — to demonstrate how those structures are applied in a real application.',
+    ex: null },
+  { q: 'What data structures are used in the project, and what is each one for?',
+    a: 'Four data structures are used. A <strong>Singly Linked List</strong> (<code>LinkedList</code> in structures.py) stores the inventory — each item is a node that holds a reference to the next. A second <strong>Singly Linked List</strong> (<code>CartLinkedList</code>) stores the shopping cart — it handles adding, merging quantities, removing items, and computing totals. A <strong>Stack</strong> stores undo actions in LIFO order — the most recent action is always the first that can be undone. A <strong>Queue</strong> stores completed transaction records in FIFO order — oldest transactions are displayed first.',
+    ex: null },
+  { q: 'Why use a linked list for the inventory instead of a Python list?',
+    a: 'A linked list demonstrates the data structure concept directly. Each <code>ItemNode</code> holds a reference (the <code>next</code> pointer) to the following node, and all traversal, tail insertion, and search-by-ID operations are implemented manually without any built-in shortcuts. This shows the underlying mechanics of how a linked list works at a lower level, rather than relying on Python\'s native <code>list</code> type, which abstracts all of that away.',
+    ex: null },
+  { q: 'Why are there two separate linked lists — LinkedList and CartLinkedList?',
+    a: 'They serve different purposes and need different operations. <code>LinkedList</code> is the inventory — it is populated at startup and is only searched and displayed during shopping; it is never structurally modified. <code>CartLinkedList</code> requires a richer set of operations: adding items, merging quantities when the same item is added again, removing items by ID, computing totals, iterating for receipts, and clearing itself after checkout. Keeping them as separate classes means each is focused on its own responsibilities, and changes to cart logic do not risk breaking inventory logic.',
+    ex: null },
+  { q: 'How does CartLinkedList handle adding the same item twice?',
+    a: 'The <code>add_item()</code> method calls <code>search()</code> first. If the item already exists in the cart, it simply increments the existing node\'s <code>quantity</code> field by the new amount — no new node is created. Only if the item is not yet in the cart does it create and append a new <code>CartNode</code> at the tail of the list.',
+    ex: '# structures.py — CartLinkedList.add_item()\nexisting = self.search(item_id)\nif existing is not None:\n    existing.quantity += quantity  # merge — no new node\n    return\nnew_node = CartNode(...)           # only if not already in cart' },
+  { q: 'How does add_to_cart() in system.py prevent exceeding available stock?',
+    a: 'It checks how many units of the item are already in the cart: <code>already_in_cart = cart_item.quantity if cart_item else 0</code>. It then computes <code>total_requested = already_in_cart + quantity</code>. If <code>total_requested</code> exceeds the inventory quantity, it calculates the remaining available stock and either adds only what is left or returns <code>"maxed"</code> / <code>False</code>. This means the cart can never hold more units than what is in stock, even across multiple separate add actions.',
+    ex: 'already_in_cart = cart_item.quantity if cart_item else 0\ntotal_requested = already_in_cart + quantity\nif total_requested > inv_item.quantity:\n    available = inv_item.quantity - already_in_cart\n    ...' },
+  { q: 'Why does remove_from_cart() save item details before actually removing the node?',
+    a: 'Once a node is removed from the cart linked list, its data is gone — it is no longer reachable. The undo feature requires the item\'s <code>category</code> and <code>price</code> to reconstruct the exact cart entry if the user undoes the removal. Those values are saved into local variables before <code>self.cart.remove_item()</code> is called, ensuring the undo action dictionary always has the complete information needed to restore the item correctly.',
+    ex: '# system.py\nremoved_qty      = cart_item.quantity\nremoved_name     = cart_item.name\nremoved_category = cart_item.category\nremoved_price    = cart_item.price\nself.cart.remove_item(item_id)   # ← remove AFTER saving the data' },
+  { q: 'Why does the undo feature use a Stack instead of a regular list?',
+    a: 'A Stack is LIFO — Last In, First Out. The most recently performed action should always be the first one that can be undone. A list used as a queue (FIFO — First In, First Out) would attempt to undo the oldest action first, which is the wrong order. The Stack\'s <code>pop()</code> method naturally returns the last item that was pushed, which is precisely the behavior that undo requires.',
+    ex: '# Correct — Stack (LIFO):\n  Push: add Ballpen  (first)\n  Push: add Notebook (second)\n  Pop (undo): Notebook ✓  ← most recent first\n\n# Wrong — Queue (FIFO):\n  Pop (undo): Ballpen ✗  ← oldest first — incorrect' },
+  { q: 'Why does transaction history use a Queue instead of a Stack?',
+    a: 'A Queue is FIFO — First In, First Out. Transaction history should be displayed in the order the transactions occurred, with the oldest first and the newest last. The Queue\'s <code>enqueue()</code> method adds records to the back, and the <code>display()</code> method reads from index 0 forward, preserving natural chronological order. A Stack would display the most recent transaction first, which would make the history confusing to read.',
+    ex: null },
+  { q: 'What does max(0, ...) protect against in _generate_receipt()?',
+    a: 'After a successful checkout, each purchased item\'s inventory quantity is reduced by the amount sold. The expression <code>max(0, inv_item.quantity - item_data["qty"])</code> ensures that the resulting quantity can never be stored as a negative number. Without this guard, a logic edge case could produce a negative stock value, which is not a valid inventory state.',
+    ex: '# system.py line 418\ninv_item.quantity = max(0, inv_item.quantity - item_data["qty"])\n# qty=5, sold=5  →  max(0, 0) = 0   ✓\n# qty=3, sold=5  →  max(0,-2) = 0   ✓ (clamped to zero)' },
+  { q: 'What happens to the cart, undo stack, and promo attributes after a successful checkout?',
+    a: 'After <code>_generate_receipt()</code> completes, four things are reset: <code>self.cart.clear()</code> empties the shopping cart linked list. <code>self.discount</code> is set to <code>0</code>. <code>self.promo_used</code> is set to <code>""</code>. <code>self.undo_stack.clear()</code> empties the undo stack. The undo stack is cleared because the cart is now empty — there is nothing left to undo, and keeping the old action records would be meaningless and potentially incorrect for the next transaction.',
+    ex: '# system.py lines 458–461\nself.cart.clear()\nself.discount   = 0\nself.promo_used = ""\nself.undo_stack.clear()' },
+  { q: 'How does buyer_login() validate the username and password?',
+    a: 'It validates in two stages. First, it checks that the password is exactly 12 characters using <code>len(password) != 12</code>. If the length is wrong, it counts as a failed attempt — the attempt counter decrements and the loop continues. Second, if the length is correct, it checks both the username and the password against the <code>dict_Buyer</code> dictionary: <code>username in dict_Buyer and dict_Buyer[username] == password</code>. Both conditions must be true simultaneously for the login to succeed.',
+    ex: '# system.py lines 84–92\nif len(password) != 12:       # length check — counts as failed attempt\n    ...\nif username in dict_Buyer and dict_Buyer[username] == password:\n    return True               # only succeeds when both conditions pass' },
+  { q: 'How does the system separate user interface from business logic?',
+    a: '<code>main.py</code> handles the user interface — menus, input prompts, retry loops, and display messages. <code>system.py</code> handles all business logic — applying promo codes, computing totals, managing cart state, processing payments, and generating receipts. This is called <em>separation of concerns</em>. The benefit is maintainability: if the menu layout needs to change, only <code>main.py</code> needs to be edited. If the pricing logic changes, only <code>system.py</code> needs to be edited. The two files communicate through method calls on the shared <code>store</code> object.',
+    ex: null },
+  { q: 'What is the difference between a Stack and a Queue in terms of order?',
+    a: 'A <strong>Stack</strong> is LIFO — Last In, First Out. The last item added is the first one retrieved. This is ideal for undo operations because the most recent action should be reversed first. A <strong>Queue</strong> is FIFO — First In, First Out. The first item added is the first one retrieved. This is ideal for transaction history because records should be displayed in the order they were created.',
+    ex: 'Stack (LIFO) — like a pile of trays:\n  Push A, Push B, Push C\n  Pop  →  C, then B, then A\n\nQueue (FIFO) — like a waiting line:\n  Enqueue A, Enqueue B, Enqueue C\n  Dequeue  →  A, then B, then C' },
+]);
 </script>
 </body>
 </html>
